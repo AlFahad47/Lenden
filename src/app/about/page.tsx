@@ -2,156 +2,234 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
+// ===== Animated Counter =====
+function Counter({ value, label }: { value: number; label: string }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const duration = 1200;
+    const stepTime = 16;
+    const increment = value / (duration / stepTime);
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= value) {
+        setCount(value);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [value]);
+
+  return (
+    <div className="text-center">
+      <h3 className="text-4xl font-bold bg-gradient-to-r from-[#1D4E48] to-[#BDDD7E] bg-clip-text text-transparent">
+        {count}+
+      </h3>
+      <p className="text-gray-600 mt-2">{label}</p>
+    </div>
+  );
+}
+
+// ===== Animation Variants =====
 const container = {
   hidden: {},
-  show: {
-    transition: { staggerChildren: 0.15 },
-  },
+  show: { transition: { staggerChildren: 0.2 } },
 };
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 50 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6 },
+    transition: { duration: 0.8, ease: "easeOut" },
   },
 };
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1D4E48]/10 via-white to-[#BDDD7E]/20 overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-[#f7faf9] to-[#eef5f3]">
+      {/* ===== Animated Gradient Background ===== */}
+      <motion.div
+        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 12, repeat: Infinity }}
+        className="absolute -top-20 -left-20 w-96 h-96 bg-gradient-to-r from-[#BDDD7E]/40 to-[#1D4E48]/20 rounded-full blur-3xl -z-10"
+      />
+
+      <motion.div
+        animate={{ scale: [1.1, 1, 1.1], opacity: [0.2, 0.4, 0.2] }}
+        transition={{ duration: 14, repeat: Infinity }}
+        className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-to-r from-[#1D4E48]/30 to-[#BDDD7E]/20 rounded-full blur-3xl -z-10"
+      />
+
       {/* ================= HERO ================= */}
-      <section className="max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-12 items-center">
+      <section className="max-w-7xl mx-auto px-6 py-28 grid lg:grid-cols-2 gap-16 items-center">
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="space-y-6"
+          className="space-y-8"
         >
+          <motion.span
+            variants={fadeUp}
+            className="inline-block bg-gradient-to-r from-[#BDDD7E]/40 to-[#1D4E48]/20 text-[#1D4E48] px-4 py-2 rounded-full text-sm font-medium"
+          >
+            Next-Gen Digital Wallet
+          </motion.span>
+
           <motion.h1
             variants={fadeUp}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#1D4E48] leading-tight"
+            className="text-4xl md:text-6xl font-extrabold leading-tight bg-gradient-to-r from-[#1D4E48] to-[#2f7c72] bg-clip-text text-transparent"
           >
-            Empowering Digital Transactions with Lenden
+            Professional Digital Finance Made Simple
           </motion.h1>
 
           <motion.p
             variants={fadeUp}
-            className="text-lg text-gray-600 leading-relaxed"
+            className="text-lg text-gray-600 leading-relaxed max-w-xl"
           >
-            Lenden is a modern FinTech-based digital wallet system inspired by
-            the Bengali word “লেনদেন”. It enables users to send, receive, and
-            manage money securely with real-time analytics and fraud protection.
+            Lenden delivers a secure and intelligent digital wallet platform
+            built for modern financial management. Experience fast transactions,
+            AI-powered analytics, and enterprise-grade security in one seamless
+            ecosystem.
           </motion.p>
 
-          <motion.div variants={fadeUp}>
+          <motion.div variants={fadeUp} className="flex gap-4 flex-wrap">
             <Link
               href="/register"
-              className="inline-block bg-[#1D4E48] hover:bg-[#163c37] text-white px-8 py-4 rounded-2xl shadow-xl transition-all duration-300"
+              className="bg-gradient-to-r from-[#1D4E48] to-[#2f7c72] hover:scale-105 text-white px-8 py-4 rounded-2xl shadow-2xl transition-all duration-300"
             >
-              Create Your Account
+              Get Started
+            </Link>
+
+            <Link
+              href="/login"
+              className="border border-[#1D4E48] text-[#1D4E48] hover:bg-[#1D4E48] hover:text-white px-8 py-4 rounded-2xl transition-all duration-300"
+            >
+              Login
             </Link>
           </motion.div>
         </motion.div>
 
-        {/* Feature Card */}
+        {/* Floating Glass Card */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="bg-white/80 backdrop-blur-xl p-10 rounded-3xl shadow-2xl"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: [0, -12, 0] }}
+          transition={{ duration: 6, repeat: Infinity }}
+          className="bg-white/60 backdrop-blur-2xl p-10 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] border border-white/40"
         >
           {[
-            "Secure & Encrypted Transactions",
-            "Instant Money Transfers",
-            "AI-Powered Expense Analytics",
-            "Smart Fraud Detection",
+            "End-to-End Encrypted Payments",
+            "Real-Time Transaction Monitoring",
+            "AI Expense Intelligence",
+            "Advanced Fraud Protection",
           ].map((item, i) => (
             <motion.div
               key={item}
-              initial={{ opacity: 0, x: 30 }}
+              initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.2 }}
+              transition={{ delay: i * 0.25 }}
               className="flex items-center gap-4 mb-6"
             >
-              <div className="w-3 h-3 rounded-full bg-[#BDDD7E]" />
+              <div className="w-4 h-4 rounded-full bg-gradient-to-r from-[#1D4E48] to-[#BDDD7E]" />
               <p className="text-gray-700 font-medium">{item}</p>
             </motion.div>
           ))}
         </motion.div>
       </section>
 
-      {/* ================= FEATURES ================= */}
-      <section className="max-w-7xl mx-auto px-6 pb-20">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+      {/* ================= STATS ================= */}
+      <section className="max-w-6xl mx-auto px-6 pb-24">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-3xl md:text-4xl font-bold text-center text-[#1D4E48] mb-12"
+          transition={{ duration: 0.8 }}
+          className="grid md:grid-cols-3 gap-12 bg-white rounded-3xl shadow-xl p-12"
         >
-          Why Lenden Stands Out
+          <Counter value={50} label="Secure Transactions / sec" />
+          <Counter value={99} label="System Reliability %" />
+          <Counter value={24} label="Customer Support Hours" />
+        </motion.div>
+      </section>
+
+      {/* ================= FEATURES ================= */}
+      <section className="max-w-7xl mx-auto px-6 pb-28">
+        <motion.h2
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-3xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-[#1D4E48] to-[#2f7c72] bg-clip-text text-transparent"
+        >
+          Why Professionals Choose Lenden
         </motion.h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           {[
             {
-              title: "High-Level Security",
-              desc: "Integrated fraud detection and protected APIs keep your funds safe.",
+              title: "Enterprise Security",
+              desc: "Multi-layer authentication and fraud detection protect every transaction.",
             },
             {
-              title: "Lightning Fast",
-              desc: "Built with Next.js for fast performance and optimized SEO.",
+              title: "High Performance",
+              desc: "Optimized architecture ensures fast, scalable experiences.",
             },
             {
-              title: "Smart Insights",
-              desc: "AI analytics help you understand your spending habits better.",
+              title: "AI Financial Tools",
+              desc: "Smart analytics help users make informed financial decisions.",
             },
           ].map((feature, index) => (
             <motion.div
               key={feature.title}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.15 }}
-              className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-2xl transition duration-300"
+              transition={{ delay: index * 0.2 }}
+              className="group bg-white p-10 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-gray-100"
             >
               <h3 className="text-xl font-semibold text-[#1D4E48] mb-4">
                 {feature.title}
               </h3>
-              <p className="text-gray-600">{feature.desc}</p>
+              <p className="text-gray-600 leading-relaxed">{feature.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* ================= TECHNOLOGY ================= */}
-      <section className="bg-[#1D4E48] text-white py-20">
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-          
+      <section className="relative bg-gradient-to-r from-[#1D4E48] to-[#2f7c72] text-white py-28 overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,white,transparent_70%)]" />
+
+        <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold">
+            <h2 className="text-3xl md:text-5xl font-bold">
               Built with Modern Technology
             </h2>
-            <p className="text-white/80 leading-relaxed">
-              Lenden uses TypeScript for reliability and Next.js for
-              performance and scalability. The architecture is clean,
-              maintainable, and production-ready.
+            <p className="text-white/80 leading-relaxed max-w-xl">
+              Lenden is engineered with TypeScript and Next.js to deliver
+              reliability, performance, and scalability for future-ready digital
+              finance platforms.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-8">
             {["TypeScript", "Next.js", "Tailwind CSS", "Framer Motion"].map(
               (tech) => (
-                <div
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
                   key={tech}
-                  className="bg-white/10 border border-white/20 p-6 rounded-2xl text-center font-semibold backdrop-blur"
+                  className="bg-white/10 hover:bg-white/20 transition-all duration-300 border border-white/20 p-8 rounded-2xl text-center font-semibold backdrop-blur-xl"
                 >
                   {tech}
-                </div>
-              )
+                </motion.div>
+              ),
             )}
           </div>
         </div>
