@@ -128,7 +128,7 @@ export default function AboutPage() {
       </section>
 
       {/* ================= TECHNOLOGY ================= */}
-      {/* <section className="bg-[#1D4E48] text-white py-20">
+      <section className="bg-[#1D4E48] text-white py-20">
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
           
           <div className="space-y-6">
@@ -155,7 +155,7 @@ export default function AboutPage() {
             )}
           </div>
         </div>
-      </section> */}
+      </section>
     </div>
   );
 }
