@@ -36,7 +36,7 @@
 
   export default function Banner() {
     return (
-      <section className="w-full h-screen">
+      <section className="relative w-full h-screen overflow-hidden">
         <Swiper
           modules={[Autoplay, EffectFade, Parallax]}
           effect="fade"
@@ -55,7 +55,7 @@
                 <div className="absolute inset-0 bg-black/55" />
 
                 {/* Text content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center pb-24">
                   <motion.h1
                     custom={0}
                     initial="hidden"
