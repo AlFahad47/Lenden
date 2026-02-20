@@ -108,6 +108,31 @@
                     </motion.a>
                   </motion.div>
 
+                  {/* Trust Badges */}
+                  <motion.div
+                    custom={3}
+                    initial="hidden"
+                    animate="visible"
+                    variants={textVariants}
+                    className="mt-12 flex flex-wrap items-center justify-center gap-6"
+                  >
+                    {[
+                      { icon: "✅", label: "KYC Verified" },
+                      { icon: "🔒", label: "Bank-Grade Security" },
+                      { icon: "⚡", label: "Instant Transfers" },
+                      { icon: "🕐", label: "24/7 Support" },
+                    ].map((badge) => (
+                      <div
+                        key={badge.label}
+                        className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2"
+                      >
+                        <span aria-hidden="true">{badge.icon}</span>
+                        <span className="text-white text-sm font-medium">
+                          {badge.label}
+                        </span>
+                      </div>
+                    ))}
+                  </motion.div>
 
                 </div>
               </div>
