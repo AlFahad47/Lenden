@@ -64,7 +64,7 @@
                     className="text-4xl md:text-6xl font-bold text-white max-w-4xl leading-tight"
                   >
                     Your Money,Guarded with{" "}
-                    <span style={{ color: "#FFFFFF" }}>Excellence.</span>
+                    Excellence.
                   </motion.h1>
 
                   <motion.p
