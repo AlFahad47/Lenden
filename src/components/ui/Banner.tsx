@@ -139,6 +139,28 @@
             </SwiperSlide>
           ))}
         </Swiper>
+
+        {/* Stats Strip */}
+        <div
+          className="absolute bottom-0 left-0 w-full z-10 py-5 px-6"
+          style={{ backgroundColor: "rgba(29, 78, 72, 0.85)" }}
+        >
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-around gap-4">
+            {[
+              { number: "10,000+", label: "Active Users" },
+              { number: "BDT 50L+", label: "Transferred" },
+              { number: "99.9%", label: "Uptime" },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="text-2xl md:text-3xl font-bold text-white">
+                  {stat.number}
+                </p>
+                <p className="text-sm text-white/70 mt-1">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </section>
     );
   }
