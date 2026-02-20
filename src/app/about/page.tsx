@@ -37,7 +37,7 @@ function Counter({ value, label }: { value: number; label: string }) {
   );
 }
 
-// ===== Animation Variants =====
+// ===== Animation Section =====
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.2 } },
@@ -55,7 +55,7 @@ const fadeUp = {
 export default function AboutPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-[#f7faf9] to-[#eef5f3]">
-      {/* ===== Animated Gradient Background ===== */}
+      {/* =====  Gradient Background ===== */}
       <motion.div
         animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
         transition={{ duration: 12, repeat: Infinity }}
