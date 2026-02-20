@@ -84,7 +84,7 @@ export default function AboutPage() {
       </section>
 
       {/* ================= FEATURES ================= */}
-      {/* <section className="max-w-7xl mx-auto px-6 pb-20">
+      <section className="max-w-7xl mx-auto px-6 pb-20">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -125,7 +125,7 @@ export default function AboutPage() {
             </motion.div>
           ))}
         </div>
-      </section> */}
+      </section>
 
       {/* ================= TECHNOLOGY ================= */}
       {/* <section className="bg-[#1D4E48] text-white py-20">
