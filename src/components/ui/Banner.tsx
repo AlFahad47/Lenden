@@ -77,6 +77,38 @@
                     Experience the next generation of secure digital transactions
                     with Lenden.
                   </motion.p>
+
+
+                   <motion.div
+                    custom={2}
+                    initial="hidden"
+                    animate="visible"
+                    variants={textVariants}
+                    className="mt-10 flex flex-col sm:flex-row gap-4"
+                  >
+                    <motion.a
+                      href="/register"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                      className="px-8 py-4 rounded-full font-semibold text-white text-base"
+                      style={{ backgroundColor: "#1D4E48" }}
+                    >
+                      Get Started
+                    </motion.a>
+
+                    <motion.a
+                      href="/login"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                      className="px-8 py-4 rounded-full font-semibold text-white text-base border-2 border-white hover:bg-white hover:text-black transition-colors"
+                    >
+                      Learn More
+                    </motion.a>
+                  </motion.div>
+
+
                 </div>
               </div>
             </SwiperSlide>
