@@ -63,8 +63,8 @@
                     variants={textVariants}
                     className="text-4xl md:text-6xl font-bold text-white max-w-4xl leading-tight"
                   >
-                    Your Money, Guarded with{" "}
-                    <span style={{ color: "#1D4E48" }}>Excellence.</span>
+                    Your Money,Guarded with{" "}
+                    <span style={{ color: "#FFFFFF" }}>Excellence.</span>
                   </motion.h1>
 
                   <motion.p
