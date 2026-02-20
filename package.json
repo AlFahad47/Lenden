@@ -13,11 +13,7 @@
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-<<<<<<< HEAD
     "swiper": "^12.1.2"
-=======
-    "react-icons": "^5.5.0"
->>>>>>> 17eca710761e19baa4916fbb15650244bb030d4e
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
