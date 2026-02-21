@@ -10,32 +10,41 @@ import { navLinks } from "@/data/navLinks"
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
+  const [mounted, setMounted] = useState(false) // ✅ track if component is mounted
   const pathname = usePathname()
 
-  // Persist dark mode in localStorage
+  // Only run on client
   useEffect(() => {
-    if (
-      localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      document.documentElement.classList.add("dark")
-      setDarkMode(true)
-    } else {
-      document.documentElement.classList.remove("dark")
+    setMounted(true) // component is mounted
+    if (typeof window !== "undefined") {
+      const storedTheme = localStorage.getItem("theme")
+      if (storedTheme === "dark") {
+        setDarkMode(true)
+        document.documentElement.classList.add("dark")
+      } else if (storedTheme === "light") {
+        setDarkMode(false)
+        document.documentElement.classList.remove("dark")
+      } else {
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+        setDarkMode(prefersDark)
+        if (prefersDark) document.documentElement.classList.add("dark")
+      }
     }
   }, [])
 
   const toggleDarkMode = () => {
-    if (darkMode) {
-      document.documentElement.classList.remove("dark")
-      localStorage.setItem("theme", "light")
-    } else {
-      document.documentElement.classList.add("dark")
-      localStorage.setItem("theme", "dark")
-    }
-    setDarkMode(!darkMode)
+    setDarkMode((prev) => {
+      const newMode = !prev
+      if (typeof window !== "undefined") {
+        localStorage.setItem("theme", newMode ? "dark" : "light")
+        document.documentElement.classList.toggle("dark", newMode)
+      }
+      return newMode
+    })
   }
+
+  // Prevent rendering until mounted to avoid SSR mismatch
+  if (!mounted) return null
 
   return (
     <nav className="bg-[#1D4E48] dark:bg-[#111827] w-full sticky top-0 mb-1 z-50 shadow-md">
@@ -93,7 +102,6 @@ export default function Navbar() {
 
         {/* Mobile Hamburger + Toggle */}
         <div className="flex md:hidden items-center gap-2">
-          {/* Mobile Dark/Light Toggle */}
           <button
             onClick={toggleDarkMode}
             className="p-2 rounded-full bg-white dark:bg-gray-700 text-[#1D4E48] dark:text-[#FACC15] hover:opacity-90 transition"
@@ -112,7 +120,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <ul className="flex flex-col justify-center items-center mt-4 gap-4 text-white dark:text-gray-200 font-medium md:hidden transition-colors">
+        <ul className="flex flex-col justify-center items-center mt-4 pb-4 gap-4 text-white dark:text-gray-200 font-medium md:hidden transition-colors">
           {navLinks.map((link) => (
             <li key={link.name} className="relative">
               <Link
