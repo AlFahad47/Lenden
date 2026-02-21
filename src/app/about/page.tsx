@@ -52,9 +52,9 @@ const fadeUp = {
   },
 };
 
-export default function AboutPage() {
+export default function About() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#f8fffd] via-white to-[#eefaf5]">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#f8fffd] via-white to-[#eefaf5] dark:bg-gradient-to-br dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
       {/* ===== Animated Gradient Background ===== */}
       <motion.div
         animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
@@ -78,39 +78,47 @@ export default function AboutPage() {
         >
           <motion.span
             variants={fadeUp}
-            className="inline-block bg-gradient-to-r from-[#BDDD7E]/40 to-[#1D4E48]/20 text-[#1D4E48] px-4 py-2 rounded-full text-sm font-medium"
+            className="
+inline-block
+bg-gradient-to-r from-[#BDDD7E]/40 to-[#1D4E48]/20 
+dark:from-[#BDDD7E]/20 dark:to-[#1D4E48]/40
+text-[#1D4E48] dark:text-[#BDDD7E]
+px-4 py-2 rounded-full text-sm font-medium"
           >
             Next-Gen Digital Wallet
           </motion.span>
 
           <motion.h1
             variants={fadeUp}
-            className="text-4xl md:text-6xl font-extrabold leading-tight bg-gradient-to-r from-[#1D4E48] via-[#2f7c72] to-[#BDDD7E] bg-clip-text text-transparent"
+            className="text-4xl md:text-6xl font-extrabold leading-tight bg-gradient-to-r from-[#1D4E48] via-[#2f7c72] to-[#BDDD7E] dark:from-[#BDDD7E] dark:via-[#9FE870] bg-clip-text text-transparent"
           >
             Professional Digital Finance Made Simple
           </motion.h1>
 
           <motion.p
             variants={fadeUp}
-            className="text-lg text-gray-600 leading-relaxed max-w-xl"
+            className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl"
           >
-            <span className="font-bold text-[#1D4E48]">Lenden</span> delivers a
-            secure and intelligent digital wallet platform built for modern
-            financial management. Experience fast transactions, AI-powered
-            analytics, and enterprise-grade security in one seamless ecosystem.
+            <span className="font-bold text-[#1D4E48] dark:text-[#94ec82]">
+              Lenden
+            </span>{" "}
+            delivers a secure and intelligent digital wallet platform built for
+            modern financial management. Experience fast transactions,
+            AI-powered analytics, and enterprise-grade security in one seamless
+            ecosystem.
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex gap-4 flex-wrap">
             <Link
               href="/register"
-              className="bg-gradient-to-r bg-[#BDDD7E] text-[#1D4E48]  hover:scale-105 font-bold px-8 py-4 rounded-2xl shadow-2xl transition-all duration-300"
+              className="bg-gradient-to-r bg-[#BDDD7E] text-[#1D4E48]   dark:hover:bg-amber-400 dark:hover:text-black  hover:scale-105 font-bold px-8 py-4 rounded-2xl shadow-2xl transition-all duration-300"
             >
               Get Started
             </Link>
 
             <Link
               href="/login"
-              className="border border-[#1D4E48] text-[#1D4E48] hover:bg-[#BDDD7E] hover:text-[#1D4E48] hover:border-0 px-8 py-4 font-bold rounded-2xl transition-all duration-300"
+              className="border border-[#1D4E48] text-[#1D4E48] hover:bg-[#BDDD7E] hover:text-[#1D4E48] hover:border-0 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-amber-400 dark:hover:text-black px-8 py-4 font-bold rounded-2xl transition-all duration-300"
             >
               Login
             </Link>
@@ -118,11 +126,12 @@ export default function AboutPage() {
         </motion.div>
 
         {/* Floating Glass Card */}
+
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: [0, -12, 0] }}
           transition={{ duration: 6, repeat: Infinity }}
-          className="bg-white/60 backdrop-blur-2xl p-10 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] border border-white/40"
+          className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-2xl p-10 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] border border-white/40 dark:border-gray-700"
         >
           {[
             "End-to-End Encrypted Payments",
@@ -137,8 +146,11 @@ export default function AboutPage() {
               transition={{ delay: i * 0.25 }}
               className="flex items-center gap-4 mb-6"
             >
-              <div className="w-4 h-4 rounded-full bg-gradient-to-r from-[#1D4E48] to-[#BDDD7E]" />
-              <p className="text-gray-700 font-medium">{item}</p>
+              {" "}
+              <div className="w-4 h-4 rounded-full bg-gradient-to-r from-[#1D4E48] to-[#BDDD7E]" />{" "}
+              <p className="text-gray-700 dark:text-gray-200 font-medium">
+                {item}{" "}
+              </p>
             </motion.div>
           ))}
         </motion.div>
@@ -154,7 +166,7 @@ export default function AboutPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="relative grid md:grid-cols-3 gap-12 bg-white rounded-3xl shadow-xl p-12 border border-transparent"
+          className="relative grid md:grid-cols-3 gap-12 bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-12 border border-transparent dark:border-gray-700"
         >
           <Counter value={50} label="Secure Transactions / sec" />
           <Counter value={99} label="System Reliability %" />
@@ -169,7 +181,7 @@ export default function AboutPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-3xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-[#1D4E48] via-[#2f7c72] to-[#BDDD7E] bg-clip-text text-transparent"
+          className="text-3xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-[#1D4E48] via-[#2f7c72] to-[#BDDD7E] dark:from-[#BDDD7E] dark:via-[#9FE870] dark:to-white bg-clip-text text-transparent"
         >
           Why Professionals Choose Lenden
         </motion.h2>
