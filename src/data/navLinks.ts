@@ -1,6 +1,6 @@
 export interface NavLink {
-  name: string
-  href: string
+  name: string;
+  href: string;
 }
 
 export const navLinks: NavLink[] = [
@@ -9,5 +9,5 @@ export const navLinks: NavLink[] = [
   { name: "Review", href: "/review" },
   { name: "Blog", href: "/blog" },
   { name: "FAQ", href: "/faq" },
-  { name: "Contact", href: "/contact" }
-]
+  { name: "Contact", href: "/contact" },
+];
