@@ -29,10 +29,17 @@ function Counter({ value, label }: { value: number; label: string }) {
 
   return (
     <div className="text-center">
-      <h3 className="text-4xl font-bold bg-gradient-to-r from-[#1D4E48] via-[#2f7c72] to-[#BDDD7E] bg-clip-text text-transparent">
+      <h3
+        className="text-4xl font-bold 
+               bg-gradient-to-r 
+               from-[#1D4E48] via-[#2f7c72] to-[#BDDD7E] 
+               dark:from-[#BDDD7E] dark:via-[#9FE870] dark:to-white 
+               bg-clip-text text-transparent"
+      >
         {count}+
       </h3>
-      <p className="text-gray-600 mt-2">{label}</p>
+
+      <p className="text-gray-600 dark:text-white/70 mt-2">{label}</p>
     </div>
   );
 }
@@ -161,12 +168,29 @@ px-4 py-2 rounded-full text-sm font-medium"
 
       {/* ================= STATS ================= */}
       <section className="max-w-6xl mx-auto px-6 pb-24">
+        {/* <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="relative grid md:grid-cols-3 gap-12 bg-white dark:bg-gray-950  rounded-3xl shadow-xl p-12 border border-transparent dark:border-gray-700"
+        >
+          <Counter value={50} label="Secure Transactions / sec" />
+          <Counter value={99} label="System Reliability %" />
+          <Counter value={24} label="Customer Support Hours" />
+        </motion.div> */}
+
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="relative grid md:grid-cols-3 gap-12 bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-12 border border-transparent dark:border-gray-700"
+          className="relative grid md:grid-cols-3 gap-12
+bg-gradient-to-br
+from-white via-[#f8fffd] to-[#eefaf5]
+dark:from-[#00070662] dark:via-[#052c0181] dark:to-[#2e30157c]
+rounded-3xl shadow-xl p-12
+border border-[#1D4E48]/10 dark:border-gray-700"
         >
           <Counter value={50} label="Secure Transactions / sec" />
           <Counter value={99} label="System Reliability %" />
