@@ -207,14 +207,14 @@ px-4 py-2 rounded-full text-sm font-medium"
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.2 }}
-              className="group relative bg-white p-10 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-gray-100 overflow-hidden"
+              className="group relative bg-white dark:bg-gray-900 p-10 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-gray-100 dark:border-gray-700 overflow-hidden"
             >
               <div className="absolute inset-0 opacity-0 group-hover:opacity-10 bg-gradient-to-br from-[#1D4E48] to-[#BDDD7E] transition duration-500" />
 
-              <h3 className="text-xl font-semibold text-[#1D4E48] mb-4 relative">
+              <h3 className="text-xl font-semibold text-[#1D4E48] dark:text-[#BDDD7E] mb-4 relative">
                 {feature.title}
               </h3>
-              <p className="text-gray-600 leading-relaxed relative">
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed relative">
                 {feature.desc}
               </p>
             </motion.div>
@@ -223,12 +223,12 @@ px-4 py-2 rounded-full text-sm font-medium"
       </section>
 
       {/* ================= TECHNOLOGY ================= */}
-      <section className="relative bg-gradient-to-br bg-[#1D4E48]  text-white py-28 overflow-hidden">
+      <section className="relative bg-gradient-to-br bg-[#1D4E48] dark:bg-gray-950  text-white py-28 overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,white,transparent_70%)]" />
 
         <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
-            <h2 className="text-3xl md:text-5xl font-bold">
+            <h2 className="text-3xl md:text-5xl dark:text-[#BDDD7E] font-bold">
               Built with Modern Technology
             </h2>
             <p className="text-white/90 leading-relaxed max-w-xl">
@@ -238,13 +238,30 @@ px-4 py-2 rounded-full text-sm font-medium"
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-8">
+          {/* <div className="grid grid-cols-2 gap-8">
             {["TypeScript", "Next.js", "Tailwind CSS", "Framer Motion"].map(
               (tech) => (
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   key={tech}
                   className="bg-white/10 hover:bg-white/20 transition-all duration-300 border border-white/20 p-8 rounded-2xl text-center font-semibold backdrop-blur-xl"
+                >
+                  {tech}
+                </motion.div>
+              ),
+            )}
+          </div> */}
+          <div className="grid grid-cols-2 gap-8">
+            {["TypeScript", "Next.js", "Tailwind CSS", "Framer Motion"].map(
+              (tech) => (
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  key={tech}
+                  className="bg-white/10 hover:bg-[#bddd7e65]
+                   dark:text-[#b0bb9a] dark:hover:bg-gray-800
+                   transition-all duration-300 
+                   border border-white/20 
+                   p-8 rounded-2xl text-center font-semibold backdrop-blur-xl"
                 >
                   {tech}
                 </motion.div>
