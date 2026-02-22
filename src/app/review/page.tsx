@@ -118,7 +118,7 @@ export default function Page() {
 
       {/* Header */}
 <div className="relative max-w-6xl mx-auto px-6 py-14 text-center z-10">
-  <h1 className="text-4xl md:text-5xl font-bold text-[#1D4E48] dark:text-[#BDDD7E]">User Reviews</h1>
+  <h1 className="text-3xl md:text-5xl font-extrabold  text-[#1D4E48] dark:text-gray-50  mb-4">User Reviews</h1>
   <p className="mt-3 text-gray-600 dark:text-gray-300">Summary & feedback from our users</p>
   
   {/* Scroll to form button */}
