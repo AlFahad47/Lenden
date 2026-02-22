@@ -55,7 +55,7 @@
                 <div className="absolute inset-0 bg-black/25" />
 
                 {/* Text content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center pb-20 sm:pb-32">
+                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center pb-16 sm:pb-28">
                   <motion.h1
                     custom={0}
                     initial="hidden"
@@ -84,14 +84,14 @@
                     initial="hidden"
                     animate="visible"
                     variants={textVariants}
-                    className="mt-6 flex flex-col sm:flex-row gap-4"
+                    className="mt-6 flex flex-row gap-3"
                   >
                     <motion.a
                       href="/register"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       transition={{ type: "spring", stiffness: 300 }}
-                      className="px-8 py-4 rounded-full font-semibold text-white text-base"
+                      className="px-5 py-3 rounded-full font-semibold text-white text-sm md:text-base md:px-8 md:py-4"
                       style={{ backgroundColor: "#1D4E48" }}
                     >
                       Get Started
@@ -102,7 +102,7 @@
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       transition={{ type: "spring", stiffness: 300 }}
-                      className="px-8 py-4 rounded-full font-semibold text-white text-base border-2 border-white hover:bg-white hover:text-black transition-colors"
+                      className="px-5 py-3 rounded-full font-semibold text-white text-sm md:text-base md:px-8 md:py-4 border-2 border-white hover:bg-white hover:text-black transition-colors"
                     >
                       Learn More
                     </motion.a>
@@ -145,17 +145,17 @@
           className="absolute bottom-0 left-0 w-full z-10 py-5 px-6"
           style={{ backgroundColor: "rgba(29, 78, 72, 0.85)" }}
         >
-          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-around gap-4">
+          <div className="max-w-4xl mx-auto flex flex-row items-center justify-around gap-2">
             {[
               { number: "10,000+", label: "Active Users" },
               { number: "BDT 50L+", label: "Transferred" },
               { number: "99.9%", label: "Uptime" },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
-                <p className="text-2xl md:text-3xl font-bold text-white">
+                <p className="text-lg md:text-3xl font-bold text-white">
                   {stat.number}
                 </p>
-                <p className="text-sm text-white/70 mt-1">{stat.label}</p>
+                <p className="text-xs md:text-sm text-white/70 mt-1">{stat.label}</p>
               </div>
             ))}
           </div>
