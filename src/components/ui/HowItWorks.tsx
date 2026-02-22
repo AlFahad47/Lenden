@@ -6,7 +6,7 @@ import Link from "next/link";
 
 // Reusable Components
 const Card = ({ children }: { children: React.ReactNode }) => (
-  <div className="relative rounded-3xl bg-white/70 dark:bg-white/5 backdrop-blur-2xl border border-[#1D4E48]/30 dark:border-[#BDDD7E]/20 shadow-2xl hover:shadow-[#1D4E48]/20 hover:scale-[1.04] transition-all duration-500">
+  <div className="relative rounded-3xl  bg-white/70 dark:bg-white/5 backdrop-blur-2xl border border-[#1D4E48]/30 dark:border-[#BDDD7E]/20 shadow-2xl hover:shadow-[#1D4E48]/20 hover:scale-[1.04] transition-all duration-500">
     {children}
   </div>
 );
@@ -71,10 +71,10 @@ export default function HowItWorksPage() {
       </section>
 
       {/* Timeline Line */}
-      <div className="hidden md:block absolute left-1/2 top-80 bottom-32 w-1 bg-gradient-to-b from-[#1D4E48] to-[#BDDD7E] opacity-30" />
+      <div className="hidden md:block absolute left-1/2 top-80 bottom-32 w-1 bg-gradient-to-b from-[#1D4E48] to-[#BDDD7E] opacity-30 " />
 
       {/* Steps Section */}
-      <section className="relative max-w-6xl mx-auto mt-28 grid md:grid-cols-2 gap-16">
+      <section className="relative max-w-6xl  mx-auto mt-28 grid md:grid-cols-2 gap-16">
         {steps.map((step, index) => (
           <motion.div
             key={index}
