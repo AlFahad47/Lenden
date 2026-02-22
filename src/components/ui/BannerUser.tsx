@@ -27,7 +27,7 @@ export default function BannerUser() {
   }, []);
 
   return (
-    <div className="relative h-[60%] overflow-hidden transition-colors bg-gradient-to-r from-teal-600 to-green-500 dark:from-[#1B2A34] dark:via-[#0F172A] dark:to-[#1D4E48]">
+    <div className="relative h-[60%] mt-1 overflow-hidden transition-colors bg-gradient-to-r from-teal-600 to-green-500 dark:from-[#1B2A34] dark:via-[#0F172A] dark:to-[#1D4E48]">
 
       {/* Full background image */}
       <div className="absolute inset-0 z-0">

@@ -41,7 +41,7 @@ export default function Navbar() {
   if (!mounted) return null
 
   return (
-    <nav className="bg-white/90 dark:bg-[#1D4E48]/90 backdrop-blur-md border-b border-white/20 dark:border-white/10 transition-all duration-300 w-full sticky top-0 z-50 shadow-lg">
+    <nav className="bg-white/90 mb-1 dark:bg-[#1D4E48]/90 backdrop-blur-md border-b border-white/20 dark:border-white/10 transition-all duration-300 w-full sticky top-0 z-50 shadow-lg">
       <div className="flex justify-between w-11/12 mx-auto py-4 items-center">
 
         {/* Logo */}
