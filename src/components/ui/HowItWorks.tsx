@@ -114,7 +114,11 @@ export default function HowItWorksPage() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9 }}
-          className="rounded-3xl p-16 bg-gradient-to-r from-[#1D4E48] to-[#bcdbc2f8] shadow-2xl"
+          className="rounded-3xl p-16 
+  bg-gradient-to-r 
+  from-[#1D4E48] to-[#bcdbc2f8]
+  dark:from-[#0c2e2a] dark:to-[#1D4E48]
+  shadow-2xl"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
             Ready to Experience the Future of Digital Finance?
