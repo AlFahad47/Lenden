@@ -16,7 +16,7 @@ const CardContent = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Button = ({ children }: { children: React.ReactNode }) => (
-  <button className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#2cb11ab0] to-[#0bdf86c7] hover:scale-105 hover:shadow-xl hover:shadow-[#1D4E48]/30 text-white font-semibold transition-all duration-300 inline-flex items-center gap-2">
+  <button className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#1D4E48] to-[#0bdf86c7] hover:scale-105 hover:shadow-xl hover:shadow-[#1D4E48]/30 text-white font-semibold transition-all duration-300 inline-flex items-center gap-2">
     {children}
   </button>
 );
@@ -42,7 +42,7 @@ const steps = [
 
 export default function HowItWorksPage() {
   return (
-    <div className="relative overflow-hidden min-h-screen bg-gradient-to-br from-[#0c9472]/90 via-[#0cfc0477] to-white dark:from-black dark:via-[#1D4E48]/50 dark:to-black transition-colors duration-500 px-6 py-24">
+    <div className="relative overflow-hidden min-h-screen bg-gradient-to-br from-[#0c9472]/90 via-[#1D4E48] to-white dark:from-black dark:via-[#1D4E48]/50 dark:to-black transition-colors duration-500 px-6 py-24">
       {/* Animated Gradient Blobs */}
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-[#1D4E48]/30 dark:bg-[#1D4E48]/20 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#BDDD7E]/30 dark:bg-[#BDDD7E]/20 rounded-full blur-3xl animate-pulse" />
@@ -114,7 +114,7 @@ export default function HowItWorksPage() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9 }}
-          className="rounded-3xl p-16 bg-gradient-to-r from-[#0a7e06] to-[#bcdbc2f8] shadow-2xl"
+          className="rounded-3xl p-16 bg-gradient-to-r from-[#1D4E48] to-[#bcdbc2f8] shadow-2xl"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
             Ready to Experience the Future of Digital Finance?
