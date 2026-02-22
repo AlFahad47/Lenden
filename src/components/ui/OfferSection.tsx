@@ -1,5 +1,7 @@
  "use client";
 
+  import { motion } from "framer-motion";
+
   const features = [
     {
       icon: "🔒",
@@ -22,31 +24,48 @@
     return (
       <section className="w-full py-16 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+
+          {/* Heading */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
             <h2 className="text-3xl md:text-4xl font-bold text-[#1D4E48]">
               What We Offer
             </h2>
             <p className="mt-4 text-gray-500 text-base md:text-lg max-w-xl mx-auto">
               Everything you need to manage your money — simple, fast, and secure.
             </p>
-          </div>
+          </motion.div>
 
-          {/* Feature Cards Grid */}
+          {/* Feature Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            {features.map((feature) => (
-              <div
+            {features.map((feature, index) => (
+              <motion.div
                 key={feature.title}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.2 }}
+                whileHover={{ scale: 1.03 }}
                 className="bg-white rounded-2xl p-8 shadow-md border-t-4 border-[#1D4E48] hover:shadow-xl transition-shadow duration-300"
               >
                 <div className="text-4xl mb-4">{feature.icon}</div>
                 <h3 className="text-xl font-semibold text-[#1D4E48] mb-2">{feature.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
 
           {/* Promo Banner */}
-          <div
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
             className="mt-12 rounded-2xl px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4"
             style={{ backgroundColor: "#BDDD7E" }}
           >
@@ -64,7 +83,7 @@
             >
               Get Started →
             </a>
-          </div>
+          </motion.div>
 
         </div>
       </section>
