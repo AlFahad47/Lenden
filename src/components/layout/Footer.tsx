@@ -4,7 +4,7 @@ import React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { navLinks } from "@/data/navLinks" // ✅ import from navbar
+import { navLinks } from "@/data/navLinks"
 
 export default function Footer() {
   const pathname = usePathname()
@@ -23,7 +23,7 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="bg-[#1D4E48] text-gray-300 dark:text-gray-100 py-12 mt-1">
+    <footer className="bg-white dark:bg-[#1D4E48] text-[#1D4E48] dark:text-gray-100 border-t-2 border-[#2e7a47] transition-colors duration-300 py-12 mt-1">
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between gap-8">
 
         {/* Branding */}
@@ -43,10 +43,10 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Links from Navbar */}
+        {/* Links */}
         <div className="flex flex-col md:flex-row gap-10">
           <div>
-            <h2 className="font-semibold mb-3 text-white">Company</h2>
+            <h2 className="font-semibold mb-3">Company</h2>
             <ul className="space-y-2">
               {navLinks.map((link) => (
                 <li key={link.name}>
@@ -54,8 +54,8 @@ export default function Footer() {
                     href={link.href}
                     className={`transition-colors ${
                       isActive(link.href)
-                        ? "text-[#BDDD7E] dark:text-[#FACC15] font-bold"
-                        : "hover:text-[#BDDD7E] dark:hover:text-[#FACC15]"
+                        ? "text-[#BDDD7E] font-bold"
+                        : "hover:text-[#BDDD7E]"
                     }`}
                   >
                     {link.name}
@@ -66,7 +66,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h2 className="font-semibold mb-3 text-white">Account</h2>
+            <h2 className="font-semibold mb-3">Account</h2>
             <ul className="space-y-2">
               {accountLinks.map((link) => (
                 <li key={link.name}>
@@ -74,8 +74,8 @@ export default function Footer() {
                     href={link.href}
                     className={`transition-colors ${
                       isActive(link.href)
-                        ? "text-[#BDDD7E] dark:text-[#FACC15] font-bold"
-                        : "hover:text-[#BDDD7E] dark:hover:text-[#FACC15]"
+                        ? "text-[#BDDD7E] font-bold"
+                        : "hover:text-[#BDDD7E]"
                     }`}
                   >
                     {link.name}
@@ -86,15 +86,15 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Social & Contact */}
+        {/* Social */}
         <div className="flex flex-col items-start md:items-end">
-          <h2 className="font-semibold mb-3 text-white">Follow Us</h2>
+          <h2 className="font-semibold mb-3">Follow Us</h2>
           <div className="flex gap-4 mb-4">
             {socialLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className="hover:text-[#BDDD7E] dark:hover:text-[#FACC15] transition-colors"
+                className="hover:text-[#BDDD7E] transition-colors"
               >
                 {link.name}
               </Link>
@@ -105,8 +105,8 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Bar */}
-      <div className="mt-10 border-t border-gray-600 dark:border-gray-400 text-center text-sm pt-4 text-gray-400">
+      {/* Bottom */}
+      <div className="mt-10 border-t border-gray-300 dark:border-gray-500 text-center text-sm pt-4 text-gray-500 dark:text-gray-300">
         © {new Date().getFullYear()} Lenden. All rights reserved.
       </div>
     </footer>

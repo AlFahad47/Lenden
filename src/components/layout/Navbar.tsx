@@ -10,107 +10,106 @@ import { navLinks } from "@/data/navLinks"
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
-  const [mounted, setMounted] = useState(false) // ✅ track if component is mounted
+  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
 
-  // Only run on client
   useEffect(() => {
-    setMounted(true) // component is mounted
-    if (typeof window !== "undefined") {
-      const storedTheme = localStorage.getItem("theme")
-      if (storedTheme === "dark") {
-        setDarkMode(true)
-        document.documentElement.classList.add("dark")
-      } else if (storedTheme === "light") {
-        setDarkMode(false)
-        document.documentElement.classList.remove("dark")
-      } else {
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-        setDarkMode(prefersDark)
-        if (prefersDark) document.documentElement.classList.add("dark")
-      }
+    setMounted(true)
+    const storedTheme = localStorage.getItem("theme")
+    if (storedTheme === "dark") {
+      setDarkMode(true)
+      document.documentElement.classList.add("dark")
+    } else if (storedTheme === "light") {
+      setDarkMode(false)
+      document.documentElement.classList.remove("dark")
+    } else {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      setDarkMode(prefersDark)
+      if (prefersDark) document.documentElement.classList.add("dark")
     }
   }, [])
 
   const toggleDarkMode = () => {
     setDarkMode((prev) => {
       const newMode = !prev
-      if (typeof window !== "undefined") {
-        localStorage.setItem("theme", newMode ? "dark" : "light")
-        document.documentElement.classList.toggle("dark", newMode)
-      }
+      localStorage.setItem("theme", newMode ? "dark" : "light")
+      document.documentElement.classList.toggle("dark", newMode)
       return newMode
     })
   }
 
-  // Prevent rendering until mounted to avoid SSR mismatch
   if (!mounted) return null
 
   return (
-    <nav className="bg-[#1D4E48] dark:bg-[#111827] w-full sticky top-0 mb-1 z-50 shadow-md">
-      <div className="flex justify-between w-11/12 mx-auto py-4 items-center transition-colors duration-300">
-        {/* Logo */}
-        <div className="flex items-center">
-          <Link href="/">
-            <Image
-              src="/logo.png"
-              alt="Lenden Logo"
-              width={60}
-              height={15}
-              priority
-              className="object-contain"
-            />
-          </Link>
-        </div>
+    <nav className="bg-white/90 dark:bg-[#1D4E48]/90 backdrop-blur-md border-b border-white/20 dark:border-white/10 transition-all duration-300 w-full sticky top-0 z-50 shadow-lg">
+      <div className="flex justify-between w-11/12 mx-auto py-4 items-center">
 
-        {/* Desktop Links + Toggle */}
-        <div className="hidden md:flex items-center gap-4">
-          <ul className="flex items-center gap-6 text-white dark:text-gray-200 font-medium">
+        {/* Logo */}
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo.png"
+            alt="Lenden Logo"
+            width={60}
+            height={15}
+            priority
+            className="object-contain hover:scale-105 transition-transform"
+          />
+        </Link>
+
+        {/* Desktop */}
+        <div className="hidden md:flex items-center gap-6">
+          <ul className="flex items-center gap-8 text-[#1D4E48] dark:text-gray-200 font-medium">
             {navLinks.map((link) => (
               <li key={link.name} className="relative group">
                 <Link
                   href={link.href}
-                  className={`hover:text-[#BDDD7E] dark:hover:text-[#FACC15] transition ${
-                    pathname === link.href ? "font-bold" : ""
+                  className={`transition ${
+                    pathname === link.href ? "font-semibold" : ""
                   }`}
                 >
                   {link.name}
                 </Link>
-                {pathname === link.href && (
-                  <span className="absolute left-0 -bottom-2 w-full h-1 bg-[#BDDD7E] dark:bg-[#FACC15] rounded-full"></span>
-                )}
+
+                {/* animated underline */}
+                <span
+                  className={`absolute left-0 -bottom-1 h-[2px] bg-[#1D4E48] dark:bg-[#BDDD7E] transition-all duration-300 ${
+                    pathname === link.href
+                      ? "w-full"
+                      : "w-0 group-hover:w-full"
+                  }`}
+                />
               </li>
             ))}
-            <li>
-              <Link
-                href="/login"
-                className="bg-[#BDDD7E] dark:bg-[#FACC15] text-[#1D4E48] dark:text-[#111827] px-4 py-2 rounded-md font-semibold hover:opacity-90 transition"
-              >
-                Login
-              </Link>
-            </li>
+
+            {/* Login button */}
+            <Link
+              href="/login"
+              className="bg-[#1D4E48] dark:bg-[#BDDD7E] text-white dark:text-[#111827] px-5 py-2 rounded-lg font-semibold shadow hover:-translate-y-0.5 hover:shadow-lg transition"
+            >
+              Login
+            </Link>
           </ul>
 
-          {/* Desktop Dark/Light Toggle */}
+          {/* Toggle */}
           <button
             onClick={toggleDarkMode}
-            className="p-2 rounded-full bg-white dark:bg-gray-700 text-[#1D4E48] dark:text-[#FACC15] hover:opacity-90 transition"
+            className="p-2 rounded-full bg-white/80 dark:bg-gray-700 text-[#1D4E48] dark:text-[#BDDD7E] hover:rotate-12 transition"
           >
             {darkMode ? <HiSun className="w-5 h-5" /> : <HiMoon className="w-5 h-5" />}
           </button>
         </div>
 
-        {/* Mobile Hamburger + Toggle */}
+        {/* Mobile */}
         <div className="flex md:hidden items-center gap-2">
           <button
             onClick={toggleDarkMode}
-            className="p-2 rounded-full bg-white dark:bg-gray-700 text-[#1D4E48] dark:text-[#FACC15] hover:opacity-90 transition"
+            className="p-2 rounded-full bg-white/80 dark:bg-gray-700 text-[#1D4E48] dark:text-[#BDDD7E]"
           >
-            {darkMode ? <HiSun className="w-5 h-5" /> : <HiMoon className="w-5 h-5" />}
+            {darkMode ? <HiSun /> : <HiMoon />}
           </button>
 
           <div
-            className="text-white dark:text-gray-200 text-3xl cursor-pointer"
+            className="text-[#1D4E48] dark:text-gray-200 text-3xl cursor-pointer"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <HiX /> : <HiMenu />}
@@ -120,32 +119,22 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <ul className="flex flex-col justify-center items-center mt-4 pb-4 gap-4 text-white dark:text-gray-200 font-medium md:hidden transition-colors">
+        <ul className="md:hidden flex flex-col items-center gap-5 pb-6 text-[#1D4E48] dark:text-gray-200 font-medium animate-fadeIn">
           {navLinks.map((link) => (
-            <li key={link.name} className="relative">
-              <Link
-                href={link.href}
-                className={`hover:text-[#BDDD7E] dark:hover:text-[#FACC15] transition ${
-                  pathname === link.href ? "font-bold" : ""
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
+            <li key={link.name}>
+              <Link href={link.href} onClick={() => setIsOpen(false)}>
                 {link.name}
               </Link>
-              {pathname === link.href && (
-                <span className="absolute left-0 -bottom-2 w-full h-1 bg-[#BDDD7E] dark:bg-[#FACC15] rounded-full"></span>
-              )}
             </li>
           ))}
-          <li>
-            <Link
-              href="/login"
-              className="bg-[#BDDD7E] dark:bg-[#FACC15] text-[#1D4E48] dark:text-[#111827] px-4 py-2 rounded-md font-semibold hover:opacity-90 transition"
-              onClick={() => setIsOpen(false)}
-            >
-              Login
-            </Link>
-          </li>
+
+          <Link
+            href="/login"
+            className="bg-[#1D4E48] dark:bg-[#BDDD7E] text-white dark:text-[#111827] px-5 py-2 rounded-lg font-semibold"
+            onClick={() => setIsOpen(false)}
+          >
+            Login
+          </Link>
         </ul>
       )}
     </nav>
