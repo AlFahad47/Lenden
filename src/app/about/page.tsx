@@ -262,19 +262,7 @@ border border-[#1D4E48]/10 dark:border-gray-700"
             </p>
           </div>
 
-          {/* <div className="grid grid-cols-2 gap-8">
-            {["TypeScript", "Next.js", "Tailwind CSS", "Framer Motion"].map(
-              (tech) => (
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  key={tech}
-                  className="bg-white/10 hover:bg-white/20 transition-all duration-300 border border-white/20 p-8 rounded-2xl text-center font-semibold backdrop-blur-xl"
-                >
-                  {tech}
-                </motion.div>
-              ),
-            )}
-          </div> */}
+          
           <div className="grid grid-cols-2 gap-8">
             {["TypeScript", "Next.js", "Tailwind CSS", "Framer Motion"].map(
               (tech) => (

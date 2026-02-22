@@ -1,12 +1,16 @@
 import Banner from "@/components/ui/Banner";
 
 import BannerUser from "@/components/ui/BannerUser";
+import KeyFeaturesGrid from "@/components/ui/KeyFeatures";
+import KeyFeatures from "@/components/ui/KeyFeatures";
 
 export default function Home() {
   return (
     <main>
       <Banner />
-      {/* <BannerUser/> */}
+      <BannerUser />
+
+      <HowItWorksPage />
     </main>
   );
 }
