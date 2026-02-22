@@ -6,11 +6,9 @@ const ContactUs: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#f4f7f6] dark:bg-[#070e0d] text-slate-900 dark:text-slate-100 transition-colors duration-700 font-sans relative overflow-hidden selection:bg-[#e6ffa1] selection:text-[#19524c]">
       
-      {/* Background Animated Blobs (Ultra Premium Glassy Ambient Effect) */}
       <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#e6ffa1] rounded-full mix-blend-multiply filter blur-[180px] opacity-20 dark:opacity-[0.07] animate-[pulse_10s_ease-in-out_infinite]"></div>
       <div className="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#19524c] rounded-full mix-blend-multiply filter blur-[180px] opacity-15 dark:opacity-30 animate-[pulse_12s_ease-in-out_infinite_reverse]"></div>
 
-      {/* Header Banner - Frosted Glass */}
       <div className="bg-white/30 dark:bg-[#0b2421]/40 backdrop-blur-2xl py-24 text-center border-b border-white/40 dark:border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.03)] relative z-10">
         <h1 className="text-4xl md:text-5xl font-extrabold text-[#19524c] dark:text-white mb-4 tracking-tight drop-shadow-sm">Contact Us</h1>
         <p className="text-sm text-slate-600 dark:text-[#e6ffa1]/80 font-medium tracking-widest uppercase">
@@ -21,7 +19,6 @@ const ContactUs: React.FC = () => {
       <div className="w-11/12 mx-auto py-20 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
           
-          {/* Left Side: Form Section (Advanced Glassmorphism) */}
           <div className="lg:col-span-7 bg-white/50 dark:bg-[#111c1b]/50 backdrop-blur-3xl border border-white/60 dark:border-white/5 p-8 sm:p-12 rounded-[2.5rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] transition-all duration-500 hover:shadow-[0_8px_40px_0_rgba(31,38,135,0.08)]">
             <div className="mb-12">
               <h2 className="text-xs font-bold text-[#19524c] dark:text-[#e6ffa1] tracking-[0.25em] uppercase mb-4 flex items-center gap-4">
@@ -89,14 +86,12 @@ const ContactUs: React.FC = () => {
             </form>
           </div>
 
-          {/* Right Side: Information Card (Dark Glassmorphism) */}
           <div className="lg:col-span-5 bg-[#19524c]/95 dark:bg-[#0c2926]/90 backdrop-blur-3xl border border-white/10 dark:border-white/5 rounded-[2.5rem] rounded-tr-[7rem] p-10 lg:p-14 text-white shadow-2xl h-full transition-transform duration-500 relative overflow-hidden flex flex-col justify-between">
             <div className="absolute top-[-50px] right-[-50px] w-72 h-72 bg-[#e6ffa1] rounded-full mix-blend-overlay filter blur-[90px] opacity-20 pointer-events-none"></div>
             <div className="absolute bottom-[-50px] left-[-50px] w-52 h-52 bg-[#091211] rounded-full mix-blend-overlay filter blur-[60px] opacity-40 pointer-events-none"></div>
 
             <div className="space-y-10 relative z-10">
               
-              {/* Info Block 1 */}
               <div className="flex items-start gap-5 group cursor-default">
                 <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 group-hover:bg-[#e6ffa1] group-hover:text-[#19524c] transition-all duration-500 text-[#e6ffa1]">
                   <Building size={22} strokeWidth={2} />
@@ -110,7 +105,6 @@ const ContactUs: React.FC = () => {
                 </div>
               </div>
 
-              {/* Info Block 2 */}
               <div className="flex items-start gap-5 group cursor-default">
                 <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 group-hover:bg-[#e6ffa1] group-hover:text-[#19524c] transition-all duration-500 text-[#e6ffa1]">
                   <Phone size={22} strokeWidth={2} />
@@ -128,7 +122,6 @@ const ContactUs: React.FC = () => {
                 </div>
               </div>
 
-              {/* Info Block 3 */}
               <div className="flex items-start gap-5 group cursor-default">
                 <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 group-hover:bg-[#e6ffa1] group-hover:text-[#19524c] transition-all duration-500 text-[#e6ffa1]">
                   <CalendarDays size={22} strokeWidth={2} />
@@ -155,11 +148,9 @@ const ContactUs: React.FC = () => {
         </div>
       </div>
 
-      {/* Unique & Working Map Section */}
       <div className="w-11/12 mx-auto pb-16 relative z-10">
         <div className="relative w-full h-[450px] rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgb(0,0,0,0.08)] dark:shadow-[0_20px_50px_rgb(0,0,0,0.4)] border border-white/60 dark:border-white/5 group bg-slate-200 dark:bg-slate-900">
           
-          {/* Floating Location Badge */}
           <div className="absolute top-6 left-6 md:top-8 md:left-8 z-20 bg-white/90 dark:bg-[#0c1816]/90 backdrop-blur-xl p-4 md:pr-8 rounded-2xl shadow-2xl border border-white/40 dark:border-white/5 flex items-center gap-4 transition-transform duration-700 group-hover:translate-x-1 group-hover:translate-y-1">
             <div className="bg-[#19524c] dark:bg-[#e6ffa1] p-3 rounded-xl shadow-inner">
               <MapPin className="text-[#e6ffa1] dark:text-[#19524c]" size={22} strokeWidth={2.5} />
@@ -172,7 +163,6 @@ const ContactUs: React.FC = () => {
 
           <div className="absolute inset-0 bg-[#19524c]/5 dark:bg-[#070e0d]/40 pointer-events-none group-hover:opacity-0 transition-opacity duration-700 z-10 backdrop-blur-[1px]"></div>
           
-          {/* Real Google Maps Embed (Dhaka Location) */}
           <iframe 
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.9024424301397!2d90.39108011536269!3d23.75085809467994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b8a335090e5f%3A0x8b326d9c6e3b56!2sDhaka%2C%20Bangladesh!5e0!3m2!1sen!2sus!4v1614161400000!5m2!1sen!2sus" 
             width="100%" 
@@ -186,7 +176,6 @@ const ContactUs: React.FC = () => {
         </div>
       </div>
 
-      {/* Features Section */}
       <div className="w-11/12 mx-auto pb-24 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {[
