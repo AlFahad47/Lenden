@@ -54,7 +54,7 @@ export default function Footer() {
                     href={link.href}
                     className={`transition-colors ${
                       isActive(link.href)
-                        ? "text-[#1D4E48] font-bold"
+                        ? "text-[#BDDD7E] font-bold"
                         : "hover:text-[#BDDD7E]"
                     }`}
                   >
