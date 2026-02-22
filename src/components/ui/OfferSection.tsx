@@ -30,6 +30,17 @@
               Everything you need to manage your money — simple, fast, and secure.
             </p>
           </div>
+
+          {/* Feature Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+            {features.map((feature) => (
+              <div key={feature.title} className="bg-white rounded-2xl p-8 shadow-md border border-gray-100">
+                <div className="text-4xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold text-[#1D4E48] mb-2">{feature.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     );
