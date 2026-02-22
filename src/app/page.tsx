@@ -1,10 +1,11 @@
 import Banner from "@/components/ui/Banner";
-import AboutPage from "./about/page";
+import HowItWorksPage from "@/components/ui/HowItWorks";
 
 export default function Home() {
   return (
     <main>
       <Banner />
+      <HowItWorksPage />
     </main>
   );
 }
