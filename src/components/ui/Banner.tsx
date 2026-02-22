@@ -36,7 +36,7 @@
 
   export default function Banner() {
     return (
-      <section className="relative w-full h-screen overflow-hidden">
+      <section className="relative w-full h-[60vh] min-h-[520px] overflow-hidden">
         <Swiper
           modules={[Autoplay, EffectFade, Parallax]}
           effect="fade"
@@ -52,16 +52,16 @@
                 style={{ backgroundImage: `url(${slide.image})` }}
               >
                 {/* Dark overlay */}
-                <div className="absolute inset-0 bg-black/55" />
+                <div className="absolute inset-0 bg-black/25" />
 
                 {/* Text content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center pb-24">
+                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center pb-20 sm:pb-32">
                   <motion.h1
                     custom={0}
                     initial="hidden"
                     animate="visible"
                     variants={textVariants}
-                    className="text-4xl md:text-6xl font-bold text-white max-w-4xl leading-tight"
+                    className="text-3xl md:text-5xl font-bold text-white max-w-4xl leading-tight"
                   >
                     Your Money,Guarded with{" "}
                     Excellence.
@@ -72,7 +72,7 @@
                     initial="hidden"
                     animate="visible"
                     variants={textVariants}
-                    className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl"
+                    className="mt-4 text-base md:text-lg text-white/80 max-w-2xl"
                   >
                     Experience the next generation of secure digital transactions
                     with Lenden.
@@ -84,7 +84,7 @@
                     initial="hidden"
                     animate="visible"
                     variants={textVariants}
-                    className="mt-10 flex flex-col sm:flex-row gap-4"
+                    className="mt-6 flex flex-col sm:flex-row gap-4"
                   >
                     <motion.a
                       href="/register"
@@ -114,7 +114,7 @@
                     initial="hidden"
                     animate="visible"
                     variants={textVariants}
-                    className="mt-12 flex flex-wrap items-center justify-center gap-6"
+                    className="mt-6 hidden sm:flex flex-wrap items-center justify-center gap-4"
                   >
                     {[
                       { icon: "✅", label: "KYC Verified" },
