@@ -41,19 +41,30 @@ export default function Navbar() {
   if (!mounted) return null
 
   return (
-    <nav className="bg-white/90 dark:bg-[#1D4E48]/90 backdrop-blur-md border-b border-white/20 dark:border-white/10 transition-all duration-300 w-full sticky top-0 z-50 shadow-lg">
+    <nav className="bg-white/90 mb-1 dark:bg-[#1D4E48]/90 backdrop-blur-md border-b border-white/20 dark:border-white/10 transition-all duration-300 w-full sticky top-0 z-50 shadow-lg">
       <div className="flex justify-between w-11/12 mx-auto py-4 items-center">
 
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <Image
-            src="/logo.png"
-            alt="Lenden Logo"
-            width={60}
-            height={15}
-            priority
-            className="object-contain hover:scale-105 transition-transform"
-          />
+         
+
+                <Image
+          src="/logo.png" 
+          alt="Lenden Logo"
+          width={60}
+          height={15}
+          priority
+          className="hidden dark:block object-contain hover:scale-105 transition-transform"
+        />
+
+        <Image
+          src="/lightmoodlogo.png" // dark mode logo
+          alt="Lenden Logo"
+          width={60}
+          height={15}
+          priority
+          className="block dark:hidden object-contain hover:scale-105 transition-transform"
+        />
         </Link>
 
         {/* Desktop */}
