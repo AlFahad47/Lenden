@@ -16,16 +16,26 @@ function Card({ children, className = "" }: any) {
   return (
     <div
       className={`
-        bg-white/70 dark:bg-slate-900/70
-        backdrop-blur-xl
-        border border-slate-200 dark:border-slate-800
+        relative
+        bg-white/80 dark:bg-slate-900/80
+        backdrop-blur-2xl
+        border border-slate-200/60 dark:border-slate-700/60
         rounded-2xl
-        shadow-lg shadow-slate-200/40 dark:shadow-black/40
-        transition-all duration-300
+        shadow-xl shadow-slate-200/50 dark:shadow-black/50
+        hover:shadow-2xl hover:shadow-emerald-500/10
+        hover:-translate-y-1
+        transition-all duration-500 ease-out
+        before:absolute before:inset-0
+        before:rounded-2xl
+        before:bg-gradient-to-br
+        before:from-emerald-400/5 before:to-cyan-400/5
+        before:opacity-0
+        hover:before:opacity-100
+        before:transition-opacity before:duration-500
         ${className}
       `}
     >
-      {children}
+      <div className="relative z-10">{children}</div>
     </div>
   );
 }
@@ -71,7 +81,18 @@ export default function LendenDashboard() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-slate-200 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-slate-800 dark:text-slate-100 flex relative transition-colors duration-500">
+    <div
+      className="h-screen relative overflow-hidden 
+      bg-gradient-to-br 
+      from-fuchsia-100 via-sky-50 to-emerald-100 
+      dark:from-slate-950 dark:via-indigo-950 dark:to-slate-950 
+      text-slate-800 dark:text-slate-100 
+      flex transition-colors duration-500"
+    >
+      {/* Background Glow Effects */}
+      <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-fuchsia-400/30 rounded-full blur-3xl opacity-50 dark:opacity-30 pointer-events-none"></div>
+      <div className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-emerald-400/30 rounded-full blur-3xl opacity-50 dark:opacity-30 pointer-events-none"></div>
+
       {/* ================= SIDEBAR ================= */}
       <motion.aside
         initial={false}
@@ -79,9 +100,9 @@ export default function LendenDashboard() {
         className={`
           fixed md:static
           top-0 left-0
-          h-screen md:h-auto
+          h-screen md:h-full
           ${collapsed ? "w-20" : "w-64"}
-          bg-white/70 dark:bg-slate-900/80
+          bg-white/70 dark:bg-slate-900/70
           backdrop-blur-xl
           border-r border-slate-200 dark:border-slate-800
           p-6 flex flex-col gap-6
@@ -133,8 +154,8 @@ export default function LendenDashboard() {
       )}
 
       {/* ================= MAIN ================= */}
-      <div className="flex-1 transition-all duration-300">
-        <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl px-8 flex items-center justify-between">
+      <div className="flex-1 transition-all duration-300 overflow-y-auto">
+        <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/75 dark:bg-slate-900/70 backdrop-blur-xl px-8 flex items-center justify-between">
           <button
             onClick={() => setMobileOpen(true)}
             className="lg:hidden text-emerald-500 text-xl"
