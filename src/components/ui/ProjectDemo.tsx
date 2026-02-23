@@ -7,8 +7,8 @@
     const [hovered, setHovered] = useState(false);
 
     return (
-      <section className="w-full py-16 px-6 bg-gray-50 dark:bg-gray-900 border-t-2 border-[#1D4E48] dark:border-[#BDDD7E] transition-colors duration-300">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section className="w-full py-16 bg-gray-50 dark:bg-gray-900 border-t-2 border-[#1D4E48] dark:border-[#BDDD7E] transition-colors duration-300">
+        <div className="w-11/12 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
           {/* Text Side */}
           <motion.div

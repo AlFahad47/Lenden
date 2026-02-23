@@ -22,8 +22,8 @@
 
   export default function OfferSection() {
     return (
-      <section className="w-full py-16 px-6 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-        <div className="max-w-6xl mx-auto">
+      <section className="w-full py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <div className="w-11/12 mx-auto">
 
           {/* Heading */}
           <motion.div
