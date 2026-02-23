@@ -74,7 +74,7 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-16 px-4 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-11/12 mx-auto">
         
         {/* Page Header */}
         <div className="mb-16 text-center">
