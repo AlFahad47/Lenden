@@ -46,14 +46,25 @@ export default function Navbar() {
 
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <Image
-            src="/logo.png"
-            alt="Lenden Logo"
-            width={60}
-            height={15}
-            priority
-            className="object-contain hover:scale-105 transition-transform"
-          />
+         
+
+                <Image
+          src="/logo.png" 
+          alt="Lenden Logo"
+          width={60}
+          height={15}
+          priority
+          className="hidden dark:block object-contain hover:scale-105 transition-transform"
+        />
+
+        <Image
+          src="/lightmoodlogo.png" // dark mode logo
+          alt="Lenden Logo"
+          width={60}
+          height={15}
+          priority
+          className="block dark:hidden object-contain hover:scale-105 transition-transform"
+        />
         </Link>
 
         {/* Desktop */}
