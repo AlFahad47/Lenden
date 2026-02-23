@@ -1,10 +1,26 @@
 "use client";
 import React, { useState } from 'react';
-import { Chrome, Facebook, Linkedin } from 'lucide-react';
+import { Chrome, Facebook, Linkedin, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 
 const PandaLogin: React.FC = () => {
   const [activeField, setActiveField] = useState<'none' | 'username' | 'password'>('none');
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+
+  // Password strength calculation
+  const calculateStrength = (pass: string) => {
+    let score = 0;
+    if (!pass) return 0;
+    if (pass.length > 5) score += 1;
+    if (pass.length > 7) score += 1;
+    if (/[A-Z]/.test(pass)) score += 1;
+    if (/[0-9]/.test(pass)) score += 1;
+    if (/[^A-Za-z0-9]/.test(pass)) score += 1;
+    return Math.min(4, score);
+  };
+
+  const strength = calculateStrength(passwordInput);
 
   // Exact JavaScript animations converted to React inline styles
   const eyeLeftStyle = activeField === 'username' 
@@ -15,19 +31,18 @@ const PandaLogin: React.FC = () => {
     ? { right: '0.75em', top: '1.12em', transform: 'rotate(-20deg)' } 
     : { right: '0.6em', top: '0.6em', transform: 'rotate(-20deg)' };
 
-  const leftHandStyle = activeField === 'password'
+  const leftHandStyle = activeField === 'password' && !showPassword
     ? { height: '6.56em', top: '3.87em', left: '11.75em', transform: 'rotate(-155deg)' }
     : { height: '2.81em', top: '8.4em', left: '7.5em', transform: 'rotate(0deg)' };
 
-  const rightHandStyle = activeField === 'password'
+  const rightHandStyle = activeField === 'password' && !showPassword
     ? { height: '6.56em', top: '3.87em', right: '11.75em', transform: 'rotate(155deg)' }
     : { height: '2.81em', top: '8.4em', right: '7.5em', transform: 'rotate(0deg)' };
 
   return (
-    // Outer Wrapper with hidden overflow for full screen background
     <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden selection:bg-[#e6ffa1] selection:text-[#19524c]">
       
-      {/* 1. Local Video Background (Directly from public folder) */}
+      {/* Local Video Background */}
       <div className="absolute inset-0 w-full h-full overflow-hidden -z-20 bg-[#0d2b28]">
         <video 
           autoPlay 
@@ -36,16 +51,15 @@ const PandaLogin: React.FC = () => {
           playsInline 
           className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         >
-          {/* Note: Ensure the file extension is correct (.mp4, .webm etc.). Assuming .mp4 here */}
           <source src="/loginpagebgvideo.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>
 
-      {/* 2. Adjusted Glassmorphism Overlay */}
+      {/* Glassmorphism Overlay */}
       <div className="absolute inset-0 bg-[#19524c]/60 backdrop-blur-[3px] -z-10"></div>
 
-      {/* 3. Panda & Form Container */}
+      {/* Panda & Form Container */}
       <div className="relative w-[31.25em] h-[45em] text-[12px] sm:text-[14px] md:text-[16px] mt-16">
         
         {/* --- PANDA FACE --- */}
@@ -96,8 +110,9 @@ const PandaLogin: React.FC = () => {
           </div>
 
           <div className="flex-1 w-full px-2">
+            {/* Email Field */}
             <div className="relative mb-[1.5em]">
-              <label htmlFor="username" className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#19524c]">Email</label>
+              <label htmlFor="username" className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#19524c] z-10">Email</label>
               <input 
                 type="text" 
                 id="username" 
@@ -108,19 +123,48 @@ const PandaLogin: React.FC = () => {
               />
             </div>
             
+            {/* Password Field - Fixed Line Overlap */}
             <div className="relative mb-[1.5em]">
-              <label htmlFor="password" className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#19524c]">Password</label>
-              <input 
-                type="password" 
-                id="password" 
-                placeholder="••••••••" 
-                onFocus={() => setActiveField('password')}
-                onBlur={() => setActiveField('none')}
-                className="text-[0.9em] font-medium text-slate-800 p-[1em] border border-slate-300 rounded-[0.5em] bg-transparent focus:border-[#19524c] outline-none transition-colors w-full tracking-widest"
-              />
+              <label htmlFor="password" className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#19524c] z-10">Password</label>
+              <div className="relative w-full border border-slate-300 rounded-[0.5em] focus-within:border-[#19524c] transition-colors bg-transparent">
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  id="password" 
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  placeholder="••••••••" 
+                  onFocus={() => setActiveField('password')}
+                  onBlur={() => setActiveField('none')}
+                  className="text-[0.9em] font-medium text-slate-800 p-[1em] pr-[2.5em] w-full bg-transparent outline-none tracking-widest"
+                />
+                <button 
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-[0.8em] top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#19524c] transition-colors z-10"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+
+              {/* Password Strength Indicator */}
+              {activeField === 'password' && passwordInput.length > 0 && (
+                <div className="absolute -bottom-[1.2em] left-0 w-full flex items-center justify-between px-1">
+                  <div className="flex gap-1 w-full mr-2">
+                    <div className={`h-1 flex-1 rounded-full ${strength >= 1 ? (strength === 1 ? 'bg-red-400' : strength === 2 ? 'bg-yellow-400' : strength >= 3 ? 'bg-green-500' : 'bg-slate-200') : 'bg-slate-200'}`}></div>
+                    <div className={`h-1 flex-1 rounded-full ${strength >= 2 ? (strength === 2 ? 'bg-yellow-400' : strength >= 3 ? 'bg-green-500' : 'bg-slate-200') : 'bg-slate-200'}`}></div>
+                    <div className={`h-1 flex-1 rounded-full ${strength >= 3 ? 'bg-green-500' : 'bg-slate-200'}`}></div>
+                    <div className={`h-1 flex-1 rounded-full ${strength >= 4 ? 'bg-green-600' : 'bg-slate-200'}`}></div>
+                  </div>
+                  <span className="text-[0.6em] font-bold whitespace-nowrap" style={{
+                    color: strength <= 1 ? '#f87171' : strength === 2 ? '#facc15' : '#22c55e'
+                  }}>
+                    {strength <= 1 ? 'Weak' : strength === 2 ? 'Fair' : strength === 3 ? 'Good' : 'Strong'}
+                  </span>
+                </div>
+              )}
             </div>
 
-            <div className="flex items-center justify-between mb-6 px-1">
+            <div className="flex items-center justify-between mb-6 px-1 mt-[1.2em]">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" className="w-[1.1em] h-[1.1em] rounded border-slate-300 text-[#19524c] focus:ring-[#19524c]" />
                 <span className="text-[0.8em] font-bold text-slate-500">Remember me</span>
