@@ -1,10 +1,26 @@
 "use client";
 import React, { useState } from 'react';
-import { Chrome, Facebook, Linkedin } from 'lucide-react';
+import { Chrome, Facebook, Linkedin, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 
 const PandaRegister: React.FC = () => {
   const [activeField, setActiveField] = useState<'none' | 'text' | 'password'>('none');
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+
+  // Password strength calculation
+  const calculateStrength = (pass: string) => {
+    let score = 0;
+    if (!pass) return 0;
+    if (pass.length > 5) score += 1;
+    if (pass.length > 7) score += 1;
+    if (/[A-Z]/.test(pass)) score += 1;
+    if (/[0-9]/.test(pass)) score += 1;
+    if (/[^A-Za-z0-9]/.test(pass)) score += 1;
+    return Math.min(4, score);
+  };
+
+  const strength = calculateStrength(passwordInput);
 
   // Exact JavaScript animations converted to React inline styles
   const eyeLeftStyle = activeField === 'text' 
@@ -15,11 +31,11 @@ const PandaRegister: React.FC = () => {
     ? { right: '0.75em', top: '1.12em', transform: 'rotate(-20deg)' } 
     : { right: '0.6em', top: '0.6em', transform: 'rotate(-20deg)' };
 
-  const leftHandStyle = activeField === 'password'
+  const leftHandStyle = activeField === 'password' && !showPassword
     ? { height: '6.56em', top: '3.87em', left: '11.75em', transform: 'rotate(-155deg)' }
     : { height: '2.81em', top: '8.4em', left: '7.5em', transform: 'rotate(0deg)' };
 
-  const rightHandStyle = activeField === 'password'
+  const rightHandStyle = activeField === 'password' && !showPassword
     ? { height: '6.56em', top: '3.87em', right: '11.75em', transform: 'rotate(155deg)' }
     : { height: '2.81em', top: '8.4em', right: '7.5em', transform: 'rotate(0deg)' };
 
@@ -90,50 +106,84 @@ const PandaRegister: React.FC = () => {
               </button>
             </div>
             
-            {/* Added Login Navigation instead of old text */}
             <p className="text-[0.8em] font-medium text-slate-500 mb-4">
               Already have an account? <Link href="/login" className="text-[#19524c] font-bold hover:underline">Log in</Link>
             </p>
           </div>
 
           <div className="flex-1 w-full px-2">
+            {/* Full Name Field */}
             <div className="relative mb-[1.2em]">
-              <label htmlFor="name" className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#19524c]">Full Name</label>
-              <input 
-                type="text" 
-                id="name" 
-                placeholder="John Doe" 
-                onFocus={() => setActiveField('text')}
-                onBlur={() => setActiveField('none')}
-                className="text-[0.85em] font-medium text-slate-800 p-[1em] border border-slate-300 rounded-[0.5em] bg-transparent focus:border-[#19524c] outline-none transition-colors w-full"
-              />
+              <label htmlFor="name" className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#19524c] z-10">Full Name</label>
+              <div className="relative w-full border border-slate-300 rounded-[0.5em] focus-within:border-[#19524c] transition-colors bg-transparent">
+                <input 
+                  type="text" 
+                  id="name" 
+                  placeholder="John Doe" 
+                  onFocus={() => setActiveField('text')}
+                  onBlur={() => setActiveField('none')}
+                  className="text-[0.85em] font-medium text-slate-800 p-[1em] w-full bg-transparent outline-none"
+                />
+              </div>
             </div>
 
+            {/* Email Field */}
             <div className="relative mb-[1.2em]">
-              <label htmlFor="email" className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#19524c]">Email</label>
-              <input 
-                type="email" 
-                id="email" 
-                placeholder="example@email.com" 
-                onFocus={() => setActiveField('text')}
-                onBlur={() => setActiveField('none')}
-                className="text-[0.85em] font-medium text-slate-800 p-[1em] border border-slate-300 rounded-[0.5em] bg-transparent focus:border-[#19524c] outline-none transition-colors w-full"
-              />
+              <label htmlFor="email" className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#19524c] z-10">Email</label>
+              <div className="relative w-full border border-slate-300 rounded-[0.5em] focus-within:border-[#19524c] transition-colors bg-transparent">
+                <input 
+                  type="email" 
+                  id="email" 
+                  placeholder="example@email.com" 
+                  onFocus={() => setActiveField('text')}
+                  onBlur={() => setActiveField('none')}
+                  className="text-[0.85em] font-medium text-slate-800 p-[1em] w-full bg-transparent outline-none"
+                />
+              </div>
             </div>
             
+            {/* Password Field with Show/Hide & Strength */}
             <div className="relative mb-[1em]">
-              <label htmlFor="password" className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#19524c]">Password</label>
-              <input 
-                type="password" 
-                id="password" 
-                placeholder="••••••••" 
-                onFocus={() => setActiveField('password')}
-                onBlur={() => setActiveField('none')}
-                className="text-[0.85em] font-medium text-slate-800 p-[1em] border border-slate-300 rounded-[0.5em] bg-transparent focus:border-[#19524c] outline-none transition-colors w-full tracking-widest"
-              />
+              <label htmlFor="password" className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#19524c] z-10">Password</label>
+              <div className="relative w-full border border-slate-300 rounded-[0.5em] focus-within:border-[#19524c] transition-colors bg-transparent">
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  id="password" 
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  placeholder="••••••••" 
+                  onFocus={() => setActiveField('password')}
+                  onBlur={() => setActiveField('none')}
+                  className="text-[0.85em] font-medium text-slate-800 p-[1em] pr-[2.5em] w-full bg-transparent outline-none tracking-widest"
+                />
+                <button 
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-[0.8em] top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#19524c] transition-colors z-10"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+
+              {/* Password Strength Indicator */}
+              {activeField === 'password' && passwordInput.length > 0 && (
+                <div className="absolute -bottom-[1.2em] left-0 w-full flex items-center justify-between px-1">
+                  <div className="flex gap-1 w-full mr-2">
+                    <div className={`h-1 flex-1 rounded-full ${strength >= 1 ? (strength === 1 ? 'bg-red-400' : strength === 2 ? 'bg-yellow-400' : strength >= 3 ? 'bg-green-500' : 'bg-slate-200') : 'bg-slate-200'}`}></div>
+                    <div className={`h-1 flex-1 rounded-full ${strength >= 2 ? (strength === 2 ? 'bg-yellow-400' : strength >= 3 ? 'bg-green-500' : 'bg-slate-200') : 'bg-slate-200'}`}></div>
+                    <div className={`h-1 flex-1 rounded-full ${strength >= 3 ? 'bg-green-500' : 'bg-slate-200'}`}></div>
+                    <div className={`h-1 flex-1 rounded-full ${strength >= 4 ? 'bg-green-600' : 'bg-slate-200'}`}></div>
+                  </div>
+                  <span className="text-[0.6em] font-bold whitespace-nowrap" style={{
+                    color: strength <= 1 ? '#f87171' : strength === 2 ? '#facc15' : '#22c55e'
+                  }}>
+                    {strength <= 1 ? 'Weak' : strength === 2 ? 'Fair' : strength === 3 ? 'Good' : 'Strong'}
+                  </span>
+                </div>
+              )}
             </div>
 
-            <div className="flex items-center mb-5 px-1">
+            <div className="flex items-center mb-5 px-1 mt-[1.2em]">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" className="w-[1.1em] h-[1.1em] rounded border-slate-300 text-[#19524c] focus:ring-[#19524c]" />
                 <span className="text-[0.75em] font-bold text-slate-500">I accept the <Link href="#" className="text-[#19524c] hover:underline">Terms & Conditions</Link></span>
