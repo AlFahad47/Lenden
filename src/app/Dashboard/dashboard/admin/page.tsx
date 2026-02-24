@@ -22,6 +22,22 @@ import {
 } from "recharts";
 import { useRouter, usePathname } from "next/navigation";
 
+const stats = [
+  { title: "Total Users", value: "12,540" },
+  { title: "Total Revenue", value: "$45,210" },
+  { title: "Transactions", value: "8,320" },
+  { title: "Pending KYC", value: "124" },
+];
+
+const data = [
+  { name: "Jan", value: 400 },
+  { name: "Feb", value: 800 },
+  { name: "Mar", value: 650 },
+  { name: "Apr", value: 900 },
+  { name: "May", value: 1200 },
+  { name: "Jun", value: 1100 },
+];
+
 function Card({ children, className = "" }: any) {
   return (
     <div
@@ -71,8 +87,8 @@ function Button({ children, className = "", ...props }: any) {
 }
 
 const sidebarItems = [
-  { icon: Home, label: "Dashboard", path: "/dashboard" },
-  { icon: Users, label: "Users", path: "/dashboard/users" },
+  { icon: Home, label: "Dashboard", path: "/dashboard/AdminDashboard" },
+  { icon: Users, label: "Users", path: "/dashboard/UserDashboard" },
   { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
   { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
   {
