@@ -14,16 +14,21 @@ export default function Home() {
   return (
     <main>
       <Banner />
+       <Menus/>
+       
       <OfferSection />
+      <KeyFeatures/>
+             
+      <HowItWorksPage />
        <ProjectDemo />
 
-      {/* <Banner /> */}
+     
   
-      <BannerUser />
-          <Menus/>
-      <KeyFeatures/>
+      {/* <BannerUser /> */}
+         
+      
 
-      <HowItWorksPage />
+      
     </main>
   );
 }
