@@ -1,16 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import {
-  Home,
-  Users,
-  CreditCard,
-  BarChart3,
-  Settings,
-  Bell,
-  ShieldCheck,
-} from "lucide-react";
 import {
   LineChart,
   Line,
@@ -20,7 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const stats = [
   { title: "Total Users", value: "12,540" },
@@ -38,7 +29,13 @@ const data = [
   { name: "Jun", value: 1100 },
 ];
 
-function Card({ children, className = "" }: any) {
+function Card({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div
       className={`
@@ -66,127 +63,22 @@ function Card({ children, className = "" }: any) {
   );
 }
 
-function CardContent({ children, className = "" }: any) {
+function CardContent({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return <div className={className}>{children}</div>;
 }
 
-function Button({ children, className = "", ...props }: any) {
-  return (
-    <button
-      className={`
-        p-2 rounded-xl
-        hover:bg-slate-200 dark:hover:bg-slate-800
-        transition
-        ${className}
-      `}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-}
-
-const sidebarItems = [
-  { icon: Home, label: "Dashboard", path: "/dashboard/AdminDashboard" },
-  { icon: Users, label: "Users", path: "/dashboard/UserDashboard" },
-  { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
-  { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
-  {
-    icon: ShieldCheck,
-    label: "KYC Verification",
-    path: "/dashboard/kyc-verification",
-  },
-  { icon: Settings, label: "Settings", path: "/dashboard/settings" },
-];
-
-export default function LendenDashboard() {
-  const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const router = useRouter();
+export default function Admin() {
   const pathname = usePathname();
 
   return (
     <div className="h-screen relative overflow-hidden bg-gradient-to-br from-purple-300 via-sky-200 to-blue-300 dark:from-blue-950 dark:via-slate-950 dark:to-purple-950 text-slate-800 dark:text-slate-100 flex transition-colors duration-500">
-      {/* SIDEBAR */}
-      <motion.aside
-        initial={false}
-        animate={{ width: collapsed ? 80 : 256 }}
-        transition={{ duration: 0.3 }}
-        className={`fixed md:static top-0 left-0 h-screen md:h-full ${
-          collapsed ? "w-20" : "w-64"
-        } bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-6 z-40 transition-all duration-300 ${
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
-      >
-        <div className="flex items-center justify-between">
-          {!collapsed && (
-            <h1 className="text-xl font-bold bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent whitespace-nowrap">
-              Lenden Admin
-            </h1>
-          )}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="hidden lg:block text-emerald-500 text-xl"
-          >
-            ☰
-          </button>
-        </div>
-
-        <nav className="flex flex-col gap-2">
-          {sidebarItems.map((item, i) => {
-            const isActive = pathname === item.path;
-
-            return (
-              <motion.button
-                key={item.label}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05 }}
-                onClick={() => {
-                  router.push(item.path);
-                  setMobileOpen(false);
-                }}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${
-                  isActive
-                    ? "bg-emerald-500/10 text-emerald-500"
-                    : "hover:bg-slate-200 dark:hover:bg-slate-800"
-                }`}
-              >
-                <item.icon
-                  className={`w-5 h-5 ${isActive ? "text-emerald-500" : ""}`}
-                />
-                {!collapsed && <span>{item.label}</span>}
-              </motion.button>
-            );
-          })}
-        </nav>
-      </motion.aside>
-
-      {/* MAIN */}
       <div className="flex-1 overflow-y-auto">
-        <header className="sticky top-0 z-20 h-16 border-b border-slate-200 dark:border-slate-800 bg-white/75 dark:bg-slate-900/70 backdrop-blur-xl px-8 flex items-center justify-between">
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="lg:hidden text-emerald-500 text-xl"
-          >
-            ☰
-          </button>
-
-          <h2 className="text-xl font-semibold capitalize">
-            {pathname.split("/").pop()?.replace("-", " ")}
-          </h2>
-
-          <div className="flex items-center gap-4">
-            <Button>
-              <Bell className="w-5 h-5" />
-            </Button>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 shadow-md" />
-          </div>
-        </header>
-
         <main className="p-8 grid gap-8">
           {/* Stats */}
           <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -216,7 +108,7 @@ export default function LendenDashboard() {
                 <h4 className="text-lg font-semibold mb-4">
                   Revenue Analytics
                 </h4>
-                {/* chart here */}
+
                 <div className="h-[240px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={data}>
@@ -224,20 +116,17 @@ export default function LendenDashboard() {
                         strokeDasharray="3 3"
                         strokeOpacity={0.1}
                       />
-
                       <XAxis
                         dataKey="name"
                         tick={{ fill: "#94a3b8" }}
                         axisLine={false}
                         tickLine={false}
                       />
-
                       <YAxis
                         tick={{ fill: "#94a3b8" }}
                         axisLine={false}
                         tickLine={false}
                       />
-
                       <Tooltip
                         contentStyle={{
                           backgroundColor: "#0f172a",
@@ -246,7 +135,6 @@ export default function LendenDashboard() {
                         }}
                         labelStyle={{ color: "#10b981" }}
                       />
-
                       <Line
                         type="monotone"
                         dataKey="value"
@@ -280,6 +168,7 @@ export default function LendenDashboard() {
                 <h4 className="text-lg font-semibold mb-4">
                   Recent Transactions
                 </h4>
+
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
