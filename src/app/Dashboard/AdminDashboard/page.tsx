@@ -11,6 +11,16 @@ import {
   Bell,
   ShieldCheck,
 } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { useRouter, usePathname } from "next/navigation";
 
 function Card({ children, className = "" }: any) {
   return (
@@ -61,56 +71,37 @@ function Button({ children, className = "", ...props }: any) {
 }
 
 const sidebarItems = [
-  { icon: Home, label: "Dashboard" },
-  { icon: Users, label: "Users" },
-  { icon: CreditCard, label: "Transactions" },
-  { icon: BarChart3, label: "Analytics" },
-  { icon: ShieldCheck, label: "KYC Verification" },
-  { icon: Settings, label: "Settings" },
-];
-
-const stats = [
-  { title: "Total Users", value: "12,540" },
-  { title: "Transactions", value: "$84,210" },
-  { title: "Revenue", value: "$24,900" },
-  { title: "Pending KYC", value: "320" },
+  { icon: Home, label: "Dashboard", path: "/dashboard" },
+  { icon: Users, label: "Users", path: "/dashboard/users" },
+  { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
+  { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
+  {
+    icon: ShieldCheck,
+    label: "KYC Verification",
+    path: "/dashboard/kyc-verification",
+  },
+  { icon: Settings, label: "Settings", path: "/dashboard/settings" },
 ];
 
 export default function LendenDashboard() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  return (
-    <div
-      className="h-screen relative overflow-hidden 
-      bg-gradient-to-br 
-      from-fuchsia-100 via-sky-50 to-emerald-100 
-      dark:from-slate-950 dark:via-indigo-950 dark:to-slate-950 
-      text-slate-800 dark:text-slate-100 
-      flex transition-colors duration-500"
-    >
-      {/* Background Glow Effects */}
-      <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-fuchsia-400/30 rounded-full blur-3xl opacity-50 dark:opacity-30 pointer-events-none"></div>
-      <div className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-emerald-400/30 rounded-full blur-3xl opacity-50 dark:opacity-30 pointer-events-none"></div>
+  const router = useRouter();
+  const pathname = usePathname();
 
-      {/* ================= SIDEBAR ================= */}
+  return (
+    <div className="h-screen relative overflow-hidden bg-gradient-to-br from-purple-300 via-sky-200 to-blue-300 dark:from-blue-950 dark:via-slate-950 dark:to-purple-950 text-slate-800 dark:text-slate-100 flex transition-colors duration-500">
+      {/* SIDEBAR */}
       <motion.aside
         initial={false}
-        animate={{}}
-        className={`
-          fixed md:static
-          top-0 left-0
-          h-screen md:h-full
-          ${collapsed ? "w-20" : "w-64"}
-          bg-white/70 dark:bg-slate-900/70
-          backdrop-blur-xl
-          border-r border-slate-200 dark:border-slate-800
-          p-6 flex flex-col gap-6
-          z-40
-          transition-all duration-300
-          ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0
-        `}
+        animate={{ width: collapsed ? 80 : 256 }}
+        transition={{ duration: 0.3 }}
+        className={`fixed md:static top-0 left-0 h-screen md:h-full ${
+          collapsed ? "w-20" : "w-64"
+        } bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-6 z-40 transition-all duration-300 ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0`}
       >
         <div className="flex items-center justify-between">
           {!collapsed && (
@@ -118,7 +109,6 @@ export default function LendenDashboard() {
               Lenden Admin
             </h1>
           )}
-
           <button
             onClick={() => setCollapsed(!collapsed)}
             className="hidden lg:block text-emerald-500 text-xl"
@@ -128,34 +118,40 @@ export default function LendenDashboard() {
         </div>
 
         <nav className="flex flex-col gap-2">
-          {sidebarItems.map((item, i) => (
-            <motion.button
-              key={item.label}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.05 }}
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-800 transition"
-            >
-              <item.icon className="w-5 h-5 text-emerald-500" />
-              {!collapsed && <span>{item.label}</span>}
-            </motion.button>
-          ))}
+          {sidebarItems.map((item, i) => {
+            const isActive = pathname === item.path;
+
+            return (
+              <motion.button
+                key={item.label}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.05 }}
+                onClick={() => {
+                  router.push(item.path);
+                  setMobileOpen(false);
+                }}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${
+                  isActive
+                    ? "bg-emerald-500/10 text-emerald-500"
+                    : "hover:bg-slate-200 dark:hover:bg-slate-800"
+                }`}
+              >
+                <item.icon
+                  className={`w-5 h-5 ${isActive ? "text-emerald-500" : ""}`}
+                />
+                {!collapsed && <span>{item.label}</span>}
+              </motion.button>
+            );
+          })}
         </nav>
       </motion.aside>
 
-      {mobileOpen && (
-        <div
-          onClick={() => setMobileOpen(false)}
-          className="fixed inset-0 bg-black/40 z-30 lg:hidden"
-        />
-      )}
-
-      {/* ================= MAIN ================= */}
-      <div className="flex-1 transition-all duration-300 overflow-y-auto">
-        <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/75 dark:bg-slate-900/70 backdrop-blur-xl px-8 flex items-center justify-between">
+      {/* MAIN */}
+      <div className="flex-1 overflow-y-auto">
+        <header className="sticky top-0 z-20 h-16 border-b border-slate-200 dark:border-slate-800 bg-white/75 dark:bg-slate-900/70 backdrop-blur-xl px-8 flex items-center justify-between">
           <button
             onClick={() => setMobileOpen(true)}
             className="lg:hidden text-emerald-500 text-xl"
@@ -163,7 +159,9 @@ export default function LendenDashboard() {
             ☰
           </button>
 
-          <h2 className="text-xl font-semibold">Dashboard Overview</h2>
+          <h2 className="text-xl font-semibold capitalize">
+            {pathname.split("/").pop()?.replace("-", " ")}
+          </h2>
 
           <div className="flex items-center gap-4">
             <Button>
@@ -202,8 +200,47 @@ export default function LendenDashboard() {
                 <h4 className="text-lg font-semibold mb-4">
                   Revenue Analytics
                 </h4>
-                <div className="h-full flex items-center justify-center text-slate-400">
-                  Chart Area
+                {/* chart here */}
+                <div className="h-[240px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={data}>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        strokeOpacity={0.1}
+                      />
+
+                      <XAxis
+                        dataKey="name"
+                        tick={{ fill: "#94a3b8" }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+
+                      <YAxis
+                        tick={{ fill: "#94a3b8" }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "#0f172a",
+                          border: "none",
+                          borderRadius: "8px",
+                        }}
+                        labelStyle={{ color: "#10b981" }}
+                      />
+
+                      <Line
+                        type="monotone"
+                        dataKey="value"
+                        stroke="#10b981"
+                        strokeWidth={3}
+                        dot={{ r: 4 }}
+                        activeDot={{ r: 6 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
