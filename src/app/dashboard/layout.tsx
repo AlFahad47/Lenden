@@ -146,7 +146,7 @@ export default function DashboardLayout({
             {/* Profile Image */}
             <div className="w-9 h-9 relative">
               <Image
-                src="/Jarif.jpeg"
+                src="/Jarif24.jpeg"
                 alt="Profile"
                 fill
                 className="rounded-full object-cover"
