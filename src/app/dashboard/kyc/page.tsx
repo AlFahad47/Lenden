@@ -1,10 +1,24 @@
+
+
 "use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Swal from "sweetalert2";
 
 export default function KYCPage() {
   const [role, setRole] = useState<"User" | "Agent">("User");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    Swal.fire({
+      title: "KYC Submitted!",
+      text: `${role} verification submitted successfully.`,
+      icon: "success",
+      confirmButtonColor: "#0061ff",
+    });
+  };
 
   return (
     <div
@@ -34,7 +48,6 @@ export default function KYCPage() {
           Secure identity verification for platform compliance
         </motion.p>
 
-        {/* Role Selector */}
         <div className="flex justify-center mb-12">
           <div
             className="bg-white 
@@ -73,6 +86,7 @@ export default function KYCPage() {
 
         <AnimatePresence mode="wait">
           <motion.form
+            onSubmit={handleSubmit}
             key={role}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}

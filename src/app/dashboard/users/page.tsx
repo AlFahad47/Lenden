@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import Swal from "sweetalert2";
 import {
   User,
   Mail,
@@ -72,6 +73,20 @@ export default function UserDashboard() {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
+  const handleSave = async () => {
+    setIsOpen(false);
+
+    await Swal.fire({
+      title: "Profile Updated!",
+      text: "Your information has been saved successfully.",
+      icon: "success",
+      confirmButtonColor: "#0095ff",
+      confirmButtonText: "Awesome!",
+      background: "#0c1a2b",
+      color: "#fff",
+    });
+  };
+
   return (
     <motion.div
       className="min-h-screen p-8 
@@ -93,7 +108,6 @@ export default function UserDashboard() {
       </motion.h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Profile Card */}
         <Card className="lg:col-span-1">
           <div className="flex flex-col items-center text-center gap-4">
             {userData.image ? (
@@ -136,11 +150,9 @@ export default function UserDashboard() {
           </div>
         </Card>
 
-        {/* Details */}
         <div className="lg:col-span-2 grid gap-6">
           <Card>
             <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
-
             <div className="grid md:grid-cols-2 gap-4 text-sm">
               <Info icon={User} label="Full Name" value={userData.name} />
               <Info icon={Mail} label="Email" value={userData.email} />
@@ -151,7 +163,6 @@ export default function UserDashboard() {
 
           <Card>
             <h3 className="text-lg font-semibold mb-4">Financial Details</h3>
-
             <div className="grid md:grid-cols-2 gap-4 text-sm">
               <Info
                 icon={CreditCard}
@@ -170,7 +181,6 @@ export default function UserDashboard() {
         </div>
       </div>
 
-      {/* ================= MODAL ================= */}
       <AnimatePresence>
         {isOpen && (
           <>
@@ -231,7 +241,7 @@ export default function UserDashboard() {
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  onClick={() => setIsOpen(false)}
+                  onClick={handleSave}
                   className="mt-6 w-full 
                   bg-[#0095ff] 
                   hover:bg-[#0070ff] 
