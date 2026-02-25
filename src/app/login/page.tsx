@@ -93,7 +93,7 @@ const PandaLogin: React.FC = () => {
       ));
       
       setTimeout(() => {
-        router.push("/dashboard"); 
+        router.push("/"); 
       }, 2000); // ২ সেকেন্ড ডிலே দিয়েছি যাতে ইউজার সুন্দর অ্যানিমেশনটা উপভোগ করতে পারে
     }
   };

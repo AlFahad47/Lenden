@@ -7,13 +7,30 @@ import Menus from "@/components/ui/menus";
 
 export default function Home() {
   return (
-    <main className="bg-white dark:bg-[#04090f]">
-      <Banner />
-      <Menus />
-      <OfferSection />
-      <KeyFeatures />
-      <HowItWorksPage />
-      <ProjectDemo />
+   <main>
+      <section id="home">
+        <Banner />
+      </section>
+
+      <section id="menus">
+        <Menus />
+      </section>
+
+      <section id="offers">
+        <OfferSection />
+      </section>
+
+      <section id="features">
+        <KeyFeatures />
+      </section>
+
+      <section id="how">
+        <HowItWorksPage />
+      </section>
+
+      <section id="demo">
+        <ProjectDemo />
+      </section>
     </main>
   );
 }

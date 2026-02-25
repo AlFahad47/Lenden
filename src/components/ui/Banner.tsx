@@ -59,7 +59,7 @@ const Banner: React.FC = () => {
   const hedwigGradient = 'linear-gradient(to right, #4DA1FF, #1E50FF)';
 
   return (
-    <section className="relative w-full min-h-[90vh] bg-[#050B14] flex flex-col items-center pt-28 pb-10 overflow-hidden text-white font-sans z-0">
+    <section className="relative w-full min-h-[90vh] bg-white dark:bg-[#050B14] flex flex-col items-center pt-28 pb-10 overflow-hidden text-white font-sans z-0">
       
       <style dangerouslySetInnerHTML={{__html: `
         .bg-tech-grid {
@@ -96,7 +96,7 @@ const Banner: React.FC = () => {
 
       {/* Background Elements */}
       <div className="absolute inset-0 bg-tech-grid z-[-2]" style={{ transform: `translateY(${scrollY * 0.3}px)` }}></div>
-      <div className="absolute top-[20%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[#2C64FF] opacity-[0.25] blur-[150px] rounded-full pointer-events-none z-[-2] transition-transform duration-500" style={{ transform: `translate(-50%, ${scrollY * 0.05}px)` }}></div>
+      <div className="absolute top-[20%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] dark:bg-[#2C64FF] opacity-[0.25] blur-[150px] rounded-full pointer-events-none z-[-2] transition-transform duration-500" style={{ transform: `translate(-50%, ${scrollY * 0.05}px)` }}></div>
       
       {/* Floating Icons */}
       <div className="absolute inset-0 pointer-events-none z-[-1] max-w-7xl mx-auto hidden sm:block" style={{ opacity: 1 - scatterProgress }}>
@@ -109,14 +109,14 @@ const Banner: React.FC = () => {
       {/* --- TOP SECTION --- */}
       <div className="flex flex-col items-center text-center px-4 mb-8 z-10" style={{ opacity: 1 - (scatterProgress * 2) }}>
         
-        <div className="anim-fade-up flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-[#0F172A]/50 backdrop-blur-md mb-6 shadow-[0_0_15px_-3px_rgba(77,161,255,0.3)]">
+        <div className="anim-fade-up flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-blue-400 dark:bg-[#0F172A]/50 backdrop-blur-md mb-6 shadow-[0_0_15px_-3px_rgba(77,161,255,0.3)]">
           <div className="p-1.5 rounded-full flex items-center justify-center shadow-sm" style={{ background: hedwigGradient }}>
             <Wallet size={12} className="text-white" />
           </div>
-          <span className="text-[#4DA1FF] text-xs font-bold tracking-widest uppercase pr-2">NovaPay Network</span>
+          <span className="text-white dark:text-[#4DA1FF] text-xs font-bold tracking-widest uppercase pr-2">NovaPay Network</span>
         </div>
 
-        <h1 className="anim-fade-up delay-txt-1 text-[2.5rem] md:text-5xl lg:text-[4rem] font-bold tracking-tight leading-[1.1] mb-5 max-w-3xl">
+        <h1 className="anim-fade-up delay-txt-1 text-[2.5rem] md:text-5xl lg:text-[4rem] text-[#4DA1FF] dark:text-white font-bold tracking-tight leading-[1.1] mb-5 max-w-3xl">
           Your Gateway to Digital<br />
           <span className="text-transparent bg-clip-text drop-shadow-[0_0_25px_rgba(77,161,255,0.4)]" style={{ backgroundImage: hedwigGradient }}>
             Finance Innovation
