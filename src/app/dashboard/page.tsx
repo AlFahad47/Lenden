@@ -7,22 +7,43 @@ import {
   Activity,
   ArrowUpRight,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function DashboardHome() {
   return (
-    <div className="space-y-8">
+    <motion.div
+      className="space-y-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-8 rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold mb-2">
-          Welcome back 👋
-        </h1>
+      <motion.div
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="bg-gradient-to-r from-[#0095ff] to-[#0061ff] text-white p-8 rounded-2xl shadow-lg"
+      >
+        <h1 className="text-3xl font-bold mb-2">Welcome back 👋</h1>
         <p className="opacity-90">
           Here’s what’s happening with your platform today.
         </p>
-      </div>
+      </motion.div>
 
       {/* Stats Cards */}
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <motion.div
+        className="grid gap-6 md:grid-cols-2 xl:grid-cols-4"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: 0.15,
+            },
+          },
+        }}
+      >
         <StatCard
           title="Total Users"
           value="12,450"
@@ -47,11 +68,16 @@ export default function DashboardHome() {
           icon={<Activity size={22} />}
           growth="+3%"
         />
-      </div>
+      </motion.div>
 
       {/* Quick Actions */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
-        <h2 className="text-lg font-semibold mb-4 text-slate-700 dark:text-slate-200">
+      <motion.div
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="bg-white dark:bg-[#0c1a2b] rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-blue-800"
+      >
+        <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-blue-300">
           Quick Actions
         </h2>
 
@@ -60,22 +86,39 @@ export default function DashboardHome() {
           <QuickButton label="Create Report" />
           <QuickButton label="Verify KYC" />
         </div>
-      </div>
+      </motion.div>
 
       {/* Recent Activity */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
-        <h2 className="text-lg font-semibold mb-4 text-slate-700 dark:text-slate-200">
+      <motion.div
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        className="bg-white dark:bg-[#0c1a2b] rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-blue-800"
+      >
+        <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-blue-300">
           Recent Activity
         </h2>
 
-        <ul className="space-y-4">
+        <motion.ul
+          className="space-y-4"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: 0.1,
+              },
+            },
+          }}
+        >
           <ActivityItem text="New user registered" time="2 minutes ago" />
           <ActivityItem text="Transaction completed" time="10 minutes ago" />
           <ActivityItem text="KYC verified successfully" time="1 hour ago" />
           <ActivityItem text="New admin added" time="3 hours ago" />
-        </ul>
-      </div>
-    </div>
+        </motion.ul>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -93,45 +136,61 @@ function StatCard({
   growth: string;
 }) {
   return (
-    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 hover:shadow-md transition">
+    <motion.div
+      variants={{
+        hidden: { y: 20, opacity: 0 },
+        visible: { y: 0, opacity: 1 },
+      }}
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.4 }}
+      className="bg-white dark:bg-[#0c1a2b] p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-blue-800 hover:shadow-md transition"
+    >
       <div className="flex items-center justify-between mb-4">
-        <div className="p-3 bg-emerald-100 dark:bg-emerald-900/40 rounded-xl text-emerald-600 dark:text-emerald-400">
+        <div className="p-3 bg-blue-100 dark:bg-[#0070ff]/20 rounded-xl text-blue-600 dark:text-[#00b4ff]">
           {icon}
         </div>
-        <span className="text-sm text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+        <span className="text-sm text-blue-600 dark:text-[#00b4ff] font-medium flex items-center gap-1">
           {growth}
           <ArrowUpRight size={14} />
         </span>
       </div>
-      <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+      <h3 className="text-2xl font-bold text-gray-800 dark:text-blue-100">
         {value}
       </h3>
-      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+      <p className="text-sm text-gray-500 dark:text-blue-100/60 mt-1">
         {title}
       </p>
-    </div>
+    </motion.div>
   );
 }
 
 function QuickButton({ label }: { label: string }) {
   return (
-    <button className="bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white transition px-5 py-3 rounded-xl font-medium text-slate-700 dark:text-slate-200">
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ duration: 0.2 }}
+      className="bg-gray-100 dark:bg-blue-900/40 hover:bg-[#0095ff] hover:text-white transition px-5 py-3 rounded-xl font-medium text-gray-700 dark:text-blue-200"
+    >
       {label}
-    </button>
+    </motion.button>
   );
 }
 
-function ActivityItem({
-  text,
-  time,
-}: {
-  text: string;
-  time: string;
-}) {
+function ActivityItem({ text, time }: { text: string; time: string }) {
   return (
-    <li className="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
-      <span className="text-slate-700 dark:text-slate-200">{text}</span>
-      <span className="text-sm text-slate-500">{time}</span>
-    </li>
+    <motion.li
+      variants={{
+        hidden: { opacity: 0, x: -20 },
+        visible: { opacity: 1, x: 0 },
+      }}
+      transition={{ duration: 0.3 }}
+      className="flex justify-between items-center border-b border-gray-200 dark:border-blue-900 pb-3"
+    >
+      <span className="text-gray-700 dark:text-blue-100">{text}</span>
+      <span className="text-sm text-gray-500 dark:text-blue-100/60">
+        {time}
+      </span>
+    </motion.li>
   );
 }
