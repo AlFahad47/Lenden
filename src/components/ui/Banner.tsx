@@ -6,6 +6,7 @@ const Banner: React.FC = () => {
   // --- STATES ---
   const [scrollY, setScrollY] = useState(0);
   const [activeCard, setActiveCard] = useState<number>(1); // 1 = Main, 2 = Base, 3 = Dark
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   // --- SCROLL TRACKER ---
   useEffect(() => {
@@ -23,13 +24,15 @@ const Banner: React.FC = () => {
 
   // --- DYNAMIC CARD POSITIONING ENGINE ---
   const getCardStyle = (cardId: number) => {
-    const isActive = activeCard === cardId;
+    // hover overrides active for positioning
+    const visualActive = hoveredCard ?? activeCard;
+    const isCenter = visualActive === cardId;
     let position = 'center';
 
-    if (!isActive) {
-      if (activeCard === 1) position = cardId === 2 ? 'left' : 'right';
-      else if (activeCard === 2) position = cardId === 3 ? 'left' : 'right';
-      else if (activeCard === 3) position = cardId === 1 ? 'left' : 'right';
+    if (!isCenter) {
+      if (visualActive === 1) position = cardId === 2 ? 'left' : 'right';
+      else if (visualActive === 2) position = cardId === 3 ? 'left' : 'right';
+      else if (visualActive === 3) position = cardId === 1 ? 'left' : 'right';
     }
 
     let tx = 0, ty = 0, rot = 0, zIndex = 10, scale = 1;
@@ -49,7 +52,7 @@ const Banner: React.FC = () => {
       transform: `translate(${tx}px, ${ty}px) rotate(${rot}deg) scale(${scale})`,
       zIndex: zIndex,
       opacity: Math.max(0, 1 - (scatterProgress * 1.5)),
-      transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease-out'
+      transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease-out'
     };
   };
 
@@ -161,8 +164,8 @@ const Banner: React.FC = () => {
         <div className="relative w-[300px] h-[200px] md:w-[360px] md:h-[230px] flex items-center justify-center pointer-events-auto">
           
           {/* CARD 2: NovaPay Base */}
-          <div onClick={() => setActiveCard(2)} className="absolute cursor-pointer" style={getCardStyle(2)}>
-            <div className={`w-[260px] h-[160px] md:w-[300px] md:h-[190px] bg-gradient-to-br from-blue-900 to-[#04090f] rounded-2xl border border-blue-700/50 p-5 flex flex-col justify-between backdrop-blur-md transition-all duration-300 ${activeCard === 2 ? 'animate-gentle-float shadow-[0_30px_60px_rgba(0,112,255,0.4)]' : 'shadow-[0_20px_40px_rgba(0,0,0,0.8)] hover:-translate-y-2'}`}>
+          <div onClick={() => setActiveCard(2)} onMouseEnter={() => setHoveredCard(2)} onMouseLeave={() => setHoveredCard(null)} className="absolute cursor-pointer" style={getCardStyle(2)}>
+            <div className={`w-[260px] h-[160px] md:w-[300px] md:h-[190px] bg-gradient-to-br from-blue-900 to-[#04090f] rounded-2xl border border-blue-700/50 p-5 flex flex-col justify-between backdrop-blur-md transition-all duration-300 ${activeCard === 2 ? 'animate-gentle-float shadow-[0_30px_60px_rgba(0,112,255,0.4)]' : 'shadow-[0_20px_40px_rgba(0,0,0,0.8)]'}`}>
               <div className="flex justify-between items-start opacity-70">
                 <span className="font-bold text-lg tracking-tighter text-white">NovaPay Base</span>
                 <Wifi size={20} className="text-white rotate-90" />
@@ -175,8 +178,8 @@ const Banner: React.FC = () => {
           </div>
 
           {/* CARD 3: Dark Card */}
-          <div onClick={() => setActiveCard(3)} className="absolute cursor-pointer" style={getCardStyle(3)}>
-            <div className={`w-[260px] h-[160px] md:w-[300px] md:h-[190px] bg-[#0c1a2b] rounded-2xl border border-blue-900 p-0 flex flex-col overflow-hidden transition-all duration-300 ${activeCard === 3 ? 'animate-gentle-float shadow-[0_30px_60px_rgba(0,112,255,0.3)]' : 'shadow-[0_20px_40px_rgba(0,0,0,0.8)] hover:-translate-y-2'}`}>
+          <div onClick={() => setActiveCard(3)} onMouseEnter={() => setHoveredCard(3)} onMouseLeave={() => setHoveredCard(null)} className="absolute cursor-pointer" style={getCardStyle(3)}>
+            <div className={`w-[260px] h-[160px] md:w-[300px] md:h-[190px] bg-[#0c1a2b] rounded-2xl border border-blue-900 p-0 flex flex-col overflow-hidden transition-all duration-300 ${activeCard === 3 ? 'animate-gentle-float shadow-[0_30px_60px_rgba(0,112,255,0.3)]' : 'shadow-[0_20px_40px_rgba(0,0,0,0.8)]'}`}>
               <div className="w-full h-10 md:h-12 bg-black mt-6 opacity-80 shadow-inner"></div>
                 <div className="w-[80%] h-8 md:h-10 bg-slate-100 mx-auto mt-4 rounded flex items-center justify-between px-3 border-2 border-slate-300">
                    <div className="flex-1 opacity-50">
@@ -188,8 +191,8 @@ const Banner: React.FC = () => {
           </div>
 
           {/* CARD 1: NovaPay Platinum (Matching Image Blue) */}
-          <div onClick={() => setActiveCard(1)} className="absolute cursor-pointer" style={getCardStyle(1)}>
-            <div className={`w-[280px] h-[175px] md:w-[340px] md:h-[215px] bg-gradient-to-br from-[#0061ff] via-[#00aaff] to-[#00d4ff] rounded-2xl border border-white/30 p-6 flex flex-col justify-between backdrop-blur-xl overflow-hidden transition-all duration-300 ${activeCard === 1 ? 'animate-gentle-float shadow-[0_40px_80px_rgba(0,112,255,0.4)]' : 'shadow-[0_20px_40px_rgba(0,0,0,0.8)] hover:-translate-y-2'}`}>
+          <div onClick={() => setActiveCard(1)} onMouseEnter={() => setHoveredCard(1)} onMouseLeave={() => setHoveredCard(null)} className="absolute cursor-pointer" style={getCardStyle(1)}>
+            <div className={`w-[280px] h-[175px] md:w-[340px] md:h-[215px] bg-gradient-to-br from-[#0061ff] via-[#00aaff] to-[#00d4ff] rounded-2xl border border-white/30 p-6 flex flex-col justify-between backdrop-blur-xl overflow-hidden transition-all duration-300 ${activeCard === 1 ? 'animate-gentle-float shadow-[0_40px_80px_rgba(0,112,255,0.4)]' : 'shadow-[0_20px_40px_rgba(0,0,0,0.8)]'}`}>
               <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-50 pointer-events-none"></div>
               {activeCard === 1 && <div className="absolute inset-0 -translate-x-full animate-[shimmer_3s_infinite_linear] bg-gradient-to-r from-transparent via-white/15 to-transparent z-0 pointer-events-none"></div>}
               
