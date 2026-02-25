@@ -7,7 +7,7 @@ import Menus from "@/components/ui/menus";
 
 export default function Home() {
   return (
-    <main>
+    <main className="bg-white dark:bg-[#04090f]">
       <Banner />
       <Menus />
       <OfferSection />
