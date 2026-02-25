@@ -14,12 +14,12 @@ import {
   Bell,
   ChevronLeft,
   ChevronRight,
-  UserCog,
+  // UserCog,
 } from "lucide-react";
 
 const sidebarItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  { icon: UserCog, label: "Admin", path: "/dashboard/admin" },
+  // { icon: UserCog, label: "Admin", path: "/dashboard/admin" },
   { icon: Users, label: "Users", path: "/dashboard/users" },
   { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
   { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
@@ -36,56 +36,55 @@ export default function DashboardLayout({
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  /* ---------- Page Title ---------- */
   const getPageTitle = () => {
     const segment = pathname.split("/").filter(Boolean).pop();
     if (!segment || segment === "dashboard") return "Dashboard";
     return segment.replace(/-/g, " ");
   };
 
-  /* ---------- Lock body scroll when mobile sidebar open ---------- */
   React.useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    document.body.style.overflow = mobileOpen ? "hidden" : "auto";
   }, [mobileOpen]);
 
   return (
-    <div className="flex h-screen overflow-hidden relative bg-slate-100 dark:bg-slate-950">
+    <div
+      className="flex h-screen overflow-hidden relative 
+      bg-blue-50 dark:bg-[#04090f]"
+    >
       {/* Sidebar */}
       <aside
         className={`
-    fixed md:static top-0 left-0 h-full md:h-auto
-    ${collapsed ? "w-20" : "w-64"}
-    bg-white dark:bg-slate-900
-    border-r border-slate-200 dark:border-slate-800
-    transition-all duration-300 flex flex-col z-40
-    ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
-    md:translate-x-0
-  `}
+        fixed md:static top-0 left-0 h-full md:h-auto
+        ${collapsed ? "w-20" : "w-64"}
+        bg-white dark:bg-[#0c1a2b]
+        border-r border-blue-200 dark:border-blue-900
+        transition-all duration-300 flex flex-col z-40
+        ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
+        md:translate-x-0
+      `}
       >
-        <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200 dark:border-slate-800">
+        <div
+          className="h-16 flex items-center justify-between px-4 
+          border-b border-blue-200 dark:border-blue-900"
+        >
           {!collapsed && (
-            <h1 className="text-lg font-bold text-emerald-500 tracking-wide">
+            <h1
+              className="text-lg font-bold 
+              text-[#0070ff] dark:text-[#00b4ff] tracking-wide"
+            >
               NovaPay
             </h1>
           )}
+
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-1 rounded-md  hover:bg-slate-200 dark:hover:bg-slate-800"
+            className="p-1 rounded-md 
+            hover:bg-blue-100 dark:hover:bg-blue-900/40"
           >
             {collapsed ? (
-              <ChevronRight
-                size={18}
-                className="text-purple-600 dark:text-white"
-              />
+              <ChevronRight size={18} className="text-blue-400" />
             ) : (
-              <ChevronLeft
-                size={18}
-                className="text-purple-600 dark:text-white"
-              />
+              <ChevronLeft size={18} className="text-blue-400" />
             )}
           </button>
         </div>
@@ -104,11 +103,11 @@ export default function DashboardLayout({
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                   isActive
-                    ? "bg-emerald-500 text-white"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800"
+                    ? "bg-[#0070ff] text-white shadow-md"
+                    : "text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40"
                 }`}
               >
-                <item.icon size={18} />
+                <item.icon size={18} className="text-blue-400" />
                 {!collapsed && <span>{item.label}</span>}
               </Link>
             );
@@ -116,7 +115,7 @@ export default function DashboardLayout({
         </nav>
       </aside>
 
-      {/* Overlay (Mobile Only) */}
+      {/* Overlay */}
       {mobileOpen && (
         <div
           onClick={() => setMobileOpen(false)}
@@ -126,36 +125,54 @@ export default function DashboardLayout({
 
       {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6">
+        <header
+          className="h-16 
+          bg-white dark:bg-[#0c1a2b]
+          border-b border-blue-200 dark:border-blue-900
+          flex items-center justify-between px-6"
+        >
           <button
             onClick={() => setMobileOpen(true)}
-            className="md:hidden p-2 text-purple-600 dark:text-purple-400 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800"
+            className="md:hidden p-2 
+            text-blue-500 dark:text-blue-400 
+            rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/40"
           >
             ☰
           </button>
-          <h2 className="text-lg font-semibold capitalize text-slate-700 dark:text-slate-200">
+
+          <h2
+            className="text-lg font-semibold capitalize 
+            text-blue-800 dark:text-blue-200"
+          >
             {getPageTitle()}
           </h2>
 
           <div className="flex items-center gap-5">
             <button className="relative">
-              <Bell className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full" />
+              <Bell className="w-5 h-5 text-blue-400" />
+              <span
+                className="absolute -top-1 -right-1 
+                w-2 h-2 bg-[#00b4ff] rounded-full"
+              />
             </button>
-
-            {/* Profile Image */}
             <div className="w-9 h-9 relative">
               <Image
-                src="/Jarif24.jpeg"
+                src="/dashboard.jfif"
                 alt="Profile"
                 fill
-                className="rounded-full object-cover"
+                className="rounded-full object-cover 
+                border border-blue-300 dark:border-blue-700/50"
               />
             </div>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main
+          className="flex-1 overflow-y-auto p-6 
+          text-blue-900 dark:text-blue-100/80"
+        >
+          {children}
+        </main>
       </div>
     </div>
   );

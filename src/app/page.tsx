@@ -1,34 +1,36 @@
 import Banner from "@/components/ui/Banner";
-import AboutPage from "./about/page";
 import OfferSection from "@/components/ui/OfferSection";
 import ProjectDemo from "@/components/ui/ProjectDemo";
-
-import BannerUser from "@/components/ui/BannerUser";
 import HowItWorksPage from "@/components/ui/HowItWorks";
 import KeyFeatures from "@/components/ui/KeyFeatures";
 import Menus from "@/components/ui/menus";
 
-
-
 export default function Home() {
   return (
-    <main>
-      <Banner />
-       <Menus/>
-       
-      <OfferSection />
-      <KeyFeatures/>
-             
-      <HowItWorksPage />
-       <ProjectDemo />
+   <main>
+      <section id="home">
+        <Banner />
+      </section>
 
-     
-  
-      {/* <BannerUser /> */}
-         
-      
+      <section id="menus">
+        <Menus />
+      </section>
 
-      
+      <section id="offers">
+        <OfferSection />
+      </section>
+
+      <section id="features">
+        <KeyFeatures />
+      </section>
+
+      <section id="how">
+        <HowItWorksPage />
+      </section>
+
+      <section id="demo">
+        <ProjectDemo />
+      </section>
     </main>
   );
 }
