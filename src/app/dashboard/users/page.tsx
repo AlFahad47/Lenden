@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import Swal from "sweetalert2";
 import {
   User,
   Mail,
@@ -33,14 +34,23 @@ function Card({
   className?: string;
 }) {
   return (
-    <div
-      className={`relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl
-      border border-slate-200/60 dark:border-slate-700/60
-      rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-black/50
-      p-6 ${className}`}
+    <motion.div
+      initial={{ opacity: 0, y: 25 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ y: -4 }}
+      className={`relative 
+      bg-white 
+      dark:bg-[#0c1a2b] 
+      border border-gray-200 
+      dark:border-blue-700/50
+      rounded-2xl 
+      shadow-md 
+      dark:shadow-blue-900/40
+      p-6 transition ${className}`}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
 
@@ -63,54 +73,86 @@ export default function UserDashboard() {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
+  const handleSave = async () => {
+    setIsOpen(false);
+
+    await Swal.fire({
+      title: "Profile Updated!",
+      text: "Your information has been saved successfully.",
+      icon: "success",
+      confirmButtonColor: "#0095ff",
+      confirmButtonText: "Awesome!",
+      background: "#0c1a2b",
+      color: "#fff",
+    });
+  };
+
   return (
-    <div className="min-h-screen p-8 bg-gradient-to-br from-sky-100 via-purple-100 to-blue-200 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-slate-800 dark:text-slate-100">
+    <motion.div
+      className="min-h-screen p-8 
+      bg-gray-50 
+      dark:bg-[#04090f] 
+      text-gray-800 
+      dark:text-blue-100"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
         className="text-3xl font-bold mb-8"
       >
         User Dashboard
       </motion.h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Profile Card */}
         <Card className="lg:col-span-1">
           <div className="flex flex-col items-center text-center gap-4">
             {userData.image ? (
-              <Image
-                src={userData.image}
-                alt="Profile"
-                width={96}
-                height={96}
-                className="rounded-full object-cover border-4 border-emerald-500"
-                priority
-              />
+              <motion.div whileHover={{ scale: 1.05 }}>
+                <Image
+                  src={userData.image}
+                  alt="Profile"
+                  width={96}
+                  height={96}
+                  className="rounded-full object-cover border-4 
+                  border-blue-500 dark:border-[#0095ff]"
+                  priority
+                />
+              </motion.div>
             ) : (
-              <div className="w-24 h-24 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 flex items-center justify-center text-white text-3xl font-bold">
+              <div
+                className="w-24 h-24 rounded-full 
+              bg-gradient-to-r from-[#0095ff] to-[#0061ff]
+              flex items-center justify-center text-white text-3xl font-bold"
+              >
                 {userData.name.charAt(0)}
               </div>
             )}
 
             <h2 className="text-xl font-semibold">{userData.name}</h2>
-            <p className="text-slate-500 dark:text-slate-400">
-              {userData.email}
-            </p>
 
-            <button
+            <p className="text-gray-500 dark:text-blue-300">{userData.email}</p>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setIsOpen(true)}
-              className="mt-4 px-4 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition"
+              className="mt-4 px-4 py-2 
+              bg-[#0095ff] 
+              hover:bg-[#0070ff] 
+              text-white rounded-xl transition"
             >
               Edit Profile
-            </button>
+            </motion.button>
           </div>
         </Card>
 
-        {/* Details */}
         <div className="lg:col-span-2 grid gap-6">
           <Card>
             <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
-
             <div className="grid md:grid-cols-2 gap-4 text-sm">
               <Info icon={User} label="Full Name" value={userData.name} />
               <Info icon={Mail} label="Email" value={userData.email} />
@@ -121,7 +163,6 @@ export default function UserDashboard() {
 
           <Card>
             <h3 className="text-lg font-semibold mb-4">Financial Details</h3>
-
             <div className="grid md:grid-cols-2 gap-4 text-sm">
               <Info
                 icon={CreditCard}
@@ -140,7 +181,6 @@ export default function UserDashboard() {
         </div>
       </div>
 
-      {/* ================= MODAL ================= */}
       <AnimatePresence>
         {isOpen && (
           <>
@@ -153,17 +193,21 @@ export default function UserDashboard() {
             />
 
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              initial={{ scale: 0.8, opacity: 0, y: 40 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 40 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
               className="fixed z-50 inset-0 flex items-center justify-center p-4"
             >
-              <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+              <div
+                className="bg-white dark:bg-[#0c1a2b] 
+              border border-gray-200 dark:border-blue-700/50
+              rounded-2xl p-6 w-full max-w-md shadow-xl"
+              >
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-semibold">Edit Profile</h2>
                   <button onClick={() => setIsOpen(false)}>
-                    <X className="w-5 h-5" />
+                    <X className="w-5 h-5 text-gray-500 dark:text-blue-300" />
                   </button>
                 </div>
 
@@ -194,18 +238,23 @@ export default function UserDashboard() {
                   />
                 </div>
 
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="mt-6 w-full bg-emerald-500 text-white py-2 rounded-xl hover:bg-emerald-600 transition"
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleSave}
+                  className="mt-6 w-full 
+                  bg-[#0095ff] 
+                  hover:bg-[#0070ff] 
+                  text-white py-2 rounded-xl transition"
                 >
                   Save Changes
-                </button>
+                </motion.button>
               </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }
 
@@ -219,13 +268,21 @@ function Info({
   value: string;
 }) {
   return (
-    <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-100 dark:bg-slate-800">
-      <Icon className="w-5 h-5 text-emerald-500" />
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.2 }}
+      className="flex items-center gap-3 p-4 rounded-xl 
+      bg-gray-100 
+      dark:bg-blue-900/20 
+      border border-gray-200 
+      dark:border-blue-700/40 transition"
+    >
+      <Icon className="w-5 h-5 text-blue-500 dark:text-blue-400" />
       <div>
-        <p className="text-slate-500 dark:text-slate-400 text-xs">{label}</p>
+        <p className="text-gray-500 dark:text-blue-300 text-xs">{label}</p>
         <p className="font-medium">{value}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -242,14 +299,22 @@ function Input({
 }) {
   return (
     <div>
-      <label className="text-sm text-slate-500 dark:text-slate-400">
+      <label className="text-sm text-gray-500 dark:text-blue-300">
         {label}
       </label>
       <input
         name={name}
         value={value}
         onChange={onChange}
-        className="w-full mt-1 px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+        className="w-full mt-1 px-3 py-2 rounded-lg 
+        bg-gray-100 
+        dark:bg-blue-900/20 
+        border border-gray-300 
+        dark:border-blue-700/40
+        focus:outline-none 
+        focus:ring-2 
+        focus:ring-[#0095ff] 
+        transition"
       />
     </div>
   );
