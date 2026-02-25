@@ -40,18 +40,16 @@ function Card({
     <div
       className={`
         relative
-        bg-white/80 dark:bg-slate-900/80
-        backdrop-blur-2xl
-        border border-slate-200/60 dark:border-slate-700/60
+        bg-white dark:bg-[#0c1a2b]
+        border border-blue-200 dark:border-blue-700/50
         rounded-2xl
-        shadow-xl shadow-slate-200/50 dark:shadow-black/50
-        hover:shadow-2xl hover:shadow-emerald-500/10
+        shadow-lg dark:shadow-blue-900/30
+        hover:shadow-xl dark:hover:shadow-blue-500/20
         hover:-translate-y-1
         transition-all duration-500 ease-out
         before:absolute before:inset-0
         before:rounded-2xl
-        before:bg-gradient-to-br
-        before:from-emerald-400/5 before:to-cyan-400/5
+        before:bg-[#0070ff]/10
         before:opacity-0
         hover:before:opacity-100
         before:transition-opacity before:duration-500
@@ -77,7 +75,7 @@ export default function Admin() {
   const pathname = usePathname();
 
   return (
-    <div className="h-screen relative overflow-hidden bg-gradient-to-br from-purple-300 via-sky-200 to-blue-300 dark:from-blue-950 dark:via-slate-950 dark:to-purple-950 text-slate-800 dark:text-slate-100 flex transition-colors duration-500">
+    <div className="h-screen relative overflow-hidden bg-gray-50 dark:bg-[#04090f] text-gray-800 dark:text-blue-100 flex transition-colors duration-500">
       <div className="flex-1 overflow-y-auto">
         <main className="p-8 grid gap-8">
           {/* Stats */}
@@ -91,10 +89,12 @@ export default function Admin() {
               >
                 <Card className="hover:scale-[1.02] transition">
                   <CardContent className="p-6">
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">
+                    <p className="text-gray-500 dark:text-blue-100/60 text-sm">
                       {stat.title}
                     </p>
-                    <h3 className="text-3xl font-bold mt-2">{stat.value}</h3>
+                    <h3 className="text-3xl font-bold mt-2 text-blue-600 dark:text-blue-400">
+                      {stat.value}
+                    </h3>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -105,7 +105,7 @@ export default function Admin() {
           <section className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <Card className="h-80 xl:col-span-2">
               <CardContent className="p-6">
-                <h4 className="text-lg font-semibold mb-4">
+                <h4 className="text-lg font-semibold mb-4 text-gray-800 dark:text-blue-300">
                   Revenue Analytics
                 </h4>
 
@@ -113,32 +113,32 @@ export default function Admin() {
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={data}>
                       <CartesianGrid
+                        stroke="rgba(0,157,255,0.08)"
                         strokeDasharray="3 3"
-                        strokeOpacity={0.1}
                       />
                       <XAxis
                         dataKey="name"
-                        tick={{ fill: "#94a3b8" }}
+                        tick={{ fill: "#64748b" }}
                         axisLine={false}
                         tickLine={false}
                       />
                       <YAxis
-                        tick={{ fill: "#94a3b8" }}
+                        tick={{ fill: "#64748b" }}
                         axisLine={false}
                         tickLine={false}
                       />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: "#0f172a",
-                          border: "none",
+                          backgroundColor: "#0c1a2b",
+                          border: "1px solid rgba(0,157,255,0.2)",
                           borderRadius: "8px",
                         }}
-                        labelStyle={{ color: "#10b981" }}
+                        labelStyle={{ color: "#0095ff" }}
                       />
                       <Line
                         type="monotone"
                         dataKey="value"
-                        stroke="#10b981"
+                        stroke="#0095ff"
                         strokeWidth={3}
                         dot={{ r: 4 }}
                         activeDot={{ r: 6 }}
@@ -151,10 +151,10 @@ export default function Admin() {
 
             <Card className="h-80">
               <CardContent className="p-6">
-                <h4 className="text-lg font-semibold mb-4">
+                <h4 className="text-lg font-semibold mb-4 text-gray-800 dark:text-blue-300">
                   User Distribution
                 </h4>
-                <div className="h-full flex items-center justify-center text-slate-400">
+                <div className="h-full flex items-center justify-center text-gray-400 dark:text-blue-200/60">
                   Pie Chart
                 </div>
               </CardContent>
@@ -165,13 +165,13 @@ export default function Admin() {
           <section>
             <Card>
               <CardContent className="p-6">
-                <h4 className="text-lg font-semibold mb-4">
+                <h4 className="text-lg font-semibold mb-4 text-gray-800 dark:text-blue-300">
                   Recent Transactions
                 </h4>
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                    <thead className="text-gray-500 dark:text-blue-100/60 border-b border-gray-200 dark:border-blue-800">
                       <tr>
                         <th className="text-left py-3">User</th>
                         <th className="text-left py-3">Amount</th>
@@ -183,16 +183,22 @@ export default function Admin() {
                       {[1, 2, 3, 4].map((row) => (
                         <tr
                           key={row}
-                          className="border-b border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition"
+                          className="border-b border-gray-200 dark:border-blue-900 hover:bg-gray-100 dark:hover:bg-blue-900/30 transition"
                         >
-                          <td className="py-3">User {row}</td>
-                          <td className="py-3">$120.00</td>
+                          <td className="py-3 text-gray-700 dark:text-blue-100">
+                            User {row}
+                          </td>
+                          <td className="py-3 text-gray-700 dark:text-blue-100">
+                            $120.00
+                          </td>
                           <td className="py-3">
-                            <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-500">
+                            <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-600 dark:bg-[#0070ff]/20 dark:text-[#00b4ff]">
                               Success
                             </span>
                           </td>
-                          <td className="py-3">Today</td>
+                          <td className="py-3 text-gray-500 dark:text-blue-200/70">
+                            Today
+                          </td>
                         </tr>
                       ))}
                     </tbody>
