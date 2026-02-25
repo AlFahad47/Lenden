@@ -15,10 +15,22 @@ const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [activeHash, setActiveHash] = useState("");
   const pathname = usePathname();
 
   const user = session?.user;
 
+useEffect(() => {
+  const updateHash = () => {
+    setActiveHash(window.location.hash);
+  };
+
+  updateHash(); // page load এ run হবে
+
+  window.addEventListener("hashchange", updateHash);
+
+  return () => window.removeEventListener("hashchange", updateHash);
+}, []);
   // Scroll detection for dynamic width and blur
   useEffect(() => {
     const handleScroll = () => {
@@ -39,14 +51,21 @@ const Navbar: React.FC = () => {
 
   // Smooth scroll handler
   const handleScrollLink = (path: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (path.startsWith('#')) {
-      e.preventDefault();
-      const target = document.querySelector(path);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-      }
+  if (path.startsWith("/#")) {
+    e.preventDefault();
+
+    const hash = path.replace("/", "");
+    const target = document.querySelector(hash);
+
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+
+      // URL update + active update
+      window.history.pushState(null, "", hash);
+      setActiveHash(hash);
     }
-  };
+  }
+};
 
   const navLinks = user
     ? [
@@ -88,12 +107,14 @@ const Navbar: React.FC = () => {
         {/* Desktop Links (Center) */}
         <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2 bg-white/[0.02] p-1 rounded-full border border-white/[0.05]">
           {navLinks.map((link) => {
-            const isActive = pathname === link.path || (link.name === 'Home' && pathname === '/');
+            const isActive = link.path.startsWith("/#")
+  ? activeHash === link.path.replace("/", "")
+  : pathname === link.path;
             return (
               <Link
                 key={link.name}
                 href={link.path}
-                onClick={!user && link.path.startsWith('#') ? handleScrollLink(link.path) : undefined}
+                onClick={!user && link.path.startsWith("/#") ? handleScrollLink(link.path) : undefined}
                 className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-full group  ${
                   isActive ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
                 }`}
