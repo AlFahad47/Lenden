@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"; // বা তোমার যে ফ�
 import "./globals.css";
 import AuthProvider from "@/components/AuthProvider";
 import { Toaster } from "react-hot-toast"; // ১. এই লাইনটি ইমপোর্ট করো
+import Navbar from "@/components/layout/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
+          <Navbar />
           {children}
         </AuthProvider>
 
