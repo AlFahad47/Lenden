@@ -1,14 +1,18 @@
 "use client";
 import React, { useState } from 'react';
-import { Chrome, Facebook, Linkedin, Eye, EyeOff } from 'lucide-react';
+import { Chrome, Facebook, Linkedin, Eye, EyeOff, Shield, Unlock, Lock } from 'lucide-react';
 import Link from 'next/link';
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import toast from 'react-hot-toast';
 
 const PandaLogin: React.FC = () => {
   const [activeField, setActiveField] = useState<'none' | 'username' | 'password'>('none');
   const [showPassword, setShowPassword] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
+  const [usernameInput, setUsernameInput] = useState('');
+  const router = useRouter();
 
-  // Password strength calculation
   const calculateStrength = (pass: string) => {
     let score = 0;
     if (!pass) return 0;
@@ -22,7 +26,78 @@ const PandaLogin: React.FC = () => {
 
   const strength = calculateStrength(passwordInput);
 
-  // Exact JavaScript animations converted to React inline styles
+  // --- CREATIVE MODERN TOAST HANDLER ---
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // 1. Creative Loading Toast (Radar Scan Effect)
+    const toastId = toast.custom((t) => (
+      <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-sm w-full bg-[#0d2b28]/90 backdrop-blur-xl border border-[#19524c] shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[1.2rem] pointer-events-auto p-4 flex items-center gap-5 relative overflow-hidden`}>
+        {/* Animated Background Line */}
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#e6ffa1] to-transparent animate-[pulse_1.5s_ease-in-out_infinite]"></div>
+        
+        {/* Custom Spinning Rings with Shield */}
+        <div className="relative flex items-center justify-center w-12 h-12">
+          <div className="absolute inset-0 border-[3px] border-transparent border-t-[#e6ffa1] border-r-[#e6ffa1] rounded-full animate-spin"></div>
+          <div className="absolute inset-1.5 border-[3px] border-transparent border-b-[#19524c] border-l-[#19524c] rounded-full animate-spin" style={{ animationDirection: 'reverse' }}></div>
+          <Shield className="text-[#e6ffa1]" size={18} />
+        </div>
+
+        <div className="flex-1">
+          <p className="text-[1em] font-black text-[#e6ffa1] tracking-widest uppercase">Verifying</p>
+          <p className="text-[0.75em] font-medium text-slate-400 mt-0.5 tracking-wide">Establishing secure connection...</p>
+        </div>
+      </div>
+    ), { duration: Infinity });
+
+    const result = await signIn("credentials", {
+      email: usernameInput,
+      password: passwordInput,
+      redirect: false,
+    });
+
+    toast.dismiss(toastId);
+
+    if (result?.error) {
+      // 2. Creative Error Toast (Security Locked Effect)
+      toast.custom((t) => (
+        <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-sm w-full bg-[#0d2b28]/95 backdrop-blur-xl border border-red-500/30 shadow-[0_0_40px_-10px_rgba(239,68,68,0.4)] rounded-[1.2rem] pointer-events-auto overflow-hidden relative p-4 flex items-center gap-5`}>
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-red-500/20 blur-2xl rounded-full z-0"></div>
+          
+          <div className="relative flex items-center justify-center w-12 h-12 rounded-full bg-red-500/10 border border-red-500/50 z-10">
+            <Lock className="text-red-400 animate-bounce" size={22} />
+          </div>
+
+          <div className="flex-1 z-10">
+            <p className="text-[1em] font-black text-red-400 tracking-widest uppercase">Access Denied</p>
+            <p className="text-[0.75em] font-medium text-slate-400 mt-0.5 tracking-wide">Invalid security credentials.</p>
+          </div>
+        </div>
+      ));
+    } else {
+      // 3. Creative Success Toast (Access Granted Effect)
+      toast.custom((t) => (
+        <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-sm w-full bg-[#0d2b28]/95 backdrop-blur-xl border border-[#e6ffa1]/40 shadow-[0_0_40px_-10px_rgba(230,255,161,0.3)] rounded-[1.2rem] pointer-events-auto overflow-hidden relative p-4 flex items-center gap-5`}>
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-[#e6ffa1]/10 blur-2xl rounded-full z-0"></div>
+          
+          <div className="relative flex items-center justify-center w-12 h-12 rounded-full bg-[#19524c] border border-[#e6ffa1]/50 z-10">
+            <div className="absolute inset-0 bg-[#e6ffa1] animate-ping opacity-20 rounded-full"></div>
+            <Unlock className="text-[#e6ffa1]" size={22} />
+          </div>
+
+          <div className="flex-1 z-10">
+            <p className="text-[1em] font-black text-[#e6ffa1] tracking-widest uppercase">Access Granted</p>
+            <p className="text-[0.75em] font-medium text-slate-400 mt-0.5 tracking-wide">Identity confirmed. Routing to dashboard...</p>
+          </div>
+        </div>
+      ));
+      
+      setTimeout(() => {
+        router.push("/"); 
+      }, 2000); // ২ সেকেন্ড ডிலே দিয়েছি যাতে ইউজার সুন্দর অ্যানিমেশনটা উপভোগ করতে পারে
+    }
+  };
+
   const eyeLeftStyle = activeField === 'username' 
     ? { left: '0.75em', top: '1.12em', transform: 'rotate(20deg)' } 
     : { left: '0.6em', top: '0.6em', transform: 'rotate(20deg)' };
@@ -88,7 +163,7 @@ const PandaLogin: React.FC = () => {
 
         {/* --- FORM SECTION --- */}
         <form 
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={handleLogin} 
           className="absolute top-[9.35em] left-1/2 -translate-x-1/2 w-[25em] h-[32em] bg-white px-[2.5em] py-[2em] flex flex-col rounded-[1em] z-10 shadow-[0_30px_60px_rgba(0,0,0,0.5)] border border-slate-100"
         >
           <div className="text-center w-full mt-2">
@@ -116,6 +191,8 @@ const PandaLogin: React.FC = () => {
               <input 
                 type="text" 
                 id="username" 
+                value={usernameInput} 
+                onChange={(e) => setUsernameInput(e.target.value)} 
                 placeholder="example@email.com" 
                 onFocus={() => setActiveField('username')}
                 onBlur={() => setActiveField('none')}
@@ -123,15 +200,15 @@ const PandaLogin: React.FC = () => {
               />
             </div>
             
-            {/* Password Field - Fixed Line Overlap */}
+            {/* Password Field */}
             <div className="relative mb-[1.5em]">
               <label htmlFor="password" className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#19524c] z-10">Password</label>
               <div className="relative w-full border border-slate-300 rounded-[0.5em] focus-within:border-[#19524c] transition-colors bg-transparent">
                 <input 
                   type={showPassword ? "text" : "password"} 
                   id="password" 
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
+                  value={passwordInput} 
+                  onChange={(e) => setPasswordInput(e.target.value)} 
                   placeholder="••••••••" 
                   onFocus={() => setActiveField('password')}
                   onBlur={() => setActiveField('none')}
@@ -175,7 +252,7 @@ const PandaLogin: React.FC = () => {
             </div>
             
             <button 
-              type="button"
+              type="submit" 
               className="text-[0.95em] py-[1em] rounded-[2em] border-none outline-none bg-[#19524c] text-white font-bold tracking-[0.05em] cursor-pointer transition-all duration-300 hover:-translate-y-[2px] hover:shadow-[0_5px_15px_rgba(25,82,76,0.3)] w-full"
             >
               Sign In
