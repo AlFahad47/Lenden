@@ -23,7 +23,7 @@ const sidebarItems = [
   { icon: Users, label: "Users", path: "/dashboard/users" },
   { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
   { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
-  { icon: ShieldCheck, label: "KYC", path: "/dashboard/kyc-verification" },
+  { icon: ShieldCheck, label: "KYC", path: "/dashboard/kyc" },
   { icon: Settings, label: "Settings", path: "/dashboard/settings" },
 ];
 
