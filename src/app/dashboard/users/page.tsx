@@ -66,7 +66,7 @@ export default function UserDashboard() {
     phone: "+8801904947118",
     nid: "199876543210",
     bank: "1234-5678-91011",
-    image: "/Jarif24.jpeg",
+    image: "/user.jfif",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

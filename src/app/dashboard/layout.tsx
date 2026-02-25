@@ -14,12 +14,12 @@ import {
   Bell,
   ChevronLeft,
   ChevronRight,
-  UserCog,
+  // UserCog,
 } from "lucide-react";
 
 const sidebarItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  { icon: UserCog, label: "Admin", path: "/dashboard/admin" },
+  // { icon: UserCog, label: "Admin", path: "/dashboard/admin" },
   { icon: Users, label: "Users", path: "/dashboard/users" },
   { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
   { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
@@ -155,10 +155,9 @@ export default function DashboardLayout({
                 w-2 h-2 bg-[#00b4ff] rounded-full"
               />
             </button>
-
             <div className="w-9 h-9 relative">
               <Image
-                src="/Jarif24.jpeg"
+                src="/dashboard.jfif"
                 alt="Profile"
                 fill
                 className="rounded-full object-cover 
