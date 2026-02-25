@@ -1,146 +1,133 @@
-"use client"
+"use client";
+import React, { useState } from 'react';
+import { ArrowLeft, ArrowRight, Wallet, Receipt, Globe2, ArrowRightLeft, Building2, CreditCard, Smartphone } from 'lucide-react';
 
-import React, { useRef } from "react"
-import { motion } from "framer-motion"
-import {
-  FaPaperPlane,
-  FaMoneyBillWave,
-  FaMobileAlt,
-  FaReceipt,
-  FaHandHoldingUsd,
-  FaWallet,
-  FaChevronLeft,
-  FaChevronRight,
-  FaShieldAlt,
-  FaHeadset,
-  FaLock,
-} from "react-icons/fa"
-import { IconType } from "react-icons"
-import { useRouter } from "next/navigation"
-import { Wallet } from "lucide-react"
-import { useSession } from "next-auth/react"
+const servicesData = [
+  { id: 0, title: 'Cash In', icon: Wallet },
+  { id: 1, title: 'Bill Pay', icon: Receipt },
+  { id: 2, title: 'Remittance', icon: Globe2 },
+  { id: 3, title: 'Transfer Money', icon: ArrowRightLeft },
+  { id: 4, title: 'Nova Islamic', icon: Building2 },
+  { id: 5, title: 'Cash Out', icon: CreditCard },
+  { id: 6, title: 'Mobile Recharge', icon: Smartphone },
+];
 
-type MenuItem = {
-  name: string
-  icon: IconType
-  route: string
-}
+const KeyFeatures: React.FC = () => {
+  const [activeIndex, setActiveIndex] = useState(2);
+  const total = servicesData.length;
 
-const quickActions: MenuItem[] = [
-  { name: "Send Money", icon: FaPaperPlane, route: "/send-money" },
-  { name: "Request Money", icon: FaHandHoldingUsd, route: "/request-money" },
-  { name: "Cash Out", icon: FaMoneyBillWave, route: "/cash-out" },
-  { name: "Add Money", icon: FaWallet, route: "/add-money" },
-  { name: "Mobile Recharge", icon: FaMobileAlt, route: "/mobile-recharge" },
-  { name: "Pay Bill", icon: FaReceipt, route: "/pay-bill" },
-  { name: "Transaction History", icon: FaReceipt, route: "/transactions" },
-  { name: "Wallet", icon: Wallet, route: "/wallet" },
-  { name: "Cards & Banks", icon: FaWallet, route: "/cards-banks" },
-  { name: "Subscriptions", icon: FaReceipt, route: "/subscriptions" },
-  { name: "Security Settings", icon: FaShieldAlt, route: "/security" },
-  { name: "Disputes / Support", icon: FaHeadset, route: "/support" },
-]
+  const handleNext = () => setActiveIndex((prev) => (prev + 1) % total);
+  const handlePrev = () => setActiveIndex((prev) => (prev - 1 + total) % total);
 
-export default function QuickActionsSlider() {
-  const router = useRouter()
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const { data: session } = useSession()
+  // প্রতিটি আইটেমের পজিশন ও সাইজ ক্যালকুলেট করার লজিক
+  const getItemStyles = (index: number) => {
+    let diff = (index - activeIndex + total) % total;
+    if (diff > Math.floor(total / 2)) diff -= total;
 
-  const scroll = (direction: "left" | "right") => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({
-        left: direction === "left" ? -300 : 300,
-        behavior: "smooth",
-      })
-    }
-  }
+    const isCenter = diff === 0;
 
-  const handleClick = (route: string, locked: boolean) => {
-    if (locked) {
-      router.push("/login")
-    } else {
-      router.push(route)
-    }
-  }
+    // আইটেমগুলোর মাঝখানের গ্যাপ (যাতে বড় আইকনগুলো ওভারল্যাপ না করে)
+    const spacingX = 'max(110px, min(18vw, 240px))';
+    
+    const translateX = `calc(-50% + calc(${spacingX} * ${diff}))`;
+
+    // মাঝখানের আইটেমটি 100% সাইজে থাকবে, পাশেরগুলো একটু ছোট (80%) থাকবে
+    const scale = isCenter ? 1 : 0.8;
+
+    let opacity = 1;
+    if (Math.abs(diff) >= 3) opacity = 0; 
+
+    return {
+      transform: `translate(${translateX}, -50%) scale(${scale})`,
+      opacity: opacity,
+      zIndex: isCenter ? 20 : 10,
+    };
+  };
 
   return (
-    <div className="relative w-full py-10 
-      bg-gradient-to-br from-[#f0f7ff] via-white to-[#e8f4ff]
-      dark:from-[#040c1a] dark:via-[#04090f] dark:to-[#040c1a]"
-    >
-
-      {/* Heading */}
-      <h2 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-[#0061ff] via-[#0095ff] to-[#00d4ff] dark:from-white dark:via-[#93C5FD] dark:to-[#0061ff] bg-clip-text text-transparent text-center">
-            What We Offer
-          </h2>
-          <p className="mt-4 text-gray-500 dark:text-gray-400 text-base md:text-lg max-w-xl mx-auto text-center mb-4">
-           Login to unlock all features
-          </p>
+    <section className="w-full mt-[-12%] bg-[#FAFAFA] py-16 md:py-20 overflow-hidden select-none border-y border-slate-200/60">
       
-      
+      {/* Lucide Icon-এর জন্য কাস্টম গ্রেডিয়েন্ট ডেফিনিশন */}
+      <svg width="0" height="0" className="absolute">
+        <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop stopColor="#4DA1FF" offset="0%" />
+          <stop stopColor="#1E50FF" offset="100%" />
+        </linearGradient>
+      </svg>
 
-      {/* Left Arrow */}
-      <button
-        onClick={() => scroll("left")}
-        className="absolute left-3 top-1/2 -translate-y-1/2 z-10
-        bg-white dark:bg-[#0a1625] mt-8
-        shadow-lg rounded-full p-3 hover:scale-110 transition"
-      >
-        <FaChevronLeft className="text-[#0061ff] text-4xl" />
-      </button>
+      <div className="max-w-[1400px] mx-auto px-2 md:px-4 relative flex flex-col items-center">
+        
+        {/* --- Main Slider Area --- */}
+        <div className="relative w-full h-[280px] md:h-[340px] flex items-center justify-between">
+          
+          {/* Left Arrow */}
+          <button 
+            onClick={handlePrev} 
+            className="z-30 p-3 md:p-4 text-slate-400 hover:text-[#2C64FF] hover:bg-white rounded-full transition-all active:scale-95 hidden sm:block shadow-sm border border-transparent hover:border-slate-100"
+          >
+            <ArrowLeft strokeWidth={2} size={32} />
+          </button>
 
-      {/* Scroll */}
-      <div ref={scrollRef} className="flex gap-8 overflow-hidden px-14">
+          <div className="relative flex-1 h-full overflow-hidden mx-2 sm:mx-8">
+            
+            {/* --- FIXED CENTER CIRCLE --- */}
+            {/* পেছনের গ্লো */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] bg-[#4DA1FF]/15 blur-[40px] rounded-full z-0 pointer-events-none"></div>
+            
+            {/* মেইন সাদা সার্কেল */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] md:w-[230px] md:h-[230px] bg-white rounded-full shadow-[0_15px_40px_rgba(15,23,42,0.08)] border-[3px] border-white z-10 pointer-events-none"></div>
 
-        {quickActions.map((item, index) => {
-          const Icon = item.icon
-          const locked = !session?.user
-
-          return (
-            <motion.div
-              key={index}
-              whileHover={{
-                scale: 1.08,
-                y: -4,
-              }}
-              transition={{ type: "spring", stiffness: 250 }}
-              onClick={() => handleClick(item.route, locked)}
-              className="flex flex-col items-center min-w-[100px] cursor-pointer group  pt-3"
-            >
-              <div className="relative w-20 h-20 rounded-3xl bg-blue-200 dark:bg-blue-400 
-                flex items-center justify-center shadow-xl
-                group-hover:shadow-[0_0_20px_rgba(0,97,255,0.35)]
-                transition"
-              >
-
-                <Icon className="text-2xl text-[#0061ff] dark:text-[#ffffff]" />
-
-                {locked && (
-                  <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#0061ff] flex items-center justify-center shadow-md">
-                    <FaLock className="text-white text-[9px]" />
+            {/* --- SLIDING ITEMS --- */}
+            {servicesData.map((service, index) => {
+              const isCenter = index === activeIndex;
+              const Icon = service.icon;
+              
+              return (
+                <div
+                  key={service.id}
+                  onClick={() => setActiveIndex(index)}
+                  className="absolute left-1/2 top-1/2 flex flex-col items-center justify-center cursor-pointer transition-all duration-[600ms] ease-[cubic-bezier(0.25,0.8,0.25,1)] w-[160px] md:w-[200px]"
+                  style={getItemStyles(index)}
+                >
+                  {/* Icon */}
+                  <div className={`mb-4 md:mb-5 transition-all duration-500 flex items-center justify-center ${
+                    isCenter ? 'scale-110 drop-shadow-[0_8px_16px_rgba(44,100,255,0.3)]' : 'text-[#64748B]'
+                  }`}>
+                    <Icon 
+                      size={isCenter ? 64 : 52} 
+                      strokeWidth={isCenter ? 1.5 : 1.5} 
+                      style={isCenter ? { stroke: 'url(#iconGradient)' } : {}}
+                    />
                   </div>
-                )}
-              </div>
+                  
+                  {/* Text */}
+                  <span 
+                    className={`text-center transition-all duration-300 leading-tight ${
+                      isCenter 
+                        ? 'text-[17px] md:text-[20px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] drop-shadow-sm' 
+                        : 'text-[15px] md:text-[17px] font-bold text-[#64748B]'
+                    }`}
+                  >
+                    {service.title}
+                  </span>
+                </div>
+              );
+            })}
 
-              <p className="mt-2 text-sm font-semibold text-center
-                text-[#0061ff] dark:text-gray-200
-                group-hover:scale-105 transition">
-                {item.name}
-              </p>
-            </motion.div>
-          )
-        })}
+          </div>
+
+          {/* Right Arrow */}
+          <button 
+            onClick={handleNext} 
+            className="z-30 p-3 md:p-4 text-slate-400 hover:text-[#2C64FF] hover:bg-white rounded-full transition-all active:scale-95 hidden sm:block shadow-sm border border-transparent hover:border-slate-100"
+          >
+            <ArrowRight strokeWidth={2} size={32} />
+          </button>
+
+        </div>
       </div>
+    </section>
+  );
+};
 
-      {/* Right Arrow */}
-      <button
-        onClick={() => scroll("right")}
-        className="absolute right-3 top-1/2 -translate-y-1/2 z-10
-        bg-white dark:bg-[#0a1625] mt-8
-        shadow-lg rounded-full p-3 hover:scale-110 transition"
-      >
-        <FaChevronRight className="text-[#0061ff]  text-3xl" />
-      </button>
-    </div>
-  )
-}
+export default KeyFeatures;
