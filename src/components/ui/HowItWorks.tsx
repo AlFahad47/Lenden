@@ -81,8 +81,9 @@ export default function HowItWorksPage() {
       <div className="absolute -top-40 -left-40 w-60 md:w-80 h-60 md:h-80 bg-blue-500/20 dark:bg-blue-700/20 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-0 right-0 w-60 md:w-80 h-60 md:h-80 bg-blue-300/20 dark:bg-[#00b4ff]/20 rounded-full blur-3xl animate-pulse" />
 
+      <div className="w-11/12 mx-auto">
       {/* Hero */}
-      <section className="relative max-w-6xl mx-auto text-center space-y-4 md:space-y-6">
+      <section className="relative text-center space-y-4 md:space-y-6">
         <motion.h1
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -114,7 +115,7 @@ export default function HowItWorksPage() {
       <div className="hidden md:block absolute left-1/2 top-64 bottom-24 w-1 bg-gradient-to-b from-[#00b4ff] to-[#0061ff] opacity-30" />
 
       {/* Steps */}
-      <section className="relative max-w-6xl mx-auto mt-8 md:mt-10 grid sm:grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 lg:gap-5">
+      <section className="relative mt-8 md:mt-10 grid sm:grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 lg:gap-5">
         {steps.map((step, index) => (
           <motion.div
             key={index}
@@ -152,7 +153,7 @@ export default function HowItWorksPage() {
       </section>
 
       {/* CTA */}
-      <section className="relative max-w-4xl mx-auto mt-14 md:mt-20 text-center">
+      <section className="relative mt-14 md:mt-20 text-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -188,6 +189,7 @@ export default function HowItWorksPage() {
           </div>
         </motion.div>
       </section>
+      </div>
     </div>
   );
 }
