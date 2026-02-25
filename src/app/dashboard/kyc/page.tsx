@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { useState } from "react";
@@ -14,7 +16,6 @@ export default function KYCPage() {
     transition-colors duration-500 px-6 py-16"
     >
       <div className="max-w-4xl mx-auto">
-        {/* Heading */}
         <motion.h1
           initial={{ opacity: 0, y: -40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -57,7 +58,6 @@ export default function KYCPage() {
           </div>
         </div>
 
-        {/* Form */}
         <motion.form
           key={role}
           initial={{ opacity: 0, y: 30 }}
@@ -69,7 +69,6 @@ export default function KYCPage() {
           border border-white/40 dark:border-slate-800 
           shadow-2xl"
         >
-          {/* Personal Info */}
           <Section title="👤 Personal Information">
             <Input label="Full Name" />
             <Input label="Date of Birth" type="date" />
@@ -77,13 +76,16 @@ export default function KYCPage() {
             <Input label="Nationality" />
           </Section>
 
-          {/* Identity */}
+          {/* ✅ Responsive Identity Section */}
           <Section title="🆔 Identity Verification">
-            <Input label="NID / Passport Number" />
-            <FileInput label="Upload ID Document" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:col-span-2">
+              <Input label="NID / Passport Number" />
+              <div className="md:col-span-2">
+                <FileInput label="Upload ID Document" />
+              </div>
+            </div>
           </Section>
 
-          {/* Contact */}
           <Section title="📞 Contact Information">
             <Input label="Mobile Number" />
             <Input label="Email Address" type="email" />
@@ -91,7 +93,6 @@ export default function KYCPage() {
             <Textarea label="Permanent Address" />
           </Section>
 
-          {/* Agent Extra Fields */}
           {role === "Agent" && (
             <>
               <Section title="💼 Professional Agent Details">
@@ -116,15 +117,14 @@ export default function KYCPage() {
             </>
           )}
 
-          {/* Declaration */}
           <div className="flex items-center gap-3 mt-6">
             <input type="checkbox" className="w-5 h-5 accent-purple-600" />
             <span className="text-gray-800 dark:text-gray-300">
-              I confirm that all provided information is accurate and verifiable.
+              I confirm that all provided information is accurate and
+              verifiable.
             </span>
           </div>
 
-          {/* Submit */}
           <motion.button
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
@@ -164,13 +164,7 @@ function Section({
   );
 }
 
-function Input({
-  label,
-  type = "text",
-}: {
-  label: string;
-  type?: string;
-}) {
+function Input({ label, type = "text" }: { label: string; type?: string }) {
   return (
     <div className="flex flex-col gap-2">
       <label className="text-sm text-gray-800 dark:text-gray-400">
@@ -208,13 +202,7 @@ function Textarea({ label }: { label: string }) {
   );
 }
 
-function Select({
-  label,
-  options,
-}: {
-  label: string;
-  options: string[];
-}) {
+function Select({ label, options }: { label: string; options: string[] }) {
   return (
     <div className="flex flex-col gap-2">
       <label className="text-sm text-gray-800 dark:text-gray-400">
@@ -242,16 +230,20 @@ function FileInput({ label }: { label: string }) {
       <label className="text-sm text-gray-800 dark:text-gray-400">
         {label}
       </label>
+
       <input
         type="file"
         className="bg-white dark:bg-slate-800 
-        text-gray-800 dark:text-gray-200
-        border border-gray-300 dark:border-slate-700 
-        rounded-lg px-4 py-2 
-        file:mr-4 file:py-2 file:px-4 
-        file:rounded-lg file:border-0 
-        file:bg-gradient-to-r file:from-sky-500 file:to-purple-600 
-        file:text-white hover:file:opacity-90 transition"
+  text-gray-800 dark:text-gray-200
+  border border-gray-300 dark:border-slate-700 
+  rounded-lg px-4 py-2 
+  file:mr-3 
+  file:text-xs md:file:text-sm
+  file:px-3 md:file:px-4 
+  file:py-1.5 md:file:py-2
+  file:rounded-lg file:border-0 
+  file:bg-gradient-to-r file:from-sky-500 file:to-purple-600 
+  file:text-white hover:file:opacity-90 transition"
       />
     </div>
   );
