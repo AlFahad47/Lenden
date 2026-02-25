@@ -7,27 +7,27 @@ import Link from "next/link";
 
 const Card = ({ children }: { children: React.ReactNode }) => (
   <div
-    className="group relative 
-    rounded-xl md:rounded-2xl lg:rounded-3xl 
-    p-[1px] 
-    bg-gradient-to-br from-[#1D4E48] via-[#BDDD7E] to-[#1D4E48]
+    className="group relative
+    rounded-xl md:rounded-2xl lg:rounded-3xl
+    p-[1px]
+    bg-gradient-to-br from-[#0061ff] via-[#00b4ff] to-[#0061ff]
     hover:scale-[1.02] transition-all duration-500"
   >
     <div
-      className="relative 
+      className="relative
       rounded-xl md:rounded-2xl lg:rounded-3xl
-      bg-white/80 dark:bg-[#0b1f1d]/80
+      bg-white/80 dark:bg-[#04090f]/85
       backdrop-blur-xl
-      border border-[#1D4E48]/30 dark:border-[#BDDD7E]/30
+      border border-blue-500/30 dark:border-blue-400/30
       shadow-md md:shadow-lg lg:shadow-2xl
-      group-hover:shadow-[#BDDD7E]/40
+      group-hover:shadow-blue-400/40
       transition-all duration-500"
     >
       <div
-        className="absolute inset-0 
+        className="absolute inset-0
         rounded-xl md:rounded-2xl lg:rounded-3xl
         opacity-0 group-hover:opacity-100
-        bg-gradient-to-br from-[#1D4E48]/20 to-[#BDDD7E]/20
+        bg-gradient-to-br from-[#0061ff]/20 to-[#00b4ff]/20
         blur-xl transition duration-500"
       />
 
@@ -43,7 +43,7 @@ const CardContent = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Button = ({ children }: { children: React.ReactNode }) => (
-  <button className="px-4 md:px-6 py-2.5 md:py-3 rounded-xl md:rounded-2xl bg-gradient-to-r from-[#1D4E48] to-[#0bdf86c7] hover:scale-105 hover:shadow-xl hover:shadow-[#1D4E48]/30 text-white text-sm md:text-base font-semibold transition-all duration-300 inline-flex items-center gap-2">
+  <button className="px-4 md:px-6 py-2.5 md:py-3 rounded-xl md:rounded-2xl bg-gradient-to-r from-[#0061ff] to-[#00b4ff] hover:scale-105 hover:shadow-xl hover:shadow-[#0061ff]/30 text-white text-sm md:text-base font-semibold transition-all duration-300 inline-flex items-center gap-2">
     {children}
   </button>
 );
@@ -72,14 +72,14 @@ export default function HowItWorksPage() {
     <div
       className="relative overflow-hidden min-h-[80vh]
       bg-gradient-to-br
-      from-gray-50 via-white to-gray-100
-      dark:from-[#234A45] dark:via-[#0b1f1d] dark:to-[#234A45]
+      from-[#f0f7ff] via-white to-[#e8f4ff]
+      dark:from-[#040c1a] dark:via-[#04090f] dark:to-[#040c1a]
       transition-colors duration-500
       px-4 md:px-6 py-12 md:py-16"
     >
       {/* Background Blobs */}
-      <div className="absolute -top-40 -left-40 w-60 md:w-80 h-60 md:h-80 bg-[#1D4E48]/30 dark:bg-[#1D4E48]/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-0 right-0 w-60 md:w-80 h-60 md:h-80 bg-[#BDDD7E]/30 dark:bg-[#BDDD7E]/20 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute -top-40 -left-40 w-60 md:w-80 h-60 md:h-80 bg-blue-500/20 dark:bg-blue-700/20 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-0 right-0 w-60 md:w-80 h-60 md:h-80 bg-blue-300/20 dark:bg-[#00b4ff]/20 rounded-full blur-3xl animate-pulse" />
 
       {/* Hero */}
       <section className="relative max-w-6xl mx-auto text-center space-y-4 md:space-y-6">
@@ -88,15 +88,15 @@ export default function HowItWorksPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9 }}
           className="
-            text-2xl sm:text-3xl md:text-5xl
+            text-4xl md:text-6xl
             font-extrabold
             bg-gradient-to-r
-            from-[#1D4E48] via-[#0fa133] to-[#35e0cc]
-            dark:from-white dark:via-[#BDDD7E] dark:to-[#1D4E48]
+            from-[#0061ff] via-[#0095ff] to-[#00d4ff]
+            dark:from-white dark:via-[#93C5FD] dark:to-[#0061ff]
             bg-clip-text text-transparent
           "
         >
-          How <span>Lenden</span> Works
+          How NovaPay Works
         </motion.h1>
 
         <motion.p
@@ -111,7 +111,7 @@ export default function HowItWorksPage() {
       </section>
 
       {/* Timeline */}
-      <div className="hidden md:block absolute left-1/2 top-64 bottom-24 w-1 bg-gradient-to-b from-[#35e0cc] to-[#BDDD7E] opacity-30" />
+      <div className="hidden md:block absolute left-1/2 top-64 bottom-24 w-1 bg-gradient-to-b from-[#00b4ff] to-[#0061ff] opacity-30" />
 
       {/* Steps */}
       <section className="relative max-w-6xl mx-auto mt-8 md:mt-10 grid sm:grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 lg:gap-5">
@@ -131,8 +131,8 @@ export default function HowItWorksPage() {
                     text-xl md:text-2xl lg:text-4xl
                     font-extrabold
                     bg-gradient-to-r
-                    from-[#123d38] to-[#0fa133]
-                    dark:from-[#BDDD7E] dark:to-[#1D4E48]
+                    from-[#0061ff] to-[#00d4ff]
+                    dark:from-[#93C5FD] dark:to-[#0061ff]
                     bg-clip-text text-transparent"
                 >
                   0{index + 1}
@@ -159,20 +159,20 @@ export default function HowItWorksPage() {
           viewport={{ once: true }}
           transition={{ duration: 0.9 }}
           className="group relative rounded-2xl md:rounded-3xl p-[1px]
-          bg-gradient-to-br from-[#1D4E48] via-[#BDDD7E] to-[#1D4E48]
+          bg-gradient-to-br from-[#0061ff] via-[#00b4ff] to-[#0061ff]
           shadow-xl md:shadow-2xl hover:scale-[1.02] transition-all duration-500"
         >
           <div
             className="relative rounded-2xl md:rounded-3xl
             p-6 md:p-10
-            bg-white/80 dark:bg-[#0b1f1d]/80
+            bg-white/80 dark:bg-[#04090f]/85
             backdrop-blur-2xl
-            border border-[#1D4E48]/30 dark:border-[#BDDD7E]/30
+            border border-blue-500/30 dark:border-blue-400/30
             overflow-hidden"
           >
             <div
               className="absolute inset-0 opacity-0 group-hover:opacity-100
-              bg-gradient-to-br from-[#1D4E48]/20 to-[#BDDD7E]/20
+              bg-gradient-to-br from-[#0061ff]/20 to-[#00b4ff]/20
               blur-xl transition duration-500"
             />
 

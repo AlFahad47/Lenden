@@ -43,8 +43,8 @@ function Section({ title, items }: { title: string; items: MenuItem[] }) {
 
   return (
     <div
-      className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100
-      dark:from-[#234A45] dark:via-[#0b1f1d] dark:to-[#234A45] transition-colors duration-500 py-12"
+      className="w-full bg-gradient-to-br from-[#f0f7ff] via-white to-[#e8f4ff]
+      dark:from-[#040c1a] dark:via-[#04090f] dark:to-[#040c1a] transition-colors duration-500 py-12"
     >
       <div className="w-11/12 mx-auto">
         {/* Fancy Heading */}
@@ -52,9 +52,9 @@ function Section({ title, items }: { title: string; items: MenuItem[] }) {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-4xl md:text-6xl font-extrabold 
-           bg-gradient-to-r from-[#1D4E48] via-[#0fa133] to-[#35e0cc]
-           dark:from-white dark:via-[#BDDD7E] dark:to-[#1D4E48]
+          className="text-4xl md:text-6xl font-extrabold
+           bg-gradient-to-r from-[#0061ff] via-[#0095ff] to-[#00d4ff]
+           dark:from-white dark:via-[#93C5FD] dark:to-[#0061ff]
            bg-clip-text text-transparent text-center pb-5"
         >
           {title}
@@ -75,12 +75,12 @@ function Section({ title, items }: { title: string; items: MenuItem[] }) {
                 className="flex flex-col items-center gap-2 cursor-pointer"
               >
                 <div
-                  className="w-16 h-16 rounded-3xl bg-[#BDDD7E]/70 dark:bg-[#BDDD7E]/20 
+                  className="w-16 h-16 rounded-3xl bg-blue-100 dark:bg-blue-900/40
                   flex items-center justify-center shadow-lg hover:shadow-2xl transition-all duration-300"
                 >
-                  <Icon className="text-[#1D4E48] dark:text-[#BDDD7E] text-2xl" />
+                  <Icon className="text-[#0061ff] dark:text-[#00b4ff] text-2xl" />
                 </div>
-                <p className="text-xs md:text-sm font-semibold text-center text-[#1D4E48] dark:text-gray-200">
+                <p className="text-xs md:text-sm font-semibold text-center text-[#0061ff] dark:text-gray-200">
                   {item.name}
                 </p>
               </motion.div>
