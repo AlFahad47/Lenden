@@ -56,7 +56,7 @@ export default function UserDashboard() {
     phone: "+8801904947118",
     nid: "199876543210",
     bank: "1234-5678-91011",
-    image: "/Jarif.jpeg", // ✅ Make sure this file is inside /public
+    image: "/Jarif24.jpeg",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
