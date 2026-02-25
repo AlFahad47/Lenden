@@ -102,12 +102,12 @@ export default function Navbar() {
           </ul>
 
           {/* Toggle */}
-          <button
+          <div
             onClick={toggleDarkMode}
             className="p-2 rounded-full bg-white/80 dark:bg-gray-700 text-[#1D4E48] dark:text-[#BDDD7E] hover:rotate-12 transition"
           >
             {darkMode ? <HiSun className="w-5 h-5" /> : <HiMoon className="w-5 h-5" />}
-          </button>
+          </div>
         </div>
 
         {/* Mobile */}
