@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useRef } from "react"
 import { motion } from "framer-motion"
 import {
   FaPaperPlane,
@@ -9,6 +9,8 @@ import {
   FaReceipt,
   FaHandHoldingUsd,
   FaWallet,
+  FaChevronLeft,
+  FaChevronRight,
   FaShieldAlt,
   FaHeadset,
   FaLock,
@@ -16,6 +18,7 @@ import {
 import { IconType } from "react-icons"
 import { useRouter } from "next/navigation"
 import { Wallet } from "lucide-react"
+import { useSession } from "next-auth/react"
 
 type MenuItem = {
   name: string
@@ -38,100 +41,106 @@ const quickActions: MenuItem[] = [
   { name: "Disputes / Support", icon: FaHeadset, route: "/support" },
 ]
 
-// Items accessible without login
-const publicRoutes = ["/mobile-recharge", "/pay-bill", "/add-money", "/send-money"]
-
-function Section({ title, items }: { title: string; items: MenuItem[] }) {
+export default function QuickActionsSlider() {
   const router = useRouter()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const { data: session } = useSession()
 
-  useEffect(() => {
-    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true")
-  }, [])
+  const scroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        left: direction === "left" ? -300 : 300,
+        behavior: "smooth",
+      })
+    }
+  }
 
-  const handleClick = (item: MenuItem) => {
-    const isPublic = publicRoutes.includes(item.route)
-    if (isLoggedIn || isPublic) {
-      router.push(item.route)
-    } else {
+  const handleClick = (route: string, locked: boolean) => {
+    if (locked) {
       router.push("/login")
+    } else {
+      router.push(route)
     }
   }
 
   return (
-    <div className="w-full bg-gradient-to-br from-[#f0f7ff] via-white to-[#e8f4ff] dark:from-[#040c1a] dark:via-[#04090f] dark:to-[#040c1a] transition-colors duration-500 py-12">
-      <div className="w-11/12 mx-auto">
+    <div className="relative w-full py-10 
+      bg-gradient-to-br from-[#f0f7ff] via-white to-[#e8f4ff]
+      dark:from-[#040c1a] dark:via-[#04090f] dark:to-[#040c1a]"
+    >
 
-        {/* Heading */}
-        <motion.h2
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="text-4xl md:text-6xl font-extrabold
-           bg-gradient-to-r from-[#0061ff] via-[#0095ff] to-[#00d4ff]
-           dark:from-white dark:via-[#93C5FD] dark:to-[#0061ff]
-           bg-clip-text text-transparent text-center pb-5"
-        >
-          {title}
-        </motion.h2>
+      {/* Heading */}
+      <h2 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-[#0061ff] via-[#0095ff] to-[#00d4ff] dark:from-white dark:via-[#93C5FD] dark:to-[#0061ff] bg-clip-text text-transparent text-center">
+            What We Offer
+          </h2>
+          <p className="mt-4 text-gray-500 dark:text-gray-400 text-base md:text-lg max-w-xl mx-auto text-center mb-4">
+           Login to unlock all features
+          </p>
+      
+      
 
-        {/* Guest notice */}
-        {!isLoggedIn && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-center text-sm text-gray-400 dark:text-gray-500 mb-6 -mt-2"
-          >
-            <span className="inline-flex items-center gap-1">
-              <FaLock className="text-xs" />
-              Login to unlock all features
-            </span>
-          </motion.p>
-        )}
+      {/* Left Arrow */}
+      <button
+        onClick={() => scroll("left")}
+        className="absolute left-3 top-1/2 -translate-y-1/2 z-10
+        bg-white dark:bg-[#0a1625] mt-8
+        shadow-lg rounded-full p-3 hover:scale-110 transition"
+      >
+        <FaChevronLeft className="text-[#0061ff] text-4xl" />
+      </button>
 
-        {/* Menu Items Grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6">
-          {items.map((item, index) => {
-            const Icon = item.icon
-            const isPublic = publicRoutes.includes(item.route)
-            const locked = !isLoggedIn && !isPublic
+      {/* Scroll */}
+      <div ref={scrollRef} className="flex gap-8 overflow-hidden px-14">
 
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, type: "spring", stiffness: 120 }}
-                whileHover={{ scale: locked ? 1.05 : 1.1, y: locked ? 0 : -5 }}
-                onClick={() => handleClick(item)}
-                className="flex flex-col items-center gap-2 cursor-pointer relative"
+        {quickActions.map((item, index) => {
+          const Icon = item.icon
+          const locked = !session?.user
+
+          return (
+            <motion.div
+              key={index}
+              whileHover={{
+                scale: 1.08,
+                y: -4,
+              }}
+              transition={{ type: "spring", stiffness: 250 }}
+              onClick={() => handleClick(item.route, locked)}
+              className="flex flex-col items-center min-w-[100px] cursor-pointer group  pt-3"
+            >
+              <div className="relative w-20 h-20 rounded-3xl bg-blue-200 dark:bg-blue-400 
+                flex items-center justify-center shadow-xl
+                group-hover:shadow-[0_0_20px_rgba(0,97,255,0.35)]
+                transition"
               >
-                <div className="relative w-16 h-16 rounded-3xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shadow-lg hover:shadow-2xl transition-all duration-300">
-                  <Icon className={`text-2xl ${locked ? "text-[#0061ff]/40 dark:text-[#00b4ff]/40" : "text-[#0061ff] dark:text-[#00b4ff]"}`} />
-                  {locked && (
-                    <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#0061ff] dark:bg-[#0095ff] flex items-center justify-center shadow-md">
-                      <FaLock className="text-white text-[8px]" />
-                    </div>
-                  )}
-                </div>
-                <p className={`text-xs md:text-sm font-semibold text-center ${locked ? "text-gray-400 dark:text-gray-500" : "text-[#0061ff] dark:text-gray-200"}`}>
-                  {item.name}
-                </p>
-              </motion.div>
-            )
-          })}
-        </div>
 
+                <Icon className="text-2xl text-[#0061ff] dark:text-[#ffffff]" />
+
+                {locked && (
+                  <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#0061ff] flex items-center justify-center shadow-md">
+                    <FaLock className="text-white text-[9px]" />
+                  </div>
+                )}
+              </div>
+
+              <p className="mt-2 text-sm font-semibold text-center
+                text-[#0061ff] dark:text-gray-200
+                group-hover:scale-105 transition">
+                {item.name}
+              </p>
+            </motion.div>
+          )
+        })}
       </div>
-    </div>
-  )
-}
 
-export default function Menus(): JSX.Element {
-  return (
-    <section className="w-full">
-      <Section title="Quick Actions" items={quickActions} />
-    </section>
+      {/* Right Arrow */}
+      <button
+        onClick={() => scroll("right")}
+        className="absolute right-3 top-1/2 -translate-y-1/2 z-10
+        bg-white dark:bg-[#0a1625] mt-8
+        shadow-lg rounded-full p-3 hover:scale-110 transition"
+      >
+        <FaChevronRight className="text-[#0061ff]  text-3xl" />
+      </button>
+    </div>
   )
 }

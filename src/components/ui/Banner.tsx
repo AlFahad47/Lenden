@@ -62,12 +62,21 @@ const Banner: React.FC = () => {
     <section className="relative w-full min-h-[90vh] bg-white dark:bg-[#050B14] flex flex-col items-center pt-28 pb-10 overflow-hidden text-white font-sans z-0">
       
       <style dangerouslySetInnerHTML={{__html: `
-        .bg-tech-grid {
-          background-image: 
-            linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-          background-size: 50px 50px;
-        }
+        /* Light mode */
+.bg-tech-grid {
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Dark mode */
+.dark .bg-tech-grid {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+          
         @keyframes gentleFloat {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-12px); }
@@ -135,11 +144,11 @@ const Banner: React.FC = () => {
             <ArrowUpRight size={16} strokeWidth={2.5} className="relative text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
           </button>
 
-          <button className="flex items-center justify-center gap-3 px-6 py-3.5 rounded-full border border-[#4DA1FF]/20 bg-[#0F172A]/60 hover:bg-[#0F172A]/80 backdrop-blur-md transition-all group text-[#64748B] hover:text-[#4DA1FF] shadow-sm">
-            <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#4DA1FF]/10 text-[#4DA1FF] group-hover:scale-110 transition-transform">
+          <button className="flex items-center justify-center gap-3 px-6 py-3.5 rounded-full border border-[#4DA1FF]/20bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] hover:bg-[#0F172A]/80 backdrop-blur-md transition-all group text-[#64748B] hover:text-[#4DA1FF] shadow-sm">
+            <div className="flex items-center justify-center w-7 h-7 rounded-full bg-black/10 text-[#4DA1FF] group-hover:scale-110  transition-transform">
               <Play size={12} fill="currentColor" />
             </div>
-            <span className="text-sm font-semibold">Watch Demo</span>
+            <span className="text-sm  text-[#4DA1FF] font-semibold">Watch Demo</span>
           </button>
         </div>
       </div>
