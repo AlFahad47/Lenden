@@ -85,7 +85,7 @@ useEffect(() => {
       ];
 
   return (
-    <div className=" sticky top-0 z-50 mb-0.5 left-0 flex justify-center px-4 pointer-events-none">
+    <div className=" sticky top-0 z-50 mb-0.5 left-0 flex justify-center px-4 pointer-events-none bg-[#F0F7FF] dark:bg-[#040911]">
       <nav 
         className={`pointer-events-auto relative flex items-center justify-between p-2  rounded-[2rem] transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
           isScrolled 
@@ -147,7 +147,7 @@ useEffect(() => {
                 <img
                   alt="User Avatar"
                   referrerPolicy="no-referrer"
-                  src={user.photoURL || 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'}
+                  src={user.photoURL || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8oghbsuzggpkknQSSU-Ch_xep_9v3m6EeBQ&s'}
                   className="w-full h-full object-cover"
                 />
                 <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
