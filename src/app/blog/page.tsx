@@ -1,15 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 const blogPosts = [
-  // ... (Keep the exact same blogPosts array from the previous code)
   {
     id: 1,
     title: "How to use AI-Powered Expense Analytics to Save More",
     excerpt: "Discover how NovaPay's new AI features categorize your spending and help you identify where you can cut back this month.",
-    content: "Understanding your spending habits is the first step to financial freedom...",
+    content: "Understanding your spending habits is the first step to financial freedom. With NovaPay's new AI-Powered Expense Analytics, every transaction you make is automatically categorized—whether it's groceries, entertainment, or bills. \n\nOur AI doesn't just stop at categorizing; it analyzes your historical data to predict future spending and alerts you when you're about to exceed your monthly budget. Try setting up a custom alert today and watch your savings grow!",
     category: "Product Updates",
     date: "Oct 12, 2023",
     readTime: "5 min read",
@@ -19,7 +18,7 @@ const blogPosts = [
     id: 2,
     title: "5 Tips for Splitting Bills Without the Awkwardness",
     excerpt: "Dining out with friends should be fun. Learn how our Split-Bill Calculator ensures everyone pays their exact share effortlessly.",
-    content: "We've all been there: the check arrives at a group dinner...",
+    content: "We've all been there: the check arrives at a group dinner, and suddenly everyone is doing complex math on their napkins. It's awkward and time-consuming.\n\nHere are 5 tips to handle it seamlessly:\n1. Be upfront about splitting before ordering.\n2. Use NovaPay's Split-Bill Calculator to divide exactly down to the last Taka.\n3. Include the tip and tax in the final split.\n4. Send NovaPay payment requests right at the table.\n5. Keep it friendly!",
     category: "Financial Tips",
     date: "Oct 05, 2023",
     readTime: "4 min read",
@@ -29,7 +28,7 @@ const blogPosts = [
     id: 3,
     title: "Automate Your Wealth: The Power of Micro-Savings",
     excerpt: "You don't need a lot of money to start saving. See how rounding up your everyday purchases can build your wealth over time.",
-    content: "Saving money shouldn't feel like a chore...",
+    content: "Saving money shouldn't feel like a chore. That's why NovaPay introduced Automated Micro-Savings. \n\nHere is how it works: whenever you make a transaction, NovaPay rounds up the amount to the nearest 10 or 50 Taka and moves the spare change into a secure savings vault. For example, if you pay 45 Taka for a coffee, we round it up to 50 Taka and stash 5 Taka away for you. It feels invisible, but over a few months, those small amounts compound into a meaningful emergency fund!",
     category: "Savings",
     date: "Sep 28, 2023",
     readTime: "3 min read",
@@ -39,7 +38,7 @@ const blogPosts = [
     id: 5,
     title: "Understanding KYC: Unlock Your Wallet's Full Potential",
     excerpt: "What is KYC, why do we ask for your ID, and how does verifying your identity unlock higher transaction limits?",
-    content: "You might have noticed that to send larger amounts...",
+    content: "You might have noticed that to send larger amounts of money, NovaPay asks you to complete your KYC (Know Your Customer) verification. \n\nKYC is a standard financial regulation designed to prevent money laundering and fraud. By verifying your identity with a valid NID or Passport, we ensure the NovaPay community remains safe and trustworthy. The best part? Completing your KYC digitally takes less than 2 minutes using your phone's camera, and it instantly bumps up your daily and monthly transaction limits!",
     category: "Guides",
     date: "Sep 02, 2023",
     readTime: "4 min read",
@@ -49,7 +48,7 @@ const blogPosts = [
     id: 6,
     title: "Never Run Out of Balance: Setting Up One-Tap Mobile Recharge",
     excerpt: "Recharge your phone or send balance to family members instantly using your favorite contacts list.",
-    content: "Running out of mobile data in the middle of a meeting...",
+    content: "Running out of mobile data in the middle of a meeting or dropping a call because your balance hit zero is incredibly frustrating. With NovaPay's Mobile Recharge feature, you can top up any local operator instantly.\n\nTo make it even faster, you can save your family and friends to your 'Favorite Contacts' list. Next time you need to send your mom mobile balance, you won't need to type out her number—just tap her profile, enter the amount, and the top-up is processed instantly.",
     category: "Features",
     date: "Aug 22, 2023",
     readTime: "3 min read",
@@ -71,8 +70,8 @@ export default function BlogPage() {
 
   const closeModal = () => setSelectedPost(null);
 
-  // Stagger animations for the grid
-  const gridVariants = {
+  // Stagger animations for the grid - TYPED AS VARIANTS
+  const gridVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -80,7 +79,8 @@ export default function BlogPage() {
     }
   };
 
-  const cardVariants = {
+  // TYPED AS VARIANTS
+  const cardVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } }
   };
@@ -193,7 +193,6 @@ export default function BlogPage() {
       </div>
 
       {/* --- ANIMATED MODAL OVERLAY --- */}
-      {/* Keeping your existing AnimatePresence code unchanged here as it was already perfect! */}
       <AnimatePresence>
         {selectedPost && (
           <motion.div 
