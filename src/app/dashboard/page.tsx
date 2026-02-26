@@ -8,8 +8,35 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import React from "react";
+
+type Role = "User" | "Agent" | "Admin";
+
+/* ---------------- ROLE-BASED QUICK ACTIONS ---------------- */
+
+const actionsByRole: Record<Role, { label: string; icon: React.ReactNode }[]> =
+  {
+    User: [
+      { label: "Apply for Loan", icon: <DollarSign size={18} /> },
+      { label: "Upload Documents", icon: <CreditCard size={18} /> },
+      { label: "Track Application", icon: <Activity size={18} /> },
+    ],
+    Agent: [
+      { label: "Verify KYC", icon: <Users size={18} /> },
+      { label: "Review Applications", icon: <Activity size={18} /> },
+      { label: "Contact Client", icon: <Users size={18} /> },
+    ],
+    Admin: [
+      { label: "Add New User", icon: <Users size={18} /> },
+      { label: "Manage Agents", icon: <Users size={18} /> },
+      { label: "Generate Report", icon: <DollarSign size={18} /> },
+    ],
+  };
 
 export default function DashboardHome() {
+  // 🔥 Change this later dynamically from auth/session
+  const role: Role = "User";
+
   return (
     <motion.div
       className="space-y-8"
@@ -17,7 +44,7 @@ export default function DashboardHome() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Welcome Section */}
+      {/* ---------------- Welcome Section ---------------- */}
       <motion.div
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -30,7 +57,7 @@ export default function DashboardHome() {
         </p>
       </motion.div>
 
-      {/* Stats Cards */}
+      {/* ---------------- Stats Cards ---------------- */}
       <motion.div
         className="grid gap-6 md:grid-cols-2 xl:grid-cols-4"
         initial="hidden"
@@ -70,7 +97,7 @@ export default function DashboardHome() {
         />
       </motion.div>
 
-      {/* Quick Actions */}
+      {/* ---------------- Quick Actions ---------------- */}
       <motion.div
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -82,13 +109,17 @@ export default function DashboardHome() {
         </h2>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <QuickButton label="Add New User" />
-          <QuickButton label="Create Report" />
-          <QuickButton label="Verify KYC" />
+          {actionsByRole[role].map((action) => (
+            <QuickButton
+              key={action.label}
+              label={action.label}
+              icon={action.icon}
+            />
+          ))}
         </div>
       </motion.div>
 
-      {/* Recent Activity */}
+      {/* ---------------- Recent Activity ---------------- */}
       <motion.div
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -122,7 +153,7 @@ export default function DashboardHome() {
   );
 }
 
-/* ---------- Components ---------- */
+/* ---------------- Components ---------------- */
 
 function StatCard({
   title,
@@ -154,6 +185,7 @@ function StatCard({
           <ArrowUpRight size={14} />
         </span>
       </div>
+
       <h3 className="text-2xl font-bold text-gray-800 dark:text-blue-100">
         {value}
       </h3>
@@ -164,14 +196,25 @@ function StatCard({
   );
 }
 
-function QuickButton({ label }: { label: string }) {
+function QuickButton({
+  label,
+  icon,
+}: {
+  label: string;
+  icon: React.ReactNode;
+}) {
   return (
     <motion.button
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="bg-gray-100 dark:bg-blue-900/40 hover:bg-[#0095ff] hover:text-white transition px-5 py-3 rounded-xl font-medium text-gray-700 dark:text-blue-200"
+      className="flex items-center justify-center gap-2
+      bg-gray-100 dark:bg-blue-900/40
+      hover:bg-[#0095ff] hover:text-white
+      transition px-5 py-3 rounded-xl
+      font-medium text-gray-700 dark:text-blue-200"
     >
+      {icon}
       {label}
     </motion.button>
   );
