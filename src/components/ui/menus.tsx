@@ -19,19 +19,19 @@ const KeyFeatures: React.FC = () => {
   const handleNext = () => setActiveIndex((prev) => (prev + 1) % total);
   const handlePrev = () => setActiveIndex((prev) => (prev - 1 + total) % total);
 
-  // প্রতিটি আইটেমের পজিশন ও সাইজ ক্যালকুলেট করার লজিক
+  // Position and size calculation logic
   const getItemStyles = (index: number) => {
     let diff = (index - activeIndex + total) % total;
     if (diff > Math.floor(total / 2)) diff -= total;
 
     const isCenter = diff === 0;
 
-    // আইটেমগুলোর মাঝখানের গ্যাপ (যাতে বড় আইকনগুলো ওভারল্যাপ না করে)
+    // Spacing between items to prevent large icon overlap
     const spacingX = 'max(110px, min(18vw, 240px))';
     
     const translateX = `calc(-50% + calc(${spacingX} * ${diff}))`;
 
-    // মাঝখানের আইটেমটি 100% সাইজে থাকবে, পাশেরগুলো একটু ছোট (80%) থাকবে
+    // Center item is 100% scale, sides are smaller (80%)
     const scale = isCenter ? 1 : 0.8;
 
     let opacity = 1;
@@ -45,13 +45,13 @@ const KeyFeatures: React.FC = () => {
   };
 
   return (
-    <section className="w-full mt-[-12%] bg-[#FAFAFA] py-16 md:py-20 overflow-hidden select-none border-y border-slate-200/60">
+    <section className="w-full mt-[-12%] bg-gray-50 dark:bg-[#0A0E17] py-16 md:py-20 overflow-hidden select-none border-y border-gray-200 dark:border-gray-800/60 transition-colors duration-300">
       
-      {/* Lucide Icon-এর জন্য কাস্টম গ্রেডিয়েন্ট ডেফিনিশন */}
+      {/* Custom Gradient Definition for Lucide Icons */}
       <svg width="0" height="0" className="absolute">
         <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop stopColor="#4DA1FF" offset="0%" />
-          <stop stopColor="#1E50FF" offset="100%" />
+          <stop stopColor="#60A5FA" offset="0%" />   {/* Tailwind blue-400 */}
+          <stop stopColor="#2563EB" offset="100%" /> {/* Tailwind blue-600 */}
         </linearGradient>
       </svg>
 
@@ -63,7 +63,7 @@ const KeyFeatures: React.FC = () => {
           {/* Left Arrow */}
           <button 
             onClick={handlePrev} 
-            className="z-30 p-3 md:p-4 text-slate-400 hover:text-[#2C64FF] hover:bg-white rounded-full transition-all active:scale-95 hidden sm:block shadow-sm border border-transparent hover:border-slate-100"
+            className="z-30 p-3 md:p-4 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white dark:hover:bg-[#121928] rounded-full transition-all active:scale-95 hidden sm:block shadow-sm border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
           >
             <ArrowLeft strokeWidth={2} size={32} />
           </button>
@@ -71,11 +71,11 @@ const KeyFeatures: React.FC = () => {
           <div className="relative flex-1 h-full overflow-hidden mx-2 sm:mx-8">
             
             {/* --- FIXED CENTER CIRCLE --- */}
-            {/* পেছনের গ্লো */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] bg-[#4DA1FF]/15 blur-[40px] rounded-full z-0 pointer-events-none"></div>
+            {/* Background Glow */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] bg-blue-500/15 dark:bg-blue-500/20 blur-[40px] rounded-full z-0 pointer-events-none transition-colors duration-300"></div>
             
-            {/* মেইন সাদা সার্কেল */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] md:w-[230px] md:h-[230px] bg-white rounded-full shadow-[0_15px_40px_rgba(15,23,42,0.08)] border-[3px] border-white z-10 pointer-events-none"></div>
+            {/* Main Center Circle */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] md:w-[230px] md:h-[230px] bg-white dark:bg-[#121928] rounded-full shadow-[0_15px_40px_rgba(15,23,42,0.08)] dark:shadow-[0_15px_40px_rgba(0,0,0,0.4)] border-[3px] border-white dark:border-[#121928] z-10 pointer-events-none transition-all duration-300"></div>
 
             {/* --- SLIDING ITEMS --- */}
             {servicesData.map((service, index) => {
@@ -91,7 +91,9 @@ const KeyFeatures: React.FC = () => {
                 >
                   {/* Icon */}
                   <div className={`mb-4 md:mb-5 transition-all duration-500 flex items-center justify-center ${
-                    isCenter ? 'scale-110 drop-shadow-[0_8px_16px_rgba(44,100,255,0.3)]' : 'text-[#64748B]'
+                    isCenter 
+                      ? 'scale-110 drop-shadow-[0_8px_16px_rgba(37,99,235,0.3)] dark:drop-shadow-[0_8px_16px_rgba(96,165,250,0.2)]' 
+                      : 'text-gray-500 dark:text-gray-400'
                   }`}>
                     <Icon 
                       size={isCenter ? 64 : 52} 
@@ -104,8 +106,8 @@ const KeyFeatures: React.FC = () => {
                   <span 
                     className={`text-center transition-all duration-300 leading-tight ${
                       isCenter 
-                        ? 'text-[17px] md:text-[20px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] drop-shadow-sm' 
-                        : 'text-[15px] md:text-[17px] font-bold text-[#64748B]'
+                        ? 'text-[17px] md:text-[20px] font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-400 dark:to-blue-600 drop-shadow-sm' 
+                        : 'text-[15px] md:text-[17px] font-bold text-gray-500 dark:text-gray-400'
                     }`}
                   >
                     {service.title}
@@ -119,7 +121,7 @@ const KeyFeatures: React.FC = () => {
           {/* Right Arrow */}
           <button 
             onClick={handleNext} 
-            className="z-30 p-3 md:p-4 text-slate-400 hover:text-[#2C64FF] hover:bg-white rounded-full transition-all active:scale-95 hidden sm:block shadow-sm border border-transparent hover:border-slate-100"
+            className="z-30 p-3 md:p-4 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white dark:hover:bg-[#121928] rounded-full transition-all active:scale-95 hidden sm:block shadow-sm border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
           >
             <ArrowRight strokeWidth={2} size={32} />
           </button>
