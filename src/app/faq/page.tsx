@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { HiChevronDown } from "react-icons/hi2";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 export default function FAQPage() {
   const faqs = [
@@ -31,8 +31,8 @@ export default function FAQPage() {
     }
   ];
 
-  // Animation variants
-  const containerVariants = {
+  // Animation variants - NOW TYPED AS VARIANTS
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -40,7 +40,8 @@ export default function FAQPage() {
     },
   };
 
-  const itemVariants = {
+  // NOW TYPED AS VARIANTS
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
   };
