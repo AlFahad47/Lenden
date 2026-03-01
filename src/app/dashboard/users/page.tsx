@@ -193,6 +193,7 @@ export default function UserDashboard() {
         </div>
       </div>
 
+      {/* Edit Modal */}
       <AnimatePresence>
         {isOpen && (
           <>
