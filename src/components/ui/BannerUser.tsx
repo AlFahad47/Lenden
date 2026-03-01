@@ -1,10 +1,10 @@
- "use client";
+"use client";
 
   import React, { useState, useEffect } from "react";
   import Link from "next/link";
   import { useSession } from "next-auth/react";
   import { motion } from "framer-motion";
-  import { Plus, LayoutDashboard, ArrowUpRight, Send, Wallet, TrendingUp, CreditCard, ShieldCheck } from "lucide-react";
+  import { Plus, LayoutDashboard, ArrowUpRight, Send, Wallet, TrendingUp, CreditCard, ShieldCheck, Wifi } from "lucide-react";
 
   const BannerUser: React.FC = () => {
     const { data: session } = useSession();
@@ -12,10 +12,7 @@
     const [scrollY, setScrollY] = useState(0);
     const [greeting, setGreeting] = useState("");
 
-    const firstName =
-      (user as { displayName?: string })?.displayName?.split(" ")[0] ||
-      user?.name?.split(" ")[0] ||
-      "User";
+    const firstName = user?.name?.split(" ")[0] || "User";
 
     useEffect(() => {
       const hour = new Date().getHours();
@@ -61,6 +58,20 @@
               50% { transform: translateY(-20px) scale(1.08); opacity: 0.5; }
             }
             .icon-float { animation: iconFloat 7s ease-in-out infinite; }
+            @keyframes floatCard {
+              0%, 100% { transform: translateY(0px); }
+              50% { transform: translateY(-10px); }
+            }
+            .float-card { animation: floatCard 5s ease-in-out infinite; }
+            @keyframes shimmerSlide { 100% { transform: translateX(200%); } }
+            .shimmer-card { position: relative; overflow: hidden; }
+            .shimmer-card::after {
+              content: '';
+              position: absolute;
+              inset: 0;
+              background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+              animation: shimmerSlide 3s infinite;
+            }
           `
         }} />
 
@@ -97,15 +108,10 @@
 
             {/* Heading */}
             <div>
-              <p className="text-[#64748B] dark:text-[#94A3B8] text-base mb-1">
-                {greeting},
-              </p>
+              <p className="text-[#64748B] dark:text-[#94A3B8] text-base mb-1">{greeting},</p>
               <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] text-[#0F172A] dark:text-white">
                 Welcome back,{" "}
-                <span
-                  className="text-transparent bg-clip-text"
-                  style={{ backgroundImage: hedwigGradient }}
-                >
+                <span className="text-transparent bg-clip-text" style={{ backgroundImage: hedwigGradient }}>
                   {firstName}!
                 </span>
               </h1>
@@ -160,11 +166,51 @@
                 </motion.div>
               ))}
             </div>
-
           </motion.div>
 
-          {/* RIGHT — to be filled */}
-          <div className="flex-shrink-0 w-[340px]" />
+          {/* RIGHT — Wallet Card */}
+          <motion.div
+            className="flex-shrink-0 flex flex-col items-center gap-5"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {/* Wallet card */}
+            <div className="float-card">
+              <div
+                className="shimmer-card w-[300px] md:w-[340px] h-[200px] md:h-[220px] rounded-2xl border border-white/20 p-6 flex flex-col justify-between
+  shadow-[0_20px_60px_rgba(77,161,255,0.3)]"
+                style={{ background: "linear-gradient(130deg, rgba(77,161,255,0.95), rgba(30,80,255,0.95))" }}
+              >
+                {/* Card top */}
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-white/60 text-[10px] uppercase tracking-widest font-medium">NovaPay Wallet</p>
+                    <p className="text-white font-bold text-base mt-0.5">{firstName}</p>
+                  </div>
+                  <Wifi size={18} className="text-white/60 rotate-90" />
+                </div>
+
+                {/* Balance */}
+                <div>
+                  <p className="text-white/60 text-[10px] uppercase tracking-widest">Available Balance</p>
+                  <p className="text-white font-bold text-3xl tracking-tight mt-1">$2,450.00</p>
+                </div>
+
+                {/* Card bottom */}
+                <div className="flex justify-between items-end">
+                  <p className="font-mono text-white/75 text-sm tracking-wider">**** **** **** 4291</p>
+                  <div className="flex items-center">
+                    <div className="w-7 h-7 rounded-full bg-yellow-400/80 -mr-3 border border-white/20" />
+                    <div className="w-7 h-7 rounded-full bg-orange-500/70 border border-white/20" />
+                  </div>
+                </div>
+
+                {/* Top shine */}
+                <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-white/20 to-transparent rounded-t-2xl pointer-events-none" />
+              </div>
+            </div>
+          </motion.div>
 
         </div>
       </section>
@@ -172,3 +218,4 @@
   };
 
   export default BannerUser;
+
