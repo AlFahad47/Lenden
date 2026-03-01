@@ -4,7 +4,7 @@
   import Link from "next/link";
   import { useSession } from "next-auth/react";
   import { motion } from "framer-motion";
-  import { Plus, LayoutDashboard, ArrowUpRight, Send, Wallet, TrendingUp, CreditCard, ShieldCheck, Wifi } from "lucide-react";
+  import { Plus, LayoutDashboard, ArrowUpRight, Send, Wallet, TrendingUp, CreditCard, ShieldCheck, Wifi, Bell } from "lucide-react";
 
   const BannerUser: React.FC = () => {
     const { data: session } = useSession();
@@ -174,13 +174,20 @@
             </div>
           </motion.div>
 
-          {/* RIGHT — Wallet Card + Action Buttons */}
+          {/* RIGHT — Notification + Wallet Card + Action Buttons */}
           <motion.div
             className="flex-shrink-0 flex flex-col items-center gap-5"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
           >
+            {/* Notification badge */}
+            <div className="relative flex items-center gap-2 self-end px-3 py-1.5 rounded-full bg-white/70 dark:bg-[#0F172A]/70 border border-[#4DA1FF]/20 backdrop-blur-md shadow-sm">
+              <Bell size={13} className="text-[#4DA1FF]" />
+              <span className="text-xs text-[#0F172A] dark:text-white font-medium">2 new alerts</span>
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[9px] text-white font-bold">2</span>
+            </div>
+
             {/* Wallet card */}
             <div className="float-card">
               <div
