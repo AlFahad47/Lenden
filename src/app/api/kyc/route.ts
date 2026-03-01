@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
 /**
- * GET: database get
+ * GET: Fetch the FULL user data including KYC details
  */
 export async function GET(request: Request) {
   try {
@@ -24,32 +24,33 @@ export async function GET(request: Request) {
 }
 
 /**
- * POST: edit save
+ * POST: Submit or Update KYC data with Country, Currency, and Address
  */
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, fullName, phone, nationality, idNumber, currency, bank } = body;
+    const { email, role, currency, ...kycData } = body;
 
     if (!email) return NextResponse.json({ message: "Email is required" }, { status: 400 });
 
     const client = await clientPromise;
-    const db = client.db("novapay_db");
+    const db = client.db("novapay_db"); 
     const usersCollection = db.collection("users");
 
-    // $set
+    // ডাটাবেসে আপডেট করার লজিক
     const result = await usersCollection.updateOne(
-      { email: email },
-      {
-        $set: {
-          currency: currency,
-          bank: bank,
-          "kycDetails.fullName": fullName,
-          "kycDetails.phone": phone,
-          "kycDetails.nationality": nationality,
-          "kycDetails.idNumber": idNumber, // read only
-          updatedAt: new Date(),
-        },
+      { email: email }, 
+      { 
+        $set: { 
+          role: role || "User",
+          currency: currency || "USD", // কারেন্সি সরাসরি মেইন অবজেক্টে সেভ হবে
+          kycStatus: "pending", 
+          kycDetails: {
+            ...kycData, // এতে fullName, nationality, permanentAddress ইত্যাদি থাকবে
+          },
+          kycSubmittedAt: new Date(),
+          updatedAt: new Date()
+        } 
       }
     );
 
@@ -57,9 +58,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, message: "Profile Updated in MongoDB!" }, { status: 200 });
+    return NextResponse.json({ 
+      success: true, 
+      message: "KYC data submitted and status set to pending." 
+    }, { status: 200 });
+
   } catch (error) {
-    console.error("POST Error:", error);
+    console.error("POST KYC Error:", error);
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
