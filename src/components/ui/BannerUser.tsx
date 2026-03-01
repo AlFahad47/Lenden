@@ -16,7 +16,7 @@ const BannerUser: React.FC = () => {
   const [scrollY, setScrollY] = useState(0);
   const [greeting, setGreeting] = useState("");
 
-  // ১. গ্রিটিং সেট করা
+
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) setGreeting("Good morning");
@@ -28,7 +28,7 @@ const BannerUser: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ২. এপিআই থেকে ডাটা আনা
+  
   useEffect(() => {
     const fetchUserData = async () => {
       if (session?.user?.email) {
@@ -46,7 +46,7 @@ const BannerUser: React.FC = () => {
     fetchUserData();
   }, [session]);
 
-  // ৩. ডাইনামিক ভ্যালু সেট করা
+  
   const firstName = dbUser?.name?.split(" ")[0] || session?.user?.name?.split(" ")[0] || "User";
   const currencySymbol = dbUser?.currency === "BDT" ? "৳" : "$";
   const isApproved = dbUser?.kycStatus === "approved";
