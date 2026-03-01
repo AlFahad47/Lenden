@@ -84,6 +84,10 @@ useEffect(() => {
         { name: "Offer", path: "/#offers" },
       ];
 
+
+
+
+
   return (
     <div className=" sticky top-0 z-50 mb-0.5 left-0 flex justify-center px-4 pointer-events-none bg-[#F0F7FF] dark:bg-[#040911]">
       <nav 
