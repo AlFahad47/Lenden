@@ -14,12 +14,12 @@ import {
   Bell,
   ChevronLeft,
   ChevronRight,
-  // UserCog,
+  UserCog,
 } from "lucide-react";
 
 const sidebarItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  // { icon: UserCog, label: "Admin", path: "/dashboard/admin" },
+  { icon: UserCog, label: "Admin", path: "/dashboard/admin" },
   { icon: Users, label: "Users", path: "/dashboard/users" },
   { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
   { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },

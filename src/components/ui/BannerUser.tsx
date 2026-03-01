@@ -1,212 +1,270 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { motion } from "framer-motion";
+import { 
+  Plus, LayoutDashboard, ArrowUpRight, Send, Wallet, 
+  TrendingUp, CreditCard, ShieldCheck, Wifi, Bell, Lock 
+} from "lucide-react";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+const BannerUser: React.FC = () => {
+  const { data: session } = useSession();
+  const [dbUser, setDbUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [scrollY, setScrollY] = useState(0);
+  const [greeting, setGreeting] = useState("");
 
-export default function BannerUser() {
-  const user = {
-    name: "Rubaiya Hamid Rongkoni",
-    email: "rubaiya@example.com",
-    profilePic:
-      "https://photodpshare.com/wp-content/uploads/2025/09/profile-picture-girls-download-free-780x1024.webp",
-    totalBalance: 12500,
-    recentActivities: [
-      { id: 1, type: "sent", amount: 500, to: "John Doe", date: "2026-02-20", category: "Shopping" },
-      { id: 2, type: "received", amount: 1500, from: "Jane Smith", date: "2026-02-19" },
-      { id: 3, type: "recharge", amount: 200, date: "2026-02-18" },
-      { id: 4, type: "received", amount: 800, from: "Ali Khan", date: "2026-02-17" },
-      { id: 5, type: "sent", amount: 250, to: "Sara Lee", date: "2026-02-16", category: "Food" },
-      { id: 6, type: "sent", amount: 100, to: "Book Store", date: "2026-02-15", category: "Education" },
-    ],
-  };
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Slide every 3 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % user.recentActivities.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [user.recentActivities.length]);
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting("Good morning");
+    else if (hour < 17) setGreeting("Good afternoon");
+    else setGreeting("Good evening");
 
-  // Pie chart data
-  const expenseActivities = user.recentActivities.filter(a => a.type === "sent" && a.category);
-  const categories = [...new Set(expenseActivities.map(a => a.category))];
+    const handleScroll = () => requestAnimationFrame(() => setScrollY(window.scrollY));
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  const pieData = {
-    labels: categories,
-    datasets: [
-      {
-        label: "Expenses",
-        data: categories.map(cat =>
-          expenseActivities
-            .filter(a => a.category === cat)
-            .reduce((sum, a) => sum + a.amount, 0)
-        ),
-        backgroundColor: [
-          "#34D399", // teal
-          "#60A5FA", // blue
-          "#FBBF24", // yellow
-          "#F87171", // red
-          "#A78BFA", // purple
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
+  
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (session?.user?.email) {
+        try {
+          const res = await fetch(`/api/user/update?email=${session.user.email}`);
+          const data = await res.json();
+          setDbUser(data);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchUserData();
+  }, [session]);
 
-  const pieOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "bottom",
-        labels: {
-          color: "#ffffff",
-        },
-      },
+  
+  const firstName = dbUser?.name?.split(" ")[0] || session?.user?.name?.split(" ")[0] || "User";
+  const currencySymbol = dbUser?.currency === "BDT" ? "৳" : "$";
+  const isApproved = dbUser?.kycStatus === "approved";
+
+  const stats = [
+    { 
+      label: "Balance", 
+      value: isApproved ? `${currencySymbol}${dbUser?.balance || "0.00"}` : "Locked", 
+      icon: <Wallet size={15} />, 
+      color: "text-[#4DA1FF]" 
     },
-  };
+    { 
+      label: "This Month", 
+      value: isApproved ? `${currencySymbol}${dbUser?.monthlyTotal || "0"}` : "N/A", 
+      icon: <TrendingUp size={15} />, 
+      color: "text-green-400" 
+    },
+    { 
+      label: "Transactions", 
+      value: isApproved ? (dbUser?.transactionCount || "0") : "0", 
+      icon: <CreditCard size={15} />, 
+      color: "text-purple-400" 
+    },
+    { 
+      label: "Security", 
+      value: isApproved ? "Active" : "Pending", 
+      icon: <ShieldCheck size={15} />, 
+      color: isApproved ? "text-emerald-400" : "text-orange-400" 
+    },
+  ];
 
-  const handleIndexChange = (idx) => setCurrentIndex(idx);
+  const cardActions = [
+    { label: "Send", icon: <Send size={15} /> },
+    { label: "Add", icon: <Plus size={15} /> },
+    { label: "History", icon: <TrendingUp size={15} /> },
+  ];
+
+  const hedwigGradient = "linear-gradient(to right, #4DA1FF, #1E50FF)";
 
   return (
-    <div className="relative h-[60vh] mt-1 overflow-hidden transition-colors bg-gradient-to-r from-teal-600 to-green-500 dark:from-[#1B2A34] dark:via-[#0F172A] dark:to-[#1D4E48]">
+    <section className="relative w-full min-h-[88vh] bg-[#f0f7ff] dark:bg-[#050B14] flex flex-col items-center justify-center pt-24 pb-16 overflow-hidden font-sans">
+      
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .bg-user-grid {
+            background-image:
+              linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
+            background-size: 50px 50px;
+          }
+          .dark .bg-user-grid {
+            background-image:
+              linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
+          }
+          @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.25; }
+            50% { transform: translateY(-20px) scale(1.08); opacity: 0.5; }
+          }
+          .icon-float { animation: iconFloat 7s ease-in-out infinite; }
+          @keyframes floatCard {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+          }
+          .float-card { animation: floatCard 5s ease-in-out infinite; }
+          @keyframes shimmerSlide { 100% { transform: translateX(200%); } }
+          .shimmer-card { position: relative; overflow: hidden; }
+          .shimmer-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+            animation: shimmerSlide 3s infinite;
+          }
+        `
+      }} />
 
-      {/* Background image */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="https://cms.star.global/wp-content/uploads/2022/08/From-digital-wallet-to-super-app.jpg"
-          alt="Banner background"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-teal-600 to-green-500 dark:from-[#1B2A34] dark:to-[#1D4E48] opacity-70"></div>
-      </div>
+      <div
+        className="absolute inset-0 bg-user-grid z-[-2]"
+        style={{ transform: `translateY(${scrollY * 0.2}px)` }}
+      />
+      
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] dark:bg-[#1E50FF] opacity-[0.18] blur-[140px] rounded-full pointer-events-none z-[-1]" />
 
-      <section className="relative w-11/12 h-[50vh] mx-auto rounded-b-3xl overflow-hidden grid grid-cols-3 gap-3  py-8 md:py-12 z-10 text-gray-100 dark:text-gray-50">
+      <div className="w-11/12 mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 z-10">
 
-        {/* Left: User info */}
-        <div className="flex-1 flex flex-col gap-5">
-          <div className="flex items-center gap-4">
-            <img
-              src={user.profilePic}
-              alt="User profile"
-              className="w-16 h-16 rounded-full border-2 border-white dark:border-gray-300"
-            />
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold">{user.name}</h2>
-              <p className="text-sm opacity-80">{user.email}</p>
-            </div>
+        {/* LEFT CONTENT */}
+        <motion.div
+          className="flex-1 flex flex-col items-start gap-6 max-w-xl"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {/* Status Badge */}
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#4DA1FF]/20 bg-[#4DA1FF]/10 backdrop-blur-sm">
+            <div className={`w-2 h-2 rounded-full animate-pulse ${isApproved ? 'bg-green-400' : 'bg-orange-400'}`} />
+            <span className="text-[#1E50FF] dark:text-[#4DA1FF] text-xs font-bold tracking-widest uppercase">
+              NovaPay · {isApproved ? "Verified Account" : "KYC Pending"}
+            </span>
           </div>
 
           <div>
-            <p className="text-sm opacity-80">Total Balance</p>
-            <h1 className="text-3xl md:text-4xl font-extrabold">${user.totalBalance.toLocaleString()}</h1>
+            <p className="text-[#64748B] dark:text-[#94A3B8] text-base mb-1">{greeting},</p>
+            <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] text-[#0F172A] dark:text-white">
+              Welcome back,{" "}
+              <span className="text-transparent bg-clip-text" style={{ backgroundImage: hedwigGradient }}>
+                {firstName}!
+              </span>
+            </h1>
+            <p className="mt-4 text-[#64748B] dark:text-[#94A3B8] text-sm md:text-base max-w-md leading-relaxed">
+              Your digital assets are {isApproved ? "secure and ready" : "under review"}. {isApproved ? "Manage transfers and track spending in real-time." : "Complete your profile to unlock all features."}
+            </p>
           </div>
 
-          {/* Quick actions */}
-          <div className="flex gap-3 mt-4 flex-wrap">
-            <button className="bg-white text-teal-600 dark:bg-gray-700 dark:text-teal-400 px-4 py-2 rounded-lg font-semibold hover:scale-105 transition">
-              Send
-            </button>
-            <button className="bg-white text-teal-600 dark:bg-gray-700 dark:text-teal-400 px-4 py-2 rounded-lg font-semibold hover:scale-105 transition">
-              Add Money
-            </button>
-            <button className="bg-white text-teal-600 dark:bg-gray-700 dark:text-teal-400 px-4 py-2 rounded-lg font-semibold hover:scale-105 transition">
-              Recharge
-            </button>
-          </div>
-        </div>
+          <div className="flex flex-wrap items-center gap-4">
+            <Link href="/dashboard">
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                className="group relative flex items-center gap-2 px-7 py-3.5 rounded-full overflow-hidden border border-[#4DA1FF]/20 shadow-lg"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF]" />
+                <LayoutDashboard size={16} className="relative text-white" />
+                <span className="relative text-white text-sm font-semibold tracking-wide">Dashboard</span>
+                <ArrowUpRight size={15} className="relative text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </motion.button>
+            </Link>
 
-        
-        {/* Pie Chart for Expenses */}
-{categories.length > 0 && (
-  <div className="rounded-xl p-4  border border-gray-700/50 shadow-xl dark:bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-2xl p-6 flex flex-col items-center justify-center">
-    <h4 className="text-white font-semibold mb-2 text-center">Expenses Distribution</h4>
-    <div className="w-40  h-40 md:w-48 md:h-48">
-      <Pie data={pieData} options={pieOptions} />
-    </div>
-  </div>
-)}
-
-        {/* Right: Recent activities carousel */}
-        <div className="flex-1 md:flex-[0.4] relative min-h-40 overflow-hidden dark:bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-2xl p-6 backdrop-blur-sm border border-gray-700/50 shadow-xl">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="font-bold text-3xl bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent dark:from-gray-50 dark:to-gray-400">
-              Recent Activities
-            </h3>
-            <span className="text-xs text-black dark:text-gray-500 p-2 bg-gray-300 dark:bg-gray-800/50 rounded-xl border border-gray-700/50">
-              Live Updates
-            </span>
-          </div>
-          
-          <div className="relative">
-            {/* Carousel navigation dots */}
-            <div className="absolute -top-8 right-0 flex gap-1.5">
-              {user.recentActivities.map((_, idx) => (
-                <button
-                  key={idx}
-                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                    idx === currentIndex 
-                      ? 'w-6 bg-green-400' 
-                      : 'bg-gray-800 dark:bg-gray-200 hover:bg-gray-500'
-                  }`}
-                  onClick={() => handleIndexChange(idx)}
-                />
-              ))}
-            </div>
-
-            {/* Activities carousel */}
-            <div 
-              className="flex transition-transform duration-700 ease-out" 
-              style={{ transform: `translateX(-${currentIndex * 33.33}%)` }}
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              className="flex items-center gap-2 px-7 py-3.5 rounded-full border border-[#4DA1FF]/25 bg-white/70 dark:bg-white/[0.04] backdrop-blur-md text-[#1E50FF] dark:text-[#4DA1FF]"
             >
-              {user.recentActivities.map((activity, idx) => (
-                <div 
-                  key={activity.id} 
-                  className="flex-none w-1/3 px-2 group"
-                >
-                  <div className="bg-gray-300 dark:bg-gray-800/40 backdrop-blur-sm rounded-xl p-4 border border-gray-700/50 hover:border-green-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/5">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className={`w-2 h-2 rounded-full ${
-                        activity.type === 'sent' ? 'bg-red-400' : 'bg-green-400'
-                      } animate-pulse`} />
-                      <p className="text-black dark:text-gray-300 font-medium text-xs uppercase tracking-wider">
-                        {activity.type}
-                      </p>
-                    </div>
-                    
-                    <p className="text-white dark:text-gray-50 font-semibold text-sm md:text-base">
-                      <span className="text-black dark:text-gray-300">
-                        {activity.to || activity.from || "N/A"}
-                      </span>
-                    </p>
-                    
-                    <p className={`font-bold text-lg mt-2 ${
-                      activity.type === "sent" 
-                        ? 'text-red-400 group-hover:text-red-300' 
-                        : 'text-green-400 group-hover:text-green-300'
-                    } transition-colors duration-300`}>
-                      {activity.type === "sent" ? "-" : "+"}${activity.amount}
-                    </p>
-                    
-                    {activity.time && (
-                      <p className="text-xs text-gray-500 mt-2">
-                        {activity.time}
-                      </p>
-                    )}
-                  </div>
+              <Send size={15} />
+              <span className="text-sm font-semibold">Quick Send</span>
+            </motion.button>
+          </div>
+
+          {/* Stats Chips */}
+          <div className="flex flex-wrap gap-3">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + i * 0.08 }}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#4DA1FF]/15 bg-white/60 dark:bg-white/[0.04] backdrop-blur-sm"
+              >
+                <span className={stat.color}>{stat.icon}</span>
+                <div>
+                  <p className="text-[10px] text-[#94A3B8] leading-none">{stat.label}</p>
+                  <p className="text-xs font-bold text-[#0F172A] dark:text-white mt-0.5">{loading ? "..." : stat.value}</p>
                 </div>
-              ))}
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* RIGHT CARD SECTION */}
+        <motion.div
+          className="flex-shrink-0 flex flex-col items-center gap-5"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.15 }}
+        >
+          <div className="relative flex items-center gap-2 self-end px-3 py-1.5 rounded-full bg-white/70 dark:bg-[#0F172A]/70 border border-[#4DA1FF]/20 backdrop-blur-md">
+            <Bell size={13} className="text-[#4DA1FF]" />
+            <span className="text-xs text-[#0F172A] dark:text-white font-medium">New Alerts</span>
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[9px] text-white font-bold">!</span>
+          </div>
+
+          <div className="float-card">
+            <div
+              className={`shimmer-card w-[300px] md:w-[340px] h-[200px] md:h-[220px] rounded-2xl border border-white/20 p-6 flex flex-col justify-between shadow-2xl transition-all duration-500 ${!isApproved ? 'grayscale brightness-75' : ''}`}
+              style={{ background: isApproved ? "linear-gradient(130deg, #4DA1FF, #1E50FF)" : "#1e293b" }}
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-white/60 text-[10px] uppercase tracking-widest font-medium">NovaPay Wallet</p>
+                  <p className="text-white font-bold text-base mt-0.5">{firstName}</p>
+                </div>
+                {isApproved ? <Wifi size={18} className="text-white/60 rotate-90" /> : <Lock size={16} className="text-white/40" />}
+              </div>
+              
+              <div>
+                <p className="text-white/60 text-[10px] uppercase tracking-widest">Available Balance</p>
+                <p className="text-white font-bold text-3xl tracking-tight mt-1">
+                  {loading ? "..." : isApproved ? `${currencySymbol}${dbUser?.balance || "0.00"}` : `${currencySymbol} ••••`}
+                </p>
+              </div>
+
+              <div className="flex justify-between items-end">
+                <p className="font-mono text-white/75 text-sm tracking-wider">**** **** **** {isApproved ? "4291" : "****"}</p>
+                <div className="flex items-center">
+                  <div className="w-7 h-7 rounded-full bg-yellow-400/80 -mr-3 border border-white/20" />
+                  <div className="w-7 h-7 rounded-full bg-orange-500/70 border border-white/20" />
+                </div>
+              </div>
             </div>
           </div>
-        </div>  
 
-      </section>
-    </div>
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3 w-full px-2">
+            {cardActions.map((action) => (
+              <motion.button
+                key={action.label}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl bg-white/70 dark:bg-white/[0.04] border border-[#4DA1FF]/15 backdrop-blur-sm hover:bg-[#4DA1FF]/10 text-[#1E50FF] dark:text-[#4DA1FF]"
+              >
+                {action.icon}
+                <span className="text-[10px] font-semibold text-[#0F172A] dark:text-white">{action.label}</span>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </section>
   );
-}
+};
 
+export default BannerUser;
