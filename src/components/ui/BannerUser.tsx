@@ -4,7 +4,7 @@
   import Link from "next/link";
   import { useSession } from "next-auth/react";
   import { motion } from "framer-motion";
-  import { Plus, LayoutDashboard, ArrowUpRight } from "lucide-react";
+  import { Plus, LayoutDashboard, ArrowUpRight, Send, Wallet, TrendingUp, CreditCard, ShieldCheck } from "lucide-react";
 
   const BannerUser: React.FC = () => {
     const { data: session } = useSession();
@@ -32,6 +32,13 @@
     }, []);
 
     const hedwigGradient = "linear-gradient(to right, #4DA1FF, #1E50FF)";
+
+    const stats = [
+      { label: "Balance", value: "$2,450.00", icon: <Wallet size={15} />, color: "text-[#4DA1FF]" },
+      { label: "This Month", value: "+$340", icon: <TrendingUp size={15} />, color: "text-green-400" },
+      { label: "Transactions", value: "24", icon: <CreditCard size={15} />, color: "text-purple-400" },
+      { label: "Security", value: "Active", icon: <ShieldCheck size={15} />, color: "text-emerald-400" },
+    ];
 
     return (
       <section className="relative w-full min-h-[88vh] bg-[#f0f7ff] dark:bg-[#050B14] flex flex-col items-center justify-center pt-24 pb-16 overflow-hidden font-sans">
@@ -107,8 +114,8 @@
               </p>
             </div>
 
-            {/* Go to Dashboard button */}
-            <div className="flex items-center gap-4 mt-2">
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-4">
               <Link href="/dashboard">
                 <motion.button
                   whileHover={{ scale: 1.04 }}
@@ -119,16 +126,39 @@
                   <div className="absolute inset-0 bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] transition-transform duration-500 group-hover:scale-[1.05]" />
                   <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/25 to-transparent rounded-t-full pointer-events-none" />
                   <LayoutDashboard size={16} className="relative text-white" />
-                  <span className="relative text-white text-sm font-semibold tracking-wide">
-                    Go to Dashboard
-                  </span>
-                  <ArrowUpRight
-                    size={15}
-                    strokeWidth={2.5}
-                    className="relative text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300"
-                  />
+                  <span className="relative text-white text-sm font-semibold tracking-wide">Go to Dashboard</span>
+                  <ArrowUpRight size={15} strokeWidth={2.5} className="relative text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
                 </motion.button>
               </Link>
+
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2 px-7 py-3.5 rounded-full border border-[#4DA1FF]/25 bg-white/70 dark:bg-white/[0.04] backdrop-blur-md text-[#1E50FF] dark:text-[#4DA1FF]
+  hover:bg-[#4DA1FF]/10 transition-colors duration-300 shadow-sm"
+              >
+                <Send size={15} />
+                <span className="text-sm font-semibold">Quick Send</span>
+              </motion.button>
+            </div>
+
+            {/* Stat chips */}
+            <div className="flex flex-wrap gap-3">
+              {stats.map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + i * 0.08 }}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#4DA1FF]/15 bg-white/60 dark:bg-white/[0.04] backdrop-blur-sm"
+                >
+                  <span className={stat.color}>{stat.icon}</span>
+                  <div>
+                    <p className="text-[10px] text-[#94A3B8] leading-none">{stat.label}</p>
+                    <p className="text-xs font-bold text-[#0F172A] dark:text-white mt-0.5">{stat.value}</p>
+                  </div>
+                </motion.div>
+              ))}
             </div>
 
           </motion.div>
