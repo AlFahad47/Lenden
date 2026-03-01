@@ -1,10 +1,27 @@
  "use client";
 
   import React, { useState, useEffect } from "react";
+  import { useSession } from "next-auth/react";
+  import { motion } from "framer-motion";
   import { Plus } from "lucide-react";
 
   const BannerUser: React.FC = () => {
+    const { data: session } = useSession();
+    const user = session?.user;
     const [scrollY, setScrollY] = useState(0);
+    const [greeting, setGreeting] = useState("");
+
+    const firstName =
+      (user as { displayName?: string })?.displayName?.split(" ")[0] ||
+      user?.name?.split(" ")[0] ||
+      "User";
+
+    useEffect(() => {
+      const hour = new Date().getHours();
+      if (hour < 12) setGreeting("Good morning");
+      else if (hour < 17) setGreeting("Good afternoon");
+      else setGreeting("Good evening");
+    }, []);
 
     useEffect(() => {
       const handleScroll = () =>
@@ -12,6 +29,8 @@
       window.addEventListener("scroll", handleScroll, { passive: true });
       return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    const hedwigGradient = "linear-gradient(to right, #4DA1FF, #1E50FF)";
 
     return (
       <section className="relative w-full min-h-[88vh] bg-[#f0f7ff] dark:bg-[#050B14] flex flex-col items-center justify-center pt-24 pb-16 overflow-hidden font-sans">
@@ -37,17 +56,13 @@
           `
         }} />
 
-        {/* Background grid */}
         <div
           className="absolute inset-0 bg-user-grid z-[-2]"
           style={{ transform: `translateY(${scrollY * 0.2}px)` }}
         />
-
-        {/* Blue glow blob */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] dark:bg-[#1E50FF] opacity-[0.18] blur-[140px] rounded-full pointer-events-none z-[-1]"
   />
 
-        {/* Floating plus icons */}
         <div className="absolute inset-0 pointer-events-none z-0 hidden md:block">
           <Plus className="absolute top-[18%] left-[8%] text-[#4DA1FF]/20 icon-float" size={22} style={{ animationDelay: "0s", animationDuration: "8s" }} />
           <Plus className="absolute top-[30%] right-[10%] text-[#4DA1FF]/20 icon-float" size={30} style={{ animationDelay: "2s", animationDuration: "9s" }} />
@@ -55,11 +70,48 @@
           <Plus className="absolute top-[22%] right-[25%] text-[#4DA1FF]/15 icon-float" size={14} style={{ animationDelay: "1s", animationDuration: "10s" }} />
         </div>
 
-        {/* Main content area — to be filled */}
-        <div className="w-11/12 mx-auto z-10">
-          <p className="text-[#4DA1FF] font-bold">BannerUser — loading...</p>
-        </div>
+        <div className="w-11/12 mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 z-10">
 
+          {/* LEFT — Greeting */}
+          <motion.div
+            className="flex-1 flex flex-col items-start gap-6 max-w-xl"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {/* Badge */}
+            <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#4DA1FF]/20 bg-[#4DA1FF]/10 backdrop-blur-sm">
+              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-[#1E50FF] dark:text-[#4DA1FF] text-xs font-bold tracking-widest uppercase">
+                NovaPay · Logged In
+              </span>
+            </div>
+
+            {/* Heading */}
+            <div>
+              <p className="text-[#64748B] dark:text-[#94A3B8] text-base mb-1">
+                {greeting},
+              </p>
+              <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] text-[#0F172A] dark:text-white">
+                Welcome back,{" "}
+                <span
+                  className="text-transparent bg-clip-text"
+                  style={{ backgroundImage: hedwigGradient }}
+                >
+                  {firstName}!
+                </span>
+              </h1>
+              <p className="mt-4 text-[#64748B] dark:text-[#94A3B8] text-sm md:text-base max-w-md leading-relaxed">
+                Your wallet is secure and ready. Manage transfers, check your balance, and track your spending — all in one place.
+              </p>
+            </div>
+
+          </motion.div>
+
+          {/* RIGHT — to be filled */}
+          <div className="flex-shrink-0 w-[340px]" />
+
+        </div>
       </section>
     );
   };
