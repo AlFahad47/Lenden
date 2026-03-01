@@ -1,53 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
-import {
-  User,
-  Mail,
-  Phone,
-  Globe,
-  CreditCard,
-  Landmark,
-  X,
-} from "lucide-react";
+import { useSession } from "next-auth/react";
+import { User, Mail, Phone, Globe, CreditCard, Landmark, X } from "lucide-react";
 
 type UserType = {
-  name: string;
-  email: string;
-  country: string;
-  currency: string;
-  idNo: string;
-  phone: string;
-  nid: string;
-  bank: string;
+  name?: string;
+  email?: string;
+  country?: string;
+  currency?: string;
+  idNo?: string;
+  phone?: string;
+  nid?: string;
+  bank?: string;
   image?: string;
 };
 
-function Card({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 25 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       whileHover={{ y: -4 }}
-      className={`relative 
-      bg-white 
-      dark:bg-[#0c1a2b] 
-      border border-gray-200 
-      dark:border-blue-700/50
-      rounded-2xl 
-      shadow-md 
-      dark:shadow-blue-900/40
-      p-6 transition ${className}`}
+      className={`relative bg-white dark:bg-[#0c1a2b] border border-gray-200 dark:border-blue-700/50 rounded-2xl shadow-md dark:shadow-blue-900/40 p-6 transition ${className}`}
     >
       {children}
     </motion.div>
@@ -55,19 +34,29 @@ function Card({
 }
 
 export default function UserDashboard() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { data: session } = useSession();
+  const user = session?.user;
 
-  const [userData, setUserData] = useState<UserType>({
-    name: "Jarif Mahfuz",
-    email: "jarifmahfuz0@email.com",
-    country: "Bangladesh",
-    currency: "BDT",
-    idNo: "USR-458721",
-    phone: "+8801904947118",
-    nid: "199876543210",
-    bank: "1234-5678-91011",
-    image: "/user.jfif",
-  });
+  const [isOpen, setIsOpen] = useState(false);
+  const [userData, setUserData] = useState<UserType>({});
+
+  useEffect(() => {
+    if (user) {
+      // Map next-auth session to userData structure
+      setUserData({
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        // Optional: set other fields if available in your database
+        country: "",
+        currency: "",
+        idNo: "",
+        phone: "",
+        nid: "",
+        bank: "",
+      });
+    }
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -85,15 +74,13 @@ export default function UserDashboard() {
       background: "#0c1a2b",
       color: "#fff",
     });
+
+    // Here you can send userData to your API for saving to database
   };
 
   return (
     <motion.div
-      className="min-h-screen p-8 
-      bg-gray-50 
-      dark:bg-[#04090f] 
-      text-gray-800 
-      dark:text-blue-100"
+      className="min-h-screen p-8 bg-gray-50 dark:bg-[#04090f] text-gray-800 dark:text-blue-100"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
@@ -117,33 +104,24 @@ export default function UserDashboard() {
                   alt="Profile"
                   width={96}
                   height={96}
-                  className="rounded-full object-cover border-4 
-                  border-blue-500 dark:border-[#0095ff]"
+                  className="rounded-full object-cover border-4 border-blue-500 dark:border-[#0095ff]"
                   priority
                 />
               </motion.div>
             ) : (
-              <div
-                className="w-24 h-24 rounded-full 
-              bg-gradient-to-r from-[#0095ff] to-[#0061ff]
-              flex items-center justify-center text-white text-3xl font-bold"
-              >
-                {userData.name.charAt(0)}
+              <div className="w-24 h-24 rounded-full bg-gradient-to-r from-[#0095ff] to-[#0061ff] flex items-center justify-center text-white text-3xl font-bold">
+                {userData.name?.charAt(0) || "U"}
               </div>
             )}
 
-            <h2 className="text-xl font-semibold">{userData.name}</h2>
-
-            <p className="text-gray-500 dark:text-blue-300">{userData.email}</p>
+            <h2 className="text-xl font-semibold">{userData.name || "User"}</h2>
+            <p className="text-gray-500 dark:text-blue-300">{userData.email || "No email"}</p>
 
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsOpen(true)}
-              className="mt-4 px-4 py-2 
-              bg-[#0095ff] 
-              hover:bg-[#0070ff] 
-              text-white rounded-xl transition"
+              className="mt-4 px-4 py-2 bg-[#0095ff] hover:bg-[#0070ff] text-white rounded-xl transition"
             >
               Edit Profile
             </motion.button>
@@ -154,33 +132,26 @@ export default function UserDashboard() {
           <Card>
             <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
             <div className="grid md:grid-cols-2 gap-4 text-sm">
-              <Info icon={User} label="Full Name" value={userData.name} />
-              <Info icon={Mail} label="Email" value={userData.email} />
-              <Info icon={Phone} label="Phone" value={userData.phone} />
-              <Info icon={Globe} label="Country" value={userData.country} />
+              <Info icon={User} label="Full Name" value={userData.name || ""} />
+              <Info icon={Mail} label="Email" value={userData.email || ""} />
+              <Info icon={Phone} label="Phone" value={userData.phone || ""} />
+              <Info icon={Globe} label="Country" value={userData.country || ""} />
             </div>
           </Card>
 
           <Card>
             <h3 className="text-lg font-semibold mb-4">Financial Details</h3>
             <div className="grid md:grid-cols-2 gap-4 text-sm">
-              <Info
-                icon={CreditCard}
-                label="Currency"
-                value={userData.currency}
-              />
-              <Info icon={User} label="User ID" value={userData.idNo} />
-              <Info icon={User} label="NID Number" value={userData.nid} />
-              <Info
-                icon={Landmark}
-                label="Bank Account"
-                value={userData.bank}
-              />
+              <Info icon={CreditCard} label="Currency" value={userData.currency || ""} />
+              <Info icon={User} label="User ID" value={userData.idNo || ""} />
+              <Info icon={User} label="NID Number" value={userData.nid || ""} />
+              <Info icon={Landmark} label="Bank Account" value={userData.bank || ""} />
             </div>
           </Card>
         </div>
       </div>
 
+      {/* Edit Modal */}
       <AnimatePresence>
         {isOpen && (
           <>
@@ -199,11 +170,7 @@ export default function UserDashboard() {
               transition={{ type: "spring", stiffness: 200, damping: 20 }}
               className="fixed z-50 inset-0 flex items-center justify-center p-4"
             >
-              <div
-                className="bg-white dark:bg-[#0c1a2b] 
-              border border-gray-200 dark:border-blue-700/50
-              rounded-2xl p-6 w-full max-w-md shadow-xl"
-              >
+              <div className="bg-white dark:bg-[#0c1a2b] border border-gray-200 dark:border-blue-700/50 rounded-2xl p-6 w-full max-w-md shadow-xl">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-semibold">Edit Profile</h2>
                   <button onClick={() => setIsOpen(false)}>
@@ -212,40 +179,17 @@ export default function UserDashboard() {
                 </div>
 
                 <div className="space-y-4">
-                  <Input
-                    label="Full Name"
-                    name="name"
-                    value={userData.name}
-                    onChange={handleChange}
-                  />
-                  <Input
-                    label="Email"
-                    name="email"
-                    value={userData.email}
-                    onChange={handleChange}
-                  />
-                  <Input
-                    label="Phone"
-                    name="phone"
-                    value={userData.phone}
-                    onChange={handleChange}
-                  />
-                  <Input
-                    label="Country"
-                    name="country"
-                    value={userData.country}
-                    onChange={handleChange}
-                  />
+                  <Input label="Full Name" name="name" value={userData.name || ""} onChange={handleChange} />
+                  <Input label="Email" name="email" value={userData.email || ""} onChange={handleChange} />
+                  <Input label="Phone" name="phone" value={userData.phone || ""} onChange={handleChange} />
+                  <Input label="Country" name="country" value={userData.country || ""} onChange={handleChange} />
                 </div>
 
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={handleSave}
-                  className="mt-6 w-full 
-                  bg-[#0095ff] 
-                  hover:bg-[#0070ff] 
-                  text-white py-2 rounded-xl transition"
+                  className="mt-6 w-full bg-[#0095ff] hover:bg-[#0070ff] text-white py-2 rounded-xl transition"
                 >
                   Save Changes
                 </motion.button>
@@ -258,24 +202,13 @@ export default function UserDashboard() {
   );
 }
 
-function Info({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string;
-}) {
+// Info and Input components remain unchanged
+function Info({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
-      className="flex items-center gap-3 p-4 rounded-xl 
-      bg-gray-100 
-      dark:bg-blue-900/20 
-      border border-gray-200 
-      dark:border-blue-700/40 transition"
+      className="flex items-center gap-3 p-4 rounded-xl bg-gray-100 dark:bg-blue-900/20 border border-gray-200 dark:border-blue-700/40 transition"
     >
       <Icon className="w-5 h-5 text-blue-500 dark:text-blue-400" />
       <div>
@@ -286,35 +219,15 @@ function Info({
   );
 }
 
-function Input({
-  label,
-  name,
-  value,
-  onChange,
-}: {
-  label: string;
-  name: string;
-  value: string;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
-}) {
+function Input({ label, name, value, onChange }: { label: string; name: string; value: string; onChange: React.ChangeEventHandler<HTMLInputElement> }) {
   return (
     <div>
-      <label className="text-sm text-gray-500 dark:text-blue-300">
-        {label}
-      </label>
+      <label className="text-sm text-gray-500 dark:text-blue-300">{label}</label>
       <input
         name={name}
         value={value}
         onChange={onChange}
-        className="w-full mt-1 px-3 py-2 rounded-lg 
-        bg-gray-100 
-        dark:bg-blue-900/20 
-        border border-gray-300 
-        dark:border-blue-700/40
-        focus:outline-none 
-        focus:ring-2 
-        focus:ring-[#0095ff] 
-        transition"
+        className="w-full mt-1 px-3 py-2 rounded-lg bg-gray-100 dark:bg-blue-900/20 border border-gray-300 dark:border-blue-700/40 focus:outline-none focus:ring-2 focus:ring-[#0095ff] transition"
       />
     </div>
   );
