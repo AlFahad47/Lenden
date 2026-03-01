@@ -1,9 +1,10 @@
  "use client";
 
   import React, { useState, useEffect } from "react";
+  import Link from "next/link";
   import { useSession } from "next-auth/react";
   import { motion } from "framer-motion";
-  import { Plus } from "lucide-react";
+  import { Plus, LayoutDashboard, ArrowUpRight } from "lucide-react";
 
   const BannerUser: React.FC = () => {
     const { data: session } = useSession();
@@ -72,7 +73,7 @@
 
         <div className="w-11/12 mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 z-10">
 
-          {/* LEFT — Greeting */}
+          {/* LEFT */}
           <motion.div
             className="flex-1 flex flex-col items-start gap-6 max-w-xl"
             initial={{ opacity: 0, y: 30 }}
@@ -104,6 +105,30 @@
               <p className="mt-4 text-[#64748B] dark:text-[#94A3B8] text-sm md:text-base max-w-md leading-relaxed">
                 Your wallet is secure and ready. Manage transfers, check your balance, and track your spending — all in one place.
               </p>
+            </div>
+
+            {/* Go to Dashboard button */}
+            <div className="flex items-center gap-4 mt-2">
+              <Link href="/dashboard">
+                <motion.button
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="group relative flex items-center gap-2 px-7 py-3.5 rounded-full overflow-hidden border border-[#4DA1FF]/20 shadow-[0_4px_20px_-4px_rgba(77,161,255,0.35)]
+  hover:shadow-[0_8px_30px_-4px_rgba(77,161,255,0.5)] transition-shadow duration-300"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] transition-transform duration-500 group-hover:scale-[1.05]" />
+                  <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/25 to-transparent rounded-t-full pointer-events-none" />
+                  <LayoutDashboard size={16} className="relative text-white" />
+                  <span className="relative text-white text-sm font-semibold tracking-wide">
+                    Go to Dashboard
+                  </span>
+                  <ArrowUpRight
+                    size={15}
+                    strokeWidth={2.5}
+                    className="relative text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300"
+                  />
+                </motion.button>
+              </Link>
             </div>
 
           </motion.div>
