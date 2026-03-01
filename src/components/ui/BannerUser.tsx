@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
   import React, { useState, useEffect } from "react";
   import Link from "next/link";
@@ -35,6 +35,12 @@
       { label: "This Month", value: "+$340", icon: <TrendingUp size={15} />, color: "text-green-400" },
       { label: "Transactions", value: "24", icon: <CreditCard size={15} />, color: "text-purple-400" },
       { label: "Security", value: "Active", icon: <ShieldCheck size={15} />, color: "text-emerald-400" },
+    ];
+
+    const cardActions = [
+      { label: "Send", icon: <Send size={15} /> },
+      { label: "Add", icon: <Plus size={15} /> },
+      { label: "History", icon: <TrendingUp size={15} /> },
     ];
 
     return (
@@ -168,7 +174,7 @@
             </div>
           </motion.div>
 
-          {/* RIGHT — Wallet Card */}
+          {/* RIGHT — Wallet Card + Action Buttons */}
           <motion.div
             className="flex-shrink-0 flex flex-col items-center gap-5"
             initial={{ opacity: 0, y: 40 }}
@@ -182,7 +188,6 @@
   shadow-[0_20px_60px_rgba(77,161,255,0.3)]"
                 style={{ background: "linear-gradient(130deg, rgba(77,161,255,0.95), rgba(30,80,255,0.95))" }}
               >
-                {/* Card top */}
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-white/60 text-[10px] uppercase tracking-widest font-medium">NovaPay Wallet</p>
@@ -190,14 +195,10 @@
                   </div>
                   <Wifi size={18} className="text-white/60 rotate-90" />
                 </div>
-
-                {/* Balance */}
                 <div>
                   <p className="text-white/60 text-[10px] uppercase tracking-widest">Available Balance</p>
                   <p className="text-white font-bold text-3xl tracking-tight mt-1">$2,450.00</p>
                 </div>
-
-                {/* Card bottom */}
                 <div className="flex justify-between items-end">
                   <p className="font-mono text-white/75 text-sm tracking-wider">**** **** **** 4291</p>
                   <div className="flex items-center">
@@ -205,11 +206,26 @@
                     <div className="w-7 h-7 rounded-full bg-orange-500/70 border border-white/20" />
                   </div>
                 </div>
-
-                {/* Top shine */}
                 <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-white/20 to-transparent rounded-t-2xl pointer-events-none" />
               </div>
             </div>
+
+            {/* Quick action buttons */}
+            <div className="flex items-center gap-3 w-full px-2">
+              {cardActions.map((action) => (
+                <motion.button
+                  key={action.label}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl bg-white/70 dark:bg-white/[0.04] border border-[#4DA1FF]/15 backdrop-blur-sm hover:bg-[#4DA1FF]/10
+  dark:hover:bg-[#4DA1FF]/10 transition-colors text-[#1E50FF] dark:text-[#4DA1FF]"
+                >
+                  {action.icon}
+                  <span className="text-[10px] font-semibold text-[#0F172A] dark:text-white">{action.label}</span>
+                </motion.button>
+              ))}
+            </div>
+
           </motion.div>
 
         </div>
@@ -218,4 +234,3 @@
   };
 
   export default BannerUser;
-
