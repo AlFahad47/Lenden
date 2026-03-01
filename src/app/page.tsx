@@ -4,12 +4,17 @@ import ProjectDemo from "@/components/ui/ProjectDemo";
 import HowItWorksPage from "@/components/ui/HowItWorks";
 import KeyFeatures from "@/components/ui/KeyFeatures";
 import Menus from "@/components/ui/menus";
+import BannerUser from "@/components/ui/BannerUser";
 
 export default function Home() {
   return (
    <main>
       <section id="home">
         <Banner />
+      </section>
+
+      <section>
+        <BannerUser></BannerUser>
       </section>
 
       <section id="menus">
