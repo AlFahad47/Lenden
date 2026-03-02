@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     if (!name || !email || !password) {
       return NextResponse.json({ message: "সবগুলো ফিল্ড পূরণ করতে হবে!" }, { status: 400 });
     }
-
+    
     const client = await clientPromise;
     const db = client.db(); // .env তে দেয়া novapay_db তে কানেক্ট হবে
 
