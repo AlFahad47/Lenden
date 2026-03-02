@@ -4,7 +4,7 @@
   import { motion } from "framer-motion"
   import Swal from "sweetalert2"
   import { useSession, signIn } from "next-auth/react"
-  import { FaStar, FaQuoteLeft } from "react-icons/fa"
+  import { FaStar, FaQuoteLeft, FaUser, FaEnvelope, FaPen, FaLock } from "react-icons/fa"
   import "sweetalert2/dist/sweetalert2.min.css"
 
   type ReviewType = {
@@ -14,6 +14,8 @@
     comment: string
     avatar?: string
   }
+
+  const STAR_LABELS = ["Terrible", "Bad", "Okay", "Good", "Excellent"]
 
   export default function Page() {
     const { data: session } = useSession()
@@ -29,6 +31,7 @@
     const [name, setName] = useState("")
     const [comment, setComment] = useState("")
     const [rating, setRating] = useState<number>(0)
+    const [hoverRating, setHoverRating] = useState<number>(0)
     const formRef = useRef<HTMLDivElement>(null)
     const [editingIndex, setEditingIndex] = useState<number | null>(null)
 
@@ -64,6 +67,7 @@
       setName("")
       setComment("")
       setRating(0)
+      setHoverRating(0)
       Swal.fire({ icon: "success", title: editingIndex !== null ? "Review Updated!" : "Review Submitted!" })
     }
 
@@ -94,14 +98,18 @@
       formRef.current?.scrollIntoView({ behavior: "smooth" })
     }
 
-    // ── Stats calculations ──
+    // ── Stats ──
     const total = reviews.length
     const avg = total > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / total).toFixed(1) : "0.0"
     const distrib = [5, 4, 3, 2, 1].map(star => ({
       star,
       count: reviews.filter(r => r.rating === star).length,
-      pct: total > 0 ? Math.round((reviews.filter(r => r.rating === star).length / total) * 100) : 0,
+      pct: total > 0
+        ? Math.round((reviews.filter(r => r.rating === star).length / total) * 100)
+        : 0,
     }))
+
+    const activeRating = hoverRating || rating
 
     return (
       <div className="relative min-h-screen bg-[#F0F7FF] dark:bg-[#040911] transition-colors overflow-hidden">
@@ -125,8 +133,13 @@
         </div>
 
         {/* Grid overlay */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05]"
-          style={{ backgroundImage: "linear-gradient(#4DA1FF 1px,transparent 1px),linear-gradient(90deg,#4DA1FF 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05]"
+          style={{
+            backgroundImage: "linear-gradient(#4DA1FF 1px,transparent 1px),linear-gradient(90deg,#4DA1FF 1px,transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
 
         {/* Header */}
         <div className="relative max-w-4xl mx-auto px-6 pt-20 pb-14 text-center z-10">
@@ -189,7 +202,11 @@
                   <FaStar
                     key={i}
                     size={16}
-                    className={i < Math.round(parseFloat(avg)) ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"}
+                    className={
+                      i < Math.round(parseFloat(avg))
+                        ? "text-yellow-400"
+                        : "text-gray-300 dark:text-gray-600"
+                    }
                   />
                 ))}
               </div>
@@ -216,7 +233,7 @@
           </div>
         </motion.div>
 
-        {/* ── PREMIUM REVIEW CARDS ── */}
+        {/* Review Cards */}
         <div className="relative w-11/12 max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6 pb-16 z-10">
           {reviews.map((review, i) => {
             const isOwn = review.email === currentUserEmail
@@ -227,28 +244,22 @@
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
                 whileHover={{ y: -4, scale: 1.02 }}
-                className={`card-shimmer relative overflow-hidden rounded-2xl p-6 flex flex-col gap-4 shadow-lg transition-shadow hover:shadow-xl
-                  ${isOwn
+                className={[
+                  "card-shimmer relative overflow-hidden rounded-2xl p-6 flex flex-col gap-4 shadow-lg transition-shadow hover:shadow-xl",
+                  isOwn
                     ? "bg-gradient-to-br from-[#4DA1FF]/15 to-[#1E50FF]/10 border border-[#4DA1FF]/40 dark:from-[#4DA1FF]/10 dark:to-[#1E50FF]/5 dark:border-[#4DA1FF]/30"
-                    : "bg-white/70 dark:bg-white/5 border border-white/40 dark:border-white/10 backdrop-blur-xl"
-                  }`}
+                    : "bg-white/70 dark:bg-white/5 border border-white/40 dark:border-white/10 backdrop-blur-xl",
+                ].join(" ")}
               >
-                {/* Your Review badge */}
                 {isOwn && (
                   <span className="absolute top-4 right-4 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#4DA1FF]/20 text-[#4DA1FF] border border-[#4DA1FF]/30 tracking-wide">
                     YOUR REVIEW
                   </span>
                 )}
-
-                {/* Quote icon */}
                 <FaQuoteLeft size={22} className="text-[#4DA1FF]/30 dark:text-[#4DA1FF]/20" />
-
-                {/* Comment */}
                 <p className="text-gray-700 dark:text-gray-200 text-sm leading-relaxed flex-1">
                   {review.comment}
                 </p>
-
-                {/* Stars */}
                 <div className="flex gap-1">
                   {Array.from({ length: 5 }).map((_, s) => (
                     <FaStar
@@ -258,19 +269,22 @@
                     />
                   ))}
                 </div>
-
-                {/* Divider */}
                 <div className="h-px bg-gray-200 dark:bg-white/10" />
-
-                {/* Author row */}
                 <div className="flex items-center gap-3">
-                  {/* Avatar with glowing ring */}
-                  <div className={`p-0.5 rounded-full ${isOwn ? "bg-gradient-to-br from-[#4DA1FF] to-[#1E50FF]" : "bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700"}`}>
+                  <div className={[
+                    "p-0.5 rounded-full",
+                    isOwn
+                      ? "bg-gradient-to-br from-[#4DA1FF] to-[#1E50FF]"
+                      : "bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700",
+                  ].join(" ")}>
                     <img
                       src={review.avatar || "/avatars/default.png"}
                       alt={review.name}
                       className="w-10 h-10 rounded-full object-cover block"
-                      onError={e => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(review.name)}&background=1E50FF&color=fff` }}
+                      onError={e => {
+                        (e.target as HTMLImageElement).src =
+                          `https://ui-avatars.com/api/?name=${encodeURIComponent(review.name)}&background=1E50FF&color=fff`
+                      }}
                     />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -278,8 +292,6 @@
                     <p className="text-[11px] text-gray-400 truncate">{review.email}</p>
                   </div>
                 </div>
-
-                {/* Edit / Delete — only for own review */}
                 {isOwn && (
                   <div className="flex gap-2 pt-1">
                     <button
@@ -301,55 +313,134 @@
           })}
         </div>
 
-        {/* Review Form */}
+        {/* ── PREMIUM FORM ── */}
         <div ref={formRef} className="max-w-xl mx-auto px-6 pb-24 z-10 relative">
-          <div className="bg-white/60 dark:bg-white/5 border border-white/30 dark:border-white/10 rounded-2xl p-8 shadow-xl">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 text-center">Leave a Review</h2>
-            <input
-              type="text"
-              placeholder="Your Name"
-              value={session?.user?.name || name}
-              onChange={e => setName(e.target.value)}
-              readOnly={!!session}
-              className="w-full mb-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2
-  focus:ring-[#4DA1FF]/50"
-            />
-            <input
-              type="email"
-              value={session?.user?.email || ""}
-              readOnly
-              placeholder="your@email.com"
-              className="w-full mb-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 focus:outline-none"
-            />
-            <textarea
-              placeholder="Share your experience..."
-              value={comment}
-              onChange={e => setComment(e.target.value)}
-              rows={4}
-              className="w-full mb-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2
-  focus:ring-[#4DA1FF]/50 resize-none"
-            />
-            <div className="flex justify-center gap-3 mb-5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <FaStar
-                  key={i}
-                  size={28}
-                  className={`cursor-pointer transition-transform hover:scale-125 ${
-                    i < rating ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"
-                  }`}
-                  onClick={() => setRating(i + 1)}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="relative rounded-3xl p-px bg-gradient-to-br from-[#4DA1FF]/50 via-[#1E50FF]/30 to-transparent shadow-2xl shadow-[#1E50FF]/10"
+          >
+            <div className="rounded-3xl bg-white/80 dark:bg-[#070F1E]/90 backdrop-blur-2xl p-8">
+
+              {/* Form header */}
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-[#4DA1FF] to-[#1E50FF] shadow-lg shadow-[#1E50FF]/30 mb-4">
+                  <FaPen size={16} className="text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+                  {editingIndex !== null ? "Update Your Review" : "Leave a Review"}
+                </h2>
+                <p className="text-sm text-gray-400 mt-1">Your feedback helps others make better decisions</p>
+              </div>
+
+              {/* Not logged in — show prompt */}
+              {!session && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mb-6 flex items-center gap-3 p-4 rounded-2xl bg-[#4DA1FF]/8 border border-[#4DA1FF]/20"
+                >
+                  <FaLock size={14} className="text-[#4DA1FF] shrink-0" />
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    You must be{" "}
+                    <button
+                      onClick={() => signIn("google")}
+                      className="text-[#4DA1FF] font-semibold hover:underline"
+                    >
+                      signed in
+                    </button>
+                    {" "}to submit a review.
+                  </p>
+                </motion.div>
+              )}
+
+              {/* Name field */}
+              <div className="relative mb-4">
+                <FaUser
+                  size={13}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
                 />
-              ))}
+                <input
+                  type="text"
+                  placeholder="Your Name"
+                  value={session?.user?.name || name}
+                  onChange={e => setName(e.target.value)}
+                  readOnly={!!session}
+                  className="w-full pl-10 pr-4 py-3.5 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-200 placeholder-gray-400
+  focus:outline-none focus:ring-2 focus:ring-[#4DA1FF]/40 focus:border-[#4DA1FF]/50 transition"
+                />
+              </div>
+
+              {/* Email field */}
+              <div className="relative mb-4">
+                <FaEnvelope
+                  size={13}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+                <input
+                  type="email"
+                  value={session?.user?.email || ""}
+                  readOnly
+                  placeholder="your@email.com"
+                  className="w-full pl-10 pr-4 py-3.5 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 placeholder-gray-400 focus:outline-none
+  cursor-default"
+                />
+              </div>
+
+              {/* Comment field */}
+              <textarea
+                placeholder="Share your experience with NovaPay..."
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                rows={4}
+                className="w-full mb-6 px-4 py-3.5 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-200 placeholder-gray-400
+  focus:outline-none focus:ring-2 focus:ring-[#4DA1FF]/40 focus:border-[#4DA1FF]/50 transition resize-none"
+              />
+
+              {/* Star rating */}
+              <div className="flex flex-col items-center gap-2 mb-7">
+                <p className="text-xs text-gray-400 uppercase tracking-widest">Your Rating</p>
+                <div className="flex gap-2">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <motion.button
+                      key={i}
+                      whileHover={{ scale: 1.25 }}
+                      whileTap={{ scale: 0.9 }}
+                      onMouseEnter={() => setHoverRating(i + 1)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      onClick={() => setRating(i + 1)}
+                      className="focus:outline-none"
+                    >
+                      <FaStar
+                        size={32}
+                        className={
+                          i < activeRating
+                            ? "text-yellow-400 drop-shadow-sm"
+                            : "text-gray-300 dark:text-gray-600"
+                        }
+                      />
+                    </motion.button>
+                  ))}
+                </div>
+                <p className="text-sm font-medium text-[#4DA1FF] h-5">
+                  {activeRating > 0 ? STAR_LABELS[activeRating - 1] : ""}
+                </p>
+              </div>
+
+              {/* Submit */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={submitReview}
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] text-white font-bold text-base tracking-wide shadow-lg shadow-[#1E50FF]/30
+  hover:shadow-[#1E50FF]/50 transition-shadow"
+              >
+                {editingIndex !== null ? "Update Review" : "Submit Review"}
+              </motion.button>
+
             </div>
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={submitReview}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] text-white font-semibold shadow-lg shadow-[#1E50FF]/30"
-            >
-              {editingIndex !== null ? "Update Review" : "Submit Review"}
-            </motion.button>
-          </div>
+          </motion.div>
         </div>
 
       </div>
