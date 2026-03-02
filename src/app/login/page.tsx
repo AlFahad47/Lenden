@@ -380,7 +380,12 @@ const PandaLogin: React.FC = () => {
 
               </button>
 
-              <button type="button" className="p-2.5 rounded-full border border-slate-200 hover:border-[#2C64FF] hover:bg-[#2C64FF]/5 transition-colors group">
+              <button 
+                type="button" 
+                onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+                className="p-2.5 rounded-full border border-slate-200 hover:border-[#2C64FF] hover:bg-[#2C64FF]/5 transition-colors group"
+                title="Google দিয়ে লগইন করুন"
+              >
 
                 <Chrome size={18} className="text-slate-500 group-hover:text-[#2C64FF]" />
 
@@ -524,7 +529,7 @@ const PandaLogin: React.FC = () => {
 
               </label>
 
-              <Link href="#" className="text-[0.8em] font-bold text-[#64748B] hover:text-[#2C64FF] transition-colors">
+              <Link href="/forgot-password" className="text-[0.8em] font-bold text-[#64748B] hover:text-[#2C64FF] transition-colors">
 
                 Forgot Password?
 
