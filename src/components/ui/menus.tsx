@@ -4,9 +4,14 @@
   import { ArrowLeft, ArrowRight } from "lucide-react";
   import {
     FaPaperPlane, FaHandHoldingUsd, FaMoneyBillWave, FaWallet,
-    FaMobileAlt, FaReceipt, FaHistory, FaPiggyBank, FaCreditCard, FaSyncAlt,
+    FaMobileAlt, FaReceipt, FaHistory, FaPiggyBank, FaCreditCard,
+    FaSyncAlt, FaLock,
   } from "react-icons/fa";
   import { IconType } from "react-icons";
+  import { useSession, signIn } from "next-auth/react";
+  import { useRouter } from "next/navigation";
+  import Swal from "sweetalert2";
+  import "sweetalert2/dist/sweetalert2.min.css";
 
   type MenuItem = {
     name: string
@@ -15,24 +20,54 @@
   }
 
   const quickActions: MenuItem[] = [
-    { name: "Send Money",          icon: FaPaperPlane,     route: "/send-money"     },
-    { name: "Request Money",       icon: FaHandHoldingUsd, route: "/request-money"  },
-    { name: "Cash Out",            icon: FaMoneyBillWave,  route: "/cash-out"       },
-    { name: "Add Money",           icon: FaWallet,         route: "/add-money"      },
-    { name: "Mobile Recharge",     icon: FaMobileAlt,      route: "/mobile-recharge"},
-    { name: "Pay Bill",            icon: FaReceipt,        route: "/pay-bill"       },
-    { name: "Transaction History", icon: FaHistory,        route: "/transactions"   },
-    { name: "Wallet",              icon: FaPiggyBank,      route: "/wallet"         },
-    { name: "Cards & Banks",       icon: FaCreditCard,     route: "/cards-banks"    },
-    { name: "Subscriptions",       icon: FaSyncAlt,        route: "/subscriptions"  },
+    { name: "Send Money",          icon: FaPaperPlane,     route: "/send-money"      },
+    { name: "Request Money",       icon: FaHandHoldingUsd, route: "/request-money"   },
+    { name: "Cash Out",            icon: FaMoneyBillWave,  route: "/cash-out"        },
+    { name: "Add Money",           icon: FaWallet,         route: "/add-money"       },
+    { name: "Mobile Recharge",     icon: FaMobileAlt,      route: "/mobile-recharge" },
+    { name: "Pay Bill",            icon: FaReceipt,        route: "/pay-bill"        },
+    { name: "Transaction History", icon: FaHistory,        route: "/transactions"    },
+    { name: "Wallet",              icon: FaPiggyBank,      route: "/wallet"          },
+    { name: "Cards & Banks",       icon: FaCreditCard,     route: "/cards-banks"     },
+    { name: "Subscriptions",       icon: FaSyncAlt,        route: "/subscriptions"   },
   ]
 
   const Menus: React.FC = () => {
+    const { data: session } = useSession();
+    const isLoggedIn = !!session;
+    const router = useRouter();
+
     const [activeIndex, setActiveIndex] = useState(0);
     const total = quickActions.length;
 
     const handleNext = () => setActiveIndex((prev) => (prev + 1) % total);
     const handlePrev = () => setActiveIndex((prev) => (prev - 1 + total) % total);
+
+    const handleItemClick = (index: number, item: MenuItem) => {
+      // Always allow carousel navigation
+      setActiveIndex(index);
+
+      // Only navigate if this is already the center item
+      if (index !== activeIndex) return;
+
+      if (!isLoggedIn) {
+        Swal.fire({
+          icon: "warning",
+          title: "Login Required",
+          html: `<p>You need to sign in to use <strong>${item.name}</strong>.</p>`,
+          showCancelButton: true,
+          confirmButtonText: "Login Now",
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#1E50FF",
+          cancelButtonColor: "#6b7280",
+        }).then((result) => {
+          if (result.isConfirmed) signIn("google");
+        });
+        return;
+      }
+
+      router.push(item.route);
+    };
 
     const getItemStyles = (index: number) => {
       let diff = (index - activeIndex + total) % total;
@@ -53,7 +88,6 @@
       <section className="w-full mt-[-12%] bg-gray-50 dark:bg-[#0A0E17] py-16 md:py-20 overflow-hidden select-none border-y border-gray-200 dark:border-gray-800/60 transition-colors
   duration-300">
 
-        {/* SVG gradient for fill-based icons */}
         <svg width="0" height="0" className="absolute">
           <defs>
             <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -89,31 +123,68 @@
               {quickActions.map((item, index) => {
                 const isCenter = index === activeIndex;
                 const Icon = item.icon;
+                const locked = !isLoggedIn;
+
                 return (
                   <div
                     key={index}
-                    onClick={() => setActiveIndex(index)}
-                    className="absolute left-1/2 top-1/2 flex flex-col items-center justify-center cursor-pointer transition-all duration-[600ms] ease-[cubic-bezier(0.25,0.8,0.25,1)] w-[160px]
-   md:w-[200px]"
+                    onClick={() => handleItemClick(index, item)}
+                    className={`absolute left-1/2 top-1/2 flex flex-col items-center justify-center transition-all duration-[600ms] ease-[cubic-bezier(0.25,0.8,0.25,1)] w-[160px] md:w-[200px]
+  ${
+                      isCenter && locked
+                        ? "cursor-not-allowed"
+                        : "cursor-pointer"
+                    }`}
                     style={getItemStyles(index)}
                   >
-                    <div className={`mb-4 md:mb-5 transition-all duration-500 flex items-center justify-center ${
-                      isCenter
-                        ? "scale-110 drop-shadow-[0_8px_16px_rgba(37,99,235,0.3)] dark:drop-shadow-[0_8px_16px_rgba(96,165,250,0.2)]"
-                        : "text-gray-400 dark:text-gray-500"
-                    }`}>
-                      <Icon
-                        size={isCenter ? 64 : 52}
-                        style={isCenter ? { fill: "url(#iconGradient)" } : {}}
-                      />
+                    {/* Icon wrapper */}
+                    <div className="relative mb-4 md:mb-5 flex items-center justify-center">
+
+                      <div className={`transition-all duration-500 flex items-center justify-center ${
+                        isCenter
+                          ? "scale-110 drop-shadow-[0_8px_16px_rgba(37,99,235,0.3)] dark:drop-shadow-[0_8px_16px_rgba(96,165,250,0.2)]"
+                          : ""
+                      } ${locked ? "opacity-35" : ""}`}>
+                        <Icon
+                          size={isCenter ? 64 : 52}
+                          style={isCenter && !locked ? { fill: "url(#iconGradient)" } : {}}
+                          className={!isCenter || locked ? "text-gray-400 dark:text-gray-500" : ""}
+                        />
+                      </div>
+
+                      {/* Lock badge */}
+                      {locked && (
+                        <div className={`absolute flex items-center justify-center rounded-full bg-white dark:bg-[#1a2235] shadow-md border border-gray-200 dark:border-gray-700 ${
+                          isCenter
+                            ? "-bottom-2 -right-2 w-7 h-7"
+                            : "-bottom-1 -right-1 w-5 h-5"
+                        }`}>
+                          <FaLock
+                            size={isCenter ? 13 : 9}
+                            className="text-gray-400 dark:text-gray-500"
+                          />
+                        </div>
+                      )}
                     </div>
+
+                    {/* Label */}
                     <span className={`text-center transition-all duration-300 leading-tight ${
-                      isCenter
+                      locked ? "opacity-40" : ""
+                    } ${
+                      isCenter && !locked
                         ? "text-[17px] md:text-[20px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] dark:from-blue-400 dark:to-blue-600"
                         : "text-[15px] md:text-[17px] font-bold text-gray-500 dark:text-gray-400"
                     }`}>
                       {item.name}
                     </span>
+
+                    {/* "Tap to open" hint — only on center when logged in */}
+                    {isCenter && isLoggedIn && (
+                      <span className="mt-2 text-[11px] text-[#4DA1FF]/70 font-medium animate-pulse">
+                        Tap to open →
+                      </span>
+                    )}
+
                   </div>
                 );
               })}
