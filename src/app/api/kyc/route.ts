@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
 /**
- * GET: Fetch the FULL user data including KYC details
+ * GET: Fetch the full user profile using email as a unique identifier.
  */
 export async function GET(request: Request) {
   try {
@@ -24,12 +24,12 @@ export async function GET(request: Request) {
 }
 
 /**
- * POST: Submit or Update KYC data with Country, Currency, and Address
+ * POST: Update KYC details and ensure financial fields are initialized.
  */
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, role, currency, ...kycData } = body;
+    const { email, role, currency, bank, ...kycData } = body;
 
     if (!email) return NextResponse.json({ message: "Email is required" }, { status: 400 });
 
@@ -37,30 +37,49 @@ export async function POST(request: Request) {
     const db = client.db("novapay_db"); 
     const usersCollection = db.collection("users");
 
-    // ডাটাবেসে আপডেট করার লজিক
+    // Fetch existing user to check current data
+    const existingUser = await usersCollection.findOne({ email });
+    
+    // updatePayload will update profile info and ensure fields exist
+    const updatePayload: any = {
+      $set: { 
+        role: role || existingUser?.role || "User",
+        currency: currency || existingUser?.currency || "BDT",
+        bank: bank || existingUser?.bank || "Not Linked",
+        kycStatus: existingUser?.kycStatus || "pending", 
+        kycDetails: {
+          ...kycData, 
+        },
+        // If these fields are missing in the database, set defaults. 
+        // If they exist, keep the original values (existingUser?.field)
+        balance: existingUser?.balance ?? 0,
+        history: existingUser?.history ?? [],
+        wallet: existingUser?.wallet ?? {
+          totalIncome: 0,
+          totalExpense: 0,
+          status: "active"
+        },
+        microsaving: existingUser?.microsaving ?? {
+          savingsBalance: 0,
+          goals: []
+        },
+        updatedAt: new Date()
+      },
+      $setOnInsert: {
+        createdAt: new Date()
+      }
+    };
+
+    // Use updateOne with upsert: true
     const result = await usersCollection.updateOne(
       { email: email }, 
-      { 
-        $set: { 
-          role: role || "User",
-          currency: currency || "USD", // কারেন্সি সরাসরি মেইন অবজেক্টে সেভ হবে
-          kycStatus: "pending", 
-          kycDetails: {
-            ...kycData, // এতে fullName, nationality, permanentAddress ইত্যাদি থাকবে
-          },
-          kycSubmittedAt: new Date(),
-          updatedAt: new Date()
-        } 
-      }
+      updatePayload,
+      { upsert: true }
     );
-
-    if (result.matchedCount === 0) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
 
     return NextResponse.json({ 
       success: true, 
-      message: "KYC data submitted and status set to pending." 
+      message: "Profile updated and financial fields ensured." 
     }, { status: 200 });
 
   } catch (error) {
