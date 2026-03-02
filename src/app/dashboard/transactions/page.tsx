@@ -2,20 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight, ArrowDownLeft, Search, Filter, Loader2 } from "lucide-react";
-// ইউজার ইমেইল পাওয়ার জন্য আপনার Auth হুক (যেমন: useSession বা localStorage)
-// এখানে আমি ডেমো হিসেবে একটি ইমেইল ধরছি
-const USER_EMAIL = "user@example.com"; 
+import { ArrowUpRight, ArrowDownLeft, Loader2, Download, FileText, Printer } from "lucide-react";
+import { useSession } from "next-auth/react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function TransactionsPage() {
+  const { data: session } = useSession();
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // ১. ডাটাবেজ থেকে ট্রানজেকশন ফেচ করা
+  const userEmail = session?.user?.email;
+
   useEffect(() => {
     async function fetchTransactions() {
       try {
-        const res = await fetch(`/api/user?email=${USER_EMAIL}`); // আপনার GET API রুট
+        // 
+        const res = await fetch(`/api/kyc?email=${session.user.email}`);  
         const data = await res.json();
         setUserData(data);
       } catch (error) {
@@ -24,71 +27,146 @@ export default function TransactionsPage() {
         setLoading(false);
       }
     }
-    fetchTransactions();
-  }, []);
+    if (userEmail) fetchTransactions();
+  }, [userEmail]);
+
+  const transactions = userData?.history || [];
+
+  // transection slip
+  const downloadSingleReceipt = (tx: any) => {
+    const doc = new jsPDF({
+        unit: "mm",
+        format: [100, 150] 
+    });
+
+    doc.setFontSize(16);
+    doc.setTextColor(30, 80, 255);
+    doc.text("Transaction Receipt", 10, 20);
+    
+    doc.setDrawColor(200, 200, 200);
+    doc.line(10, 25, 90, 25);
+
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Date: ${new Date(tx.date).toLocaleString()}`, 10, 35);
+    doc.text(`Transaction ID: ${tx.transactionId}`, 10, 42);
+    
+    doc.setFontSize(12);
+    doc.setTextColor(0);
+    doc.text(`Description: ${tx.description || tx.type}`, 10, 55);
+    doc.text(`Amount: ${tx.amount} ${tx.currency}`, 10, 65);
+    doc.text(`Status: ${tx.status || "Completed"}`, 10, 75);
+
+    doc.setFontSize(8);
+    doc.text("Thank you for using NovaPay", 10, 100);
+
+    doc.save(`Receipt_${tx.transactionId}.pdf`);
+  };
+
+ 
+  const downloadFullStatement = () => {
+    const doc = new jsPDF();
+    doc.text("Full Account Statement", 14, 20);
+    
+    const tableRows = transactions.map((tx: any) => [
+      new Date(tx.date).toLocaleDateString(),
+      tx.transactionId,
+      tx.type,
+      `${tx.amount} ${tx.currency}`,
+      tx.status || "Completed"
+    ]);
+
+    autoTable(doc, {
+      startY: 30,
+      head: [["Date", "ID", "Type", "Amount", "Status"]],
+      body: tableRows,
+      theme: "striped"
+    });
+
+    doc.save(`Statement_${userEmail}.pdf`);
+  };
 
   if (loading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin text-blue-600" /></div>;
 
-  // ২. ক্যালকুলেশন (আপনার পাঠানো JSON ফরম্যাট অনুযায়ী)
-  const transactions = userData?.history || [];
-  const totalIncome = transactions
-    .filter((t: any) => t.type === "deposit")
-    .reduce((acc: number, t: any) => acc + t.amount, 0);
-
-  const totalExpense = transactions
-    .filter((t: any) => t.type === "withdraw")
-    .reduce((acc: number, t: any) => acc + t.amount, 0);
-
-  const netBalance = userData?.balance || 0;
-
   return (
-    <motion.div initial="hidden" animate="show" className="space-y-8 px-1 sm:px-2">
-      {/* Header & Search (আগের মতোই থাকবে) ... */}
-
-      {/* Summary Cards - ডাইনামিক ভ্যালু */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <SummaryCard label="Total Income" value={`${totalIncome} BDT`} color="text-green-500" />
-        <SummaryCard label="Total Expense" value={`${totalExpense} BDT`} color="text-red-500" />
-        <SummaryCard label="Net Balance" value={`${netBalance} BDT`} color="text-blue-500" />
-      </div>
-
-      {/* Transactions List - লুপ ঘুরিয়ে ডাটা দেখানো */}
-      <div className="rounded-2xl bg-white/80 dark:bg-[#0c1a2b]/80 border border-blue-200 dark:border-blue-900 shadow-md overflow-hidden">
-        {transactions.length > 0 ? (
-          // উল্টো করে দেখাচ্ছি যাতে লেটেস্ট ট্রানজেকশন আগে আসে
-          [...transactions].reverse().map((tx: any, i: number) => {
-            const isIncome = tx.type === "deposit";
-            return (
-              <div key={tx.transactionId} className="flex items-center justify-between px-6 py-4 border-b dark:border-blue-900">
-                <div className="flex items-center gap-4">
-                  <div className={`p-3 rounded-xl ${isIncome ? "bg-green-100 dark:bg-green-900/30" : "bg-red-100 dark:bg-red-900/30"}`}>
-                    {isIncome ? <ArrowDownLeft className="text-green-500" size={18} /> : <ArrowUpRight className="text-red-500" size={18} />}
-                  </div>
-                  <div>
-                    <p className="font-medium text-blue-900 dark:text-blue-100">{tx.description || tx.type}</p>
-                    <p className="text-xs text-blue-500">{new Date(tx.date).toLocaleDateString()}</p>
-                  </div>
-                </div>
-                <div className={`font-semibold ${isIncome ? "text-green-500" : "text-red-500"}`}>
-                  {isIncome ? "+" : "-"}{tx.amount} {tx.currency}
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <p className="p-10 text-center text-gray-500">No transactions found.</p>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8 p-4 max-w-6xl mx-auto">
+      
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Account Statement</h1>
+          <p className="text-gray-500 text-sm">View and download your recent activity</p>
+        </div>
+        
+        {transactions.length > 0 && (
+          <button 
+            onClick={downloadFullStatement}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold transition-all shadow-lg shadow-blue-500/20"
+          >
+            <Download size={18} />
+            Download All
+          </button>
         )}
       </div>
-    </motion.div>
-  );
-}
 
-// ছোট কম্পোনেন্ট কার্ডের জন্য
-function SummaryCard({ label, value, color }: any) {
-  return (
-    <div className="p-6 rounded-2xl bg-white dark:bg-[#0c1a2b] border border-blue-200 dark:border-blue-900 shadow-md">
-      <p className="text-sm text-blue-600 dark:text-blue-400">{label}</p>
-      <h2 className={`text-2xl font-bold ${color}`}>{value}</h2>
-    </div>
+      {/* Transactions List */}
+      <div className="rounded-2xl bg-white dark:bg-[#0c1a2b] border border-blue-100 dark:border-blue-900 shadow-xl overflow-hidden">
+        <div className="p-6 border-b dark:border-blue-900 bg-gray-50/50 dark:bg-blue-900/10 flex items-center gap-2">
+          <FileText className="text-blue-600" size={20} />
+          <h3 className="font-bold text-blue-900 dark:text-blue-100">Recent Transactions</h3>
+        </div>
+
+        <div className="overflow-x-auto">
+          {transactions.length > 0 ? (
+            <div className="min-w-full divide-y dark:divide-blue-900">
+              {[...transactions].reverse().map((tx: any) => {
+                const isIncome = tx.type?.toLowerCase().includes("deposit") || tx.type?.toLowerCase().includes("receive");
+                
+                return (
+                  <div key={tx.transactionId} className="flex items-center justify-between px-6 py-5 hover:bg-gray-50 dark:hover:bg-blue-900/5 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-full ${isIncome ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/20" : "bg-rose-100 text-rose-600 dark:bg-rose-900/20"}`}>
+                        {isIncome ? <ArrowDownLeft size={20} /> : <ArrowUpRight size={20} />}
+                      </div>
+                      <div>
+                        <p className="font-bold text-gray-800 dark:text-gray-100">
+                          {tx.description || tx.type}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          ID: {tx.transactionId} • {new Date(tx.date).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-6 text-right">
+                      <div>
+                        <p className={`text-lg font-bold ${isIncome ? "text-emerald-500" : "text-rose-500"}`}>
+                          {isIncome ? "+" : "-"}{tx.amount} <span className="text-sm font-normal text-gray-400">{tx.currency}</span>
+                        </p>
+                        <p className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">{tx.status || "Completed"}</p>
+                      </div>
+
+                     
+                      <button 
+                        onClick={() => downloadSingleReceipt(tx)}
+                        title="Download Receipt"
+                        className="p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-blue-600 hover:text-white transition-all"
+                      >
+                        <Printer size={18} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="py-20 text-center">
+              <FileText size={40} className="mx-auto text-gray-400 mb-4" />
+              <p className="text-gray-500 font-medium">No activity found in your history.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
   );
 }
