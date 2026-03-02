@@ -4,7 +4,7 @@
   import { motion } from "framer-motion"
   import Swal from "sweetalert2"
   import { useSession, signIn } from "next-auth/react"
-  import { FaStar, FaWallet, FaMoneyBillWave, FaCoins, FaChartLine } from "react-icons/fa"
+  import { FaStar, FaQuoteLeft } from "react-icons/fa"
   import "sweetalert2/dist/sweetalert2.min.css"
 
   type ReviewType = {
@@ -94,18 +94,6 @@
       formRef.current?.scrollIntoView({ behavior: "smooth" })
     }
 
-    const Stars = ({ count }: { count: number }) => (
-      <div className="flex gap-1">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <FaStar
-            key={i}
-            size={14}
-            className={i < count ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"}
-          />
-        ))}
-      </div>
-    )
-
     // ── Stats calculations ──
     const total = reviews.length
     const avg = total > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / total).toFixed(1) : "0.0"
@@ -118,12 +106,16 @@
     return (
       <div className="relative min-h-screen bg-[#F0F7FF] dark:bg-[#040911] transition-colors overflow-hidden">
 
-        {/* Blob animations */}
+        {/* Animations */}
         <style dangerouslySetInnerHTML={{ __html: `
           @keyframes blob1 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(40px,-30px) scale(1.08)} 66%{transform:translate(-20px,20px) scale(0.95)} }
           @keyframes blob2 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-30px,40px) scale(1.05)} 66%{transform:translate(20px,-20px) scale(0.97)} }
           .blob1 { animation: blob1 12s ease-in-out infinite; }
           .blob2 { animation: blob2 15s ease-in-out infinite; }
+          @keyframes shimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
+          .card-shimmer::after { content:''; position:absolute; inset:0; background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.08) 50%,transparent 60%);
+  transform:translateX(-100%); border-radius:inherit; }
+          .card-shimmer:hover::after { animation: shimmer 0.7s ease forwards; }
         `}} />
 
         {/* Background blobs */}
@@ -180,7 +172,7 @@
           </motion.button>
         </div>
 
-        {/* ── STATS SECTION ── */}
+        {/* Stats Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -188,8 +180,6 @@
           className="relative z-10 max-w-3xl mx-auto px-6 mb-14"
         >
           <div className="bg-white/70 dark:bg-white/5 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-3xl p-8 shadow-xl flex flex-col md:flex-row items-center gap-8">
-
-            {/* Left — big average */}
             <div className="flex flex-col items-center min-w-[120px]">
               <span className="text-7xl font-black bg-gradient-to-b from-[#4DA1FF] to-[#1E50FF] bg-clip-text text-transparent leading-none">
                 {avg}
@@ -205,11 +195,7 @@
               </div>
               <p className="text-xs text-gray-400 mt-1">{total} review{total !== 1 ? "s" : ""}</p>
             </div>
-
-            {/* Divider */}
             <div className="hidden md:block w-px h-24 bg-gray-200 dark:bg-white/10" />
-
-            {/* Right — distribution bars */}
             <div className="flex-1 w-full flex flex-col gap-2">
               {distrib.map(({ star, count: cnt, pct }) => (
                 <div key={star} className="flex items-center gap-3">
@@ -227,48 +213,92 @@
                 </div>
               ))}
             </div>
-
           </div>
         </motion.div>
 
-        {/* Reviews Grid */}
+        {/* ── PREMIUM REVIEW CARDS ── */}
         <div className="relative w-11/12 max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6 pb-16 z-10">
-          {reviews.map((review, i) => (
-            <div
-              key={i}
-              className="bg-white/60 dark:bg-white/5 border border-white/30 dark:border-white/10 rounded-2xl p-6 shadow-md"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <img
-                  src={review.avatar || "/avatars/default.png"}
-                  alt={review.name}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <div>
-                  <p className="font-semibold text-gray-800 dark:text-white">{review.name}</p>
-                  <p className="text-xs text-gray-400">{review.email}</p>
+          {reviews.map((review, i) => {
+            const isOwn = review.email === currentUserEmail
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08 }}
+                whileHover={{ y: -4, scale: 1.02 }}
+                className={`card-shimmer relative overflow-hidden rounded-2xl p-6 flex flex-col gap-4 shadow-lg transition-shadow hover:shadow-xl
+                  ${isOwn
+                    ? "bg-gradient-to-br from-[#4DA1FF]/15 to-[#1E50FF]/10 border border-[#4DA1FF]/40 dark:from-[#4DA1FF]/10 dark:to-[#1E50FF]/5 dark:border-[#4DA1FF]/30"
+                    : "bg-white/70 dark:bg-white/5 border border-white/40 dark:border-white/10 backdrop-blur-xl"
+                  }`}
+              >
+                {/* Your Review badge */}
+                {isOwn && (
+                  <span className="absolute top-4 right-4 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#4DA1FF]/20 text-[#4DA1FF] border border-[#4DA1FF]/30 tracking-wide">
+                    YOUR REVIEW
+                  </span>
+                )}
+
+                {/* Quote icon */}
+                <FaQuoteLeft size={22} className="text-[#4DA1FF]/30 dark:text-[#4DA1FF]/20" />
+
+                {/* Comment */}
+                <p className="text-gray-700 dark:text-gray-200 text-sm leading-relaxed flex-1">
+                  {review.comment}
+                </p>
+
+                {/* Stars */}
+                <div className="flex gap-1">
+                  {Array.from({ length: 5 }).map((_, s) => (
+                    <FaStar
+                      key={s}
+                      size={13}
+                      className={s < review.rating ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"}
+                    />
+                  ))}
                 </div>
-              </div>
-              <Stars count={review.rating} />
-              <p className="mt-2 text-gray-600 dark:text-gray-300 text-sm">{review.comment}</p>
-              {review.email === currentUserEmail && (
-                <div className="flex gap-2 mt-3">
-                  <button
-                    onClick={() => editReview(i)}
-                    className="px-3 py-1 text-xs bg-[#4DA1FF] text-white rounded-lg hover:bg-[#1E50FF] transition"
-                  >
-                    Update
-                  </button>
-                  <button
-                    onClick={() => deleteReview(i)}
-                    className="px-3 py-1 text-xs bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-                  >
-                    Delete
-                  </button>
+
+                {/* Divider */}
+                <div className="h-px bg-gray-200 dark:bg-white/10" />
+
+                {/* Author row */}
+                <div className="flex items-center gap-3">
+                  {/* Avatar with glowing ring */}
+                  <div className={`p-0.5 rounded-full ${isOwn ? "bg-gradient-to-br from-[#4DA1FF] to-[#1E50FF]" : "bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700"}`}>
+                    <img
+                      src={review.avatar || "/avatars/default.png"}
+                      alt={review.name}
+                      className="w-10 h-10 rounded-full object-cover block"
+                      onError={e => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(review.name)}&background=1E50FF&color=fff` }}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-gray-800 dark:text-white text-sm truncate">{review.name}</p>
+                    <p className="text-[11px] text-gray-400 truncate">{review.email}</p>
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+
+                {/* Edit / Delete — only for own review */}
+                {isOwn && (
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      onClick={() => editReview(i)}
+                      className="flex-1 py-1.5 text-xs font-medium rounded-xl bg-[#4DA1FF]/15 text-[#4DA1FF] border border-[#4DA1FF]/30 hover:bg-[#4DA1FF]/25 transition"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteReview(i)}
+                      className="flex-1 py-1.5 text-xs font-medium rounded-xl bg-red-500/10 text-red-400 border border-red-400/30 hover:bg-red-500/20 transition"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </motion.div>
+            )
+          })}
         </div>
 
         {/* Review Form */}
