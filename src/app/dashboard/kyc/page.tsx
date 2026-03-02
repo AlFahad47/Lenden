@@ -12,13 +12,13 @@ export default function KYCPage() {
   const [kycStatus, setKycStatus] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // ইউজারের বর্তমান স্ট্যাটাস চেক করা
   useEffect(() => {
     const checkStatus = async () => {
       if (session?.user?.email) {
         try {
           const res = await fetch(`/api/kyc?email=${session.user.email}`);
           const data = await res.json();
-          // ডাটাবেস থেকে kycStatus ফিল্ডটি নেওয়া হচ্ছে
           setKycStatus(data.kycStatus || null);
         } catch (error) {
           console.error("Failed to fetch status");
@@ -48,13 +48,13 @@ export default function KYCPage() {
       if (response.ok) {
         Swal.fire({
           title: "KYC Submitted!",
-          text: "Your verification is now under review.",
+          text: "Verification is under review. Your account features are being activated.",
           icon: "success",
         });
         setKycStatus("pending"); 
       }
     } catch (error) {
-      Swal.fire("Error", "Connection error", "error");
+      Swal.fire("Error", "Submission failed", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -66,24 +66,27 @@ export default function KYCPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-[#04090f] transition-colors duration-500 px-6 py-16">
       <div className="max-w-4xl mx-auto">
         
+        {/* কেস ১: পেন্ডিং স্ট্যাটাস */}
         {kycStatus === "pending" && (
           <StatusCard 
             title="Verification Pending" 
-            desc="We are reviewing your documents. This usually takes 24-48 hours."
+            desc="We are reviewing your documents. Balance and Wallet features will be fully unlocked after approval."
             icon="⏳"
             color="text-yellow-500"
           />
         )}
 
+        {/* কেস ২: অ্যাপ্রুভড স্ট্যাটাস */}
         {kycStatus === "approved" && (
           <StatusCard 
             title="Account Verified" 
-            desc="Congratulations! Your identity has been successfully verified."
+            desc="Congratulations! Your identity has been verified. Welcome to NovaPay Wallet."
             icon="✅"
             color="text-green-500"
           />
         )}
 
+        {/* কেস ৩: ফর্ম ফিলাপ করা (যদি স্ট্যাটাস না থাকে) */}
         {!kycStatus && (
           <>
             <motion.h1 initial={{ opacity: 0, y: -40 }} animate={{ opacity: 1, y: 0 }} className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-[#0095ff] to-[#0061ff] bg-clip-text text-transparent">
@@ -126,7 +129,7 @@ export default function KYCPage() {
                 </Section>
 
                 <motion.button disabled={isSubmitting} type="submit" className="w-full mt-8 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-[#0095ff] to-[#0061ff] shadow-lg disabled:opacity-50">
-                  {isSubmitting ? "Processing..." : `Submit ${role} KYC`}
+                  {isSubmitting ? "Submitting..." : `Submit ${role} KYC`}
                 </motion.button>
               </motion.form>
             </AnimatePresence>
@@ -137,7 +140,8 @@ export default function KYCPage() {
   );
 }
 
-// --- Helper Components (Keep these the same) ---
+// --- হেল্পার কম্পোনেন্টসমূহ ---
+
 function StatusCard({ title, desc, icon, color }: any) {
   return (
     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-[#0c1a2b] p-10 rounded-3xl border border-gray-200 dark:border-blue-700/40 text-center shadow-2xl">

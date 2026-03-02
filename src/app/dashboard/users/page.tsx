@@ -39,6 +39,7 @@ export default function UserDashboard() {
   const [userData, setUserData] = useState<UserType>({});
   const [loading, setLoading] = useState(true);
 
+  // Fetch User Data from MongoDB
   const fetchUserData = async () => {
     if (session?.user?.email) {
       try {
@@ -57,7 +58,7 @@ export default function UserDashboard() {
           currency: dbData.currency || "BDT",
           idNo: kyc.idNumber || "Not Set",
           nid: kyc.idNumber || "Not Set",
-          bank: dbData.bank || "Not Linked",
+          bank: dbData.bank || "Not Linked", // Fetching bank field from root level
         });
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -75,40 +76,50 @@ export default function UserDashboard() {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
+  // Save changes including Bank Account Info
   const handleSave = async () => {
-  try {
-    const response = await fetch("/api/kyc", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: userData.email,
-        fullName: userData.name, 
-        phone: userData.phone,
-        nationality: userData.country,
-        idNumber: userData.idNo,
-        currency: userData.currency,
-        bank: userData.bank,
-      }),
-    });
-
-    if (response.ok) {
-      setIsOpen(false);
-      await Swal.fire({
-        title: "Profile Updated!",
-        text: "Your information has been saved successfully .",
-        icon: "success",
-        confirmButtonColor: "#0095ff",
-        background: "#0c1a2b",
-        color: "#fff",
+    try {
+      // Show loading state while processing
+      Swal.fire({
+        title: "Saving...",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
       });
-      fetchUserData(); 
-    } else {
-      Swal.fire("Error", "Failed to save changes", "error");
+
+      const response = await fetch("/api/kyc", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: userData.email,
+          fullName: userData.name, 
+          phone: userData.phone,
+          nationality: userData.country,
+          idNumber: userData.idNo,
+          currency: userData.currency,
+          bank: userData.bank, // Passing bank data to backend
+        }),
+      });
+
+      if (response.ok) {
+        setIsOpen(false);
+        await Swal.fire({
+          title: "Profile Updated!",
+          text: "Your information has been saved successfully.",
+          icon: "success",
+          confirmButtonColor: "#0095ff",
+          background: "#0c1a2b",
+          color: "#fff",
+        });
+        fetchUserData(); // Refresh dashboard with new data
+      } else {
+        Swal.fire("Error", "Failed to save changes", "error");
+      }
+    } catch (error) {
+      Swal.fire("Error", "Connection lost", "error");
     }
-  } catch (error) {
-    Swal.fire("Error", "Connection lost", "error");
-  }
-};
+  };
 
   if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center dark:bg-[#04090f] dark:text-white">
@@ -265,7 +276,6 @@ function Info({ icon: Icon, label, value }: { icon: React.ElementType; label: st
   );
 }
 
-// Input component updated with readOnly prop support
 function Input({ label, name, value, onChange, readOnly = false }: { label: string; name: string; value: string; onChange: React.ChangeEventHandler<HTMLInputElement>; readOnly?: boolean }) {
   return (
     <div>
