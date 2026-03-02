@@ -1,11 +1,10 @@
-
-  "use client";
+ "use client";
   import React, { useState } from "react";
   import { ArrowLeft, ArrowRight } from "lucide-react";
   import {
     FaPaperPlane, FaHandHoldingUsd, FaMoneyBillWave, FaWallet,
     FaMobileAlt, FaReceipt, FaHistory, FaPiggyBank, FaCreditCard,
-    FaSyncAlt, FaLock,
+    FaSyncAlt, FaLock, FaUnlockAlt,
   } from "react-icons/fa";
   import { IconType } from "react-icons";
   import { useSession, signIn } from "next-auth/react";
@@ -44,10 +43,7 @@
     const handlePrev = () => setActiveIndex((prev) => (prev - 1 + total) % total);
 
     const handleItemClick = (index: number, item: MenuItem) => {
-      // Always allow carousel navigation
       setActiveIndex(index);
-
-      // Only navigate if this is already the center item
       if (index !== activeIndex) return;
 
       if (!isLoggedIn) {
@@ -85,8 +81,7 @@
     };
 
     return (
-      <section className="w-full mt-[-12%] bg-gray-50 dark:bg-[#0A0E17] py-16 md:py-20 overflow-hidden select-none border-y border-gray-200 dark:border-gray-800/60 transition-colors
-  duration-300">
+      <section className="w-full mt-[-12%] bg-gray-50 dark:bg-[#0A0E17] pb-10 overflow-hidden select-none border-y border-gray-200 dark:border-gray-800/60 transition-colors duration-300">
 
         <svg width="0" height="0" className="absolute">
           <defs>
@@ -98,7 +93,9 @@
         </svg>
 
         <div className="max-w-[1400px] mx-auto px-2 md:px-4 relative flex flex-col items-center">
-          <div className="relative w-full h-[280px] md:h-[340px] flex items-center justify-between">
+
+          {/* Carousel */}
+          <div className="relative w-full h-[280px] md:h-[340px] flex items-center justify-between py-16 md:py-20">
 
             {/* Left Arrow */}
             <button
@@ -131,15 +128,11 @@
                     onClick={() => handleItemClick(index, item)}
                     className={`absolute left-1/2 top-1/2 flex flex-col items-center justify-center transition-all duration-[600ms] ease-[cubic-bezier(0.25,0.8,0.25,1)] w-[160px] md:w-[200px]
   ${
-                      isCenter && locked
-                        ? "cursor-not-allowed"
-                        : "cursor-pointer"
+                      isCenter && locked ? "cursor-not-allowed" : "cursor-pointer"
                     }`}
                     style={getItemStyles(index)}
                   >
-                    {/* Icon wrapper */}
                     <div className="relative mb-4 md:mb-5 flex items-center justify-center">
-
                       <div className={`transition-all duration-500 flex items-center justify-center ${
                         isCenter
                           ? "scale-110 drop-shadow-[0_8px_16px_rgba(37,99,235,0.3)] dark:drop-shadow-[0_8px_16px_rgba(96,165,250,0.2)]"
@@ -152,12 +145,9 @@
                         />
                       </div>
 
-                      {/* Lock badge */}
                       {locked && (
                         <div className={`absolute flex items-center justify-center rounded-full bg-white dark:bg-[#1a2235] shadow-md border border-gray-200 dark:border-gray-700 ${
-                          isCenter
-                            ? "-bottom-2 -right-2 w-7 h-7"
-                            : "-bottom-1 -right-1 w-5 h-5"
+                          isCenter ? "-bottom-2 -right-2 w-7 h-7" : "-bottom-1 -right-1 w-5 h-5"
                         }`}>
                           <FaLock
                             size={isCenter ? 13 : 9}
@@ -167,7 +157,6 @@
                       )}
                     </div>
 
-                    {/* Label */}
                     <span className={`text-center transition-all duration-300 leading-tight ${
                       locked ? "opacity-40" : ""
                     } ${
@@ -178,17 +167,14 @@
                       {item.name}
                     </span>
 
-                    {/* "Tap to open" hint — only on center when logged in */}
                     {isCenter && isLoggedIn && (
                       <span className="mt-2 text-[11px] text-[#4DA1FF]/70 font-medium animate-pulse">
                         Tap to open →
                       </span>
                     )}
-
                   </div>
                 );
               })}
-
             </div>
 
             {/* Right Arrow */}
@@ -199,8 +185,52 @@
             >
               <ArrowRight strokeWidth={2} size={32} />
             </button>
-
           </div>
+
+          {/* ── CTA STRIP ── */}
+          {!isLoggedIn ? (
+            <div className="w-full max-w-2xl mx-auto px-4 pb-4">
+              <div className="relative overflow-hidden rounded-2xl px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-[#4DA1FF]/10 to-[#1E50FF]/10
+  border border-[#4DA1FF]/20 dark:from-[#4DA1FF]/8 dark:to-[#1E50FF]/8 dark:border-[#4DA1FF]/15">
+
+                {/* Background glow */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#4DA1FF]/5 to-transparent pointer-events-none" />
+
+                <div className="flex items-center gap-3 z-10">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#4DA1FF] to-[#1E50FF] flex items-center justify-center shadow-md shadow-[#1E50FF]/20 shrink-0">
+                    <FaLock size={14} className="text-white" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-800 dark:text-white text-sm">
+                      {total} features locked
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Sign in to access Send Money, Pay Bills, and more
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => signIn("google")}
+                  className="z-10 shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] text-white text-sm font-bold shadow-lg
+  shadow-[#1E50FF]/25 hover:shadow-[#1E50FF]/40 hover:scale-105 transition-all active:scale-95"
+                >
+                  <FaUnlockAlt size={13} />
+                  Unlock All Features
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="w-full max-w-2xl mx-auto px-4 pb-4">
+              <div className="rounded-2xl px-6 py-3 flex items-center justify-center gap-2 bg-emerald-500/8 border border-emerald-500/20">
+                <FaUnlockAlt size={13} className="text-emerald-500" />
+                <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                  All {total} features unlocked — welcome, {session.user?.name?.split(" ")[0]}!
+                </p>
+              </div>
+            </div>
+          )}
+
         </div>
       </section>
     );
