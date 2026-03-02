@@ -97,10 +97,23 @@
     const Stars = ({ count }: { count: number }) => (
       <div className="flex gap-1">
         {Array.from({ length: 5 }).map((_, i) => (
-          <FaStar key={i} size={14} className={i < count ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"} />
+          <FaStar
+            key={i}
+            size={14}
+            className={i < count ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"}
+          />
         ))}
       </div>
     )
+
+    // ── Stats calculations ──
+    const total = reviews.length
+    const avg = total > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / total).toFixed(1) : "0.0"
+    const distrib = [5, 4, 3, 2, 1].map(star => ({
+      star,
+      count: reviews.filter(r => r.rating === star).length,
+      pct: total > 0 ? Math.round((reviews.filter(r => r.rating === star).length / total) * 100) : 0,
+    }))
 
     return (
       <div className="relative min-h-screen bg-[#F0F7FF] dark:bg-[#040911] transition-colors overflow-hidden">
@@ -167,12 +180,70 @@
           </motion.button>
         </div>
 
+        {/* ── STATS SECTION ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+          className="relative z-10 max-w-3xl mx-auto px-6 mb-14"
+        >
+          <div className="bg-white/70 dark:bg-white/5 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-3xl p-8 shadow-xl flex flex-col md:flex-row items-center gap-8">
+
+            {/* Left — big average */}
+            <div className="flex flex-col items-center min-w-[120px]">
+              <span className="text-7xl font-black bg-gradient-to-b from-[#4DA1FF] to-[#1E50FF] bg-clip-text text-transparent leading-none">
+                {avg}
+              </span>
+              <div className="flex gap-1 mt-2">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <FaStar
+                    key={i}
+                    size={16}
+                    className={i < Math.round(parseFloat(avg)) ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"}
+                  />
+                ))}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">{total} review{total !== 1 ? "s" : ""}</p>
+            </div>
+
+            {/* Divider */}
+            <div className="hidden md:block w-px h-24 bg-gray-200 dark:bg-white/10" />
+
+            {/* Right — distribution bars */}
+            <div className="flex-1 w-full flex flex-col gap-2">
+              {distrib.map(({ star, count: cnt, pct }) => (
+                <div key={star} className="flex items-center gap-3">
+                  <span className="text-xs text-gray-500 dark:text-gray-400 w-4 text-right">{star}</span>
+                  <FaStar size={11} className="text-yellow-400 shrink-0" />
+                  <div className="flex-1 h-2 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${pct}%` }}
+                      transition={{ duration: 0.8, delay: 0.4 + (5 - star) * 0.07, ease: "easeOut" }}
+                      className="h-full rounded-full bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF]"
+                    />
+                  </div>
+                  <span className="text-xs text-gray-400 w-6 text-right">{cnt}</span>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </motion.div>
+
         {/* Reviews Grid */}
         <div className="relative w-11/12 max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6 pb-16 z-10">
           {reviews.map((review, i) => (
-            <div key={i} className="bg-white/60 dark:bg-white/5 border border-white/30 dark:border-white/10 rounded-2xl p-6 shadow-md">
+            <div
+              key={i}
+              className="bg-white/60 dark:bg-white/5 border border-white/30 dark:border-white/10 rounded-2xl p-6 shadow-md"
+            >
               <div className="flex items-center gap-3 mb-3">
-                <img src={review.avatar || "/avatars/default.png"} alt={review.name} className="w-10 h-10 rounded-full object-cover" />
+                <img
+                  src={review.avatar || "/avatars/default.png"}
+                  alt={review.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
                 <div>
                   <p className="font-semibold text-gray-800 dark:text-white">{review.name}</p>
                   <p className="text-xs text-gray-400">{review.email}</p>
@@ -182,8 +253,18 @@
               <p className="mt-2 text-gray-600 dark:text-gray-300 text-sm">{review.comment}</p>
               {review.email === currentUserEmail && (
                 <div className="flex gap-2 mt-3">
-                  <button onClick={() => editReview(i)} className="px-3 py-1 text-xs bg-[#4DA1FF] text-white rounded-lg hover:bg-[#1E50FF] transition">Update</button>
-                  <button onClick={() => deleteReview(i)} className="px-3 py-1 text-xs bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Delete</button>
+                  <button
+                    onClick={() => editReview(i)}
+                    className="px-3 py-1 text-xs bg-[#4DA1FF] text-white rounded-lg hover:bg-[#1E50FF] transition"
+                  >
+                    Update
+                  </button>
+                  <button
+                    onClick={() => deleteReview(i)}
+                    className="px-3 py-1 text-xs bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                  >
+                    Delete
+                  </button>
                 </div>
               )}
             </div>
@@ -194,14 +275,30 @@
         <div ref={formRef} className="max-w-xl mx-auto px-6 pb-24 z-10 relative">
           <div className="bg-white/60 dark:bg-white/5 border border-white/30 dark:border-white/10 rounded-2xl p-8 shadow-xl">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 text-center">Leave a Review</h2>
-            <input type="text" placeholder="Your Name" value={session?.user?.name || name} onChange={e => setName(e.target.value)} readOnly={!!session}
+            <input
+              type="text"
+              placeholder="Your Name"
+              value={session?.user?.name || name}
+              onChange={e => setName(e.target.value)}
+              readOnly={!!session}
               className="w-full mb-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2
-  focus:ring-[#4DA1FF]/50" />
-            <input type="email" value={session?.user?.email || ""} readOnly placeholder="your@email.com"
-              className="w-full mb-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 focus:outline-none" />
-            <textarea placeholder="Share your experience..." value={comment} onChange={e => setComment(e.target.value)} rows={4}
+  focus:ring-[#4DA1FF]/50"
+            />
+            <input
+              type="email"
+              value={session?.user?.email || ""}
+              readOnly
+              placeholder="your@email.com"
+              className="w-full mb-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 focus:outline-none"
+            />
+            <textarea
+              placeholder="Share your experience..."
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+              rows={4}
               className="w-full mb-3 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2
-  focus:ring-[#4DA1FF]/50 resize-none" />
+  focus:ring-[#4DA1FF]/50 resize-none"
+            />
             <div className="flex justify-center gap-3 mb-5">
               {Array.from({ length: 5 }).map((_, i) => (
                 <FaStar
@@ -214,9 +311,12 @@
                 />
               ))}
             </div>
-
-            <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={submitReview}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] text-white font-semibold shadow-lg shadow-[#1E50FF]/30">
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={submitReview}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] text-white font-semibold shadow-lg shadow-[#1E50FF]/30"
+            >
               {editingIndex !== null ? "Update Review" : "Submit Review"}
             </motion.button>
           </div>
