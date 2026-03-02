@@ -1,214 +1,94 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight, ArrowDownLeft, Search, Filter } from "lucide-react";
-
-const transactions = [
-  {
-    id: 1,
-    name: "Stripe Payment",
-    type: "income",
-    amount: 1250,
-    date: "Feb 28, 2026",
-  },
-  {
-    id: 2,
-    name: "Netflix Subscription",
-    type: "expense",
-    amount: 15,
-    date: "Feb 27, 2026",
-  },
-  {
-    id: 3,
-    name: "Client Transfer",
-    type: "income",
-    amount: 3200,
-    date: "Feb 25, 2026",
-  },
-  {
-    id: 4,
-    name: "AWS Hosting",
-    type: "expense",
-    amount: 240,
-    date: "Feb 24, 2026",
-  },
-];
-
-const containerVariant = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
-  },
-};
-
-const slideIn = {
-  hidden: { opacity: 0, x: -30 },
-  show: (i: number) => ({
-    opacity: 1,
-    x: 0,
-    transition: {
-      delay: i * 0.08,
-      duration: 0.4,
-      ease: "easeOut",
-    },
-  }),
-};
+import { ArrowUpRight, ArrowDownLeft, Search, Filter, Loader2 } from "lucide-react";
+// ইউজার ইমেইল পাওয়ার জন্য আপনার Auth হুক (যেমন: useSession বা localStorage)
+// এখানে আমি ডেমো হিসেবে একটি ইমেইল ধরছি
+const USER_EMAIL = "user@example.com"; 
 
 export default function TransactionsPage() {
+  const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // ১. ডাটাবেজ থেকে ট্রানজেকশন ফেচ করা
+  useEffect(() => {
+    async function fetchTransactions() {
+      try {
+        const res = await fetch(`/api/user?email=${USER_EMAIL}`); // আপনার GET API রুট
+        const data = await res.json();
+        setUserData(data);
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchTransactions();
+  }, []);
+
+  if (loading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin text-blue-600" /></div>;
+
+  // ২. ক্যালকুলেশন (আপনার পাঠানো JSON ফরম্যাট অনুযায়ী)
+  const transactions = userData?.history || [];
+  const totalIncome = transactions
+    .filter((t: any) => t.type === "deposit")
+    .reduce((acc: number, t: any) => acc + t.amount, 0);
+
+  const totalExpense = transactions
+    .filter((t: any) => t.type === "withdraw")
+    .reduce((acc: number, t: any) => acc + t.amount, 0);
+
+  const netBalance = userData?.balance || 0;
+
   return (
-    <motion.div
-      variants={containerVariant}
-      initial="hidden"
-      animate="show"
-      className="space-y-8 px-1 sm:px-2"
-    >
-      {/* Page Header */}
-      <motion.div
-        variants={fadeUp}
-        className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
-      >
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-blue-900 dark:text-white">
-            Transactions Overview
-          </h1>
-          <p className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm">
-            Monitor your recent financial activity
-          </p>
-        </div>
+    <motion.div initial="hidden" animate="show" className="space-y-8 px-1 sm:px-2">
+      {/* Header & Search (আগের মতোই থাকবে) ... */}
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
-          <div className="relative w-full sm:w-auto">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-blue-400" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full sm:w-64 pl-9 pr-4 py-2 rounded-lg border 
-              border-blue-200 dark:border-blue-800
-              bg-white dark:bg-[#0c1a2b]
-              text-blue-800 dark:text-blue-200
-              focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg 
-            bg-blue-600 hover:bg-blue-700 
-            text-white text-sm transition w-full sm:w-auto"
-          >
-            <Filter size={16} />
-            Filter
-          </motion.button>
-        </div>
-      </motion.div>
-
-      {/* Summary Cards */}
+      {/* Summary Cards - ডাইনামিক ভ্যালু */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {[
-          { label: "Total Income", value: "$4,450", color: "text-green-500" },
-          { label: "Total Expense", value: "$255", color: "text-red-500" },
-          { label: "Net Balance", value: "$4,195", color: "text-blue-500" },
-        ].map((card) => (
-          <motion.div
-            key={card.label}
-            variants={fadeUp}
-            whileHover={{ y: -6 }}
-            transition={{ type: "spring", stiffness: 200 }}
-            className="p-5 sm:p-6 rounded-2xl 
-            bg-white/70 dark:bg-[#0c1a2b]/80
-            backdrop-blur-xl
-            border border-blue-200 dark:border-blue-900
-            shadow-md"
-          >
-            <p className="text-xs sm:text-sm text-blue-600 dark:text-blue-400">
-              {card.label}
-            </p>
-            <h2 className={`text-xl sm:text-2xl font-bold ${card.color}`}>
-              {card.value}
-            </h2>
-          </motion.div>
-        ))}
+        <SummaryCard label="Total Income" value={`${totalIncome} BDT`} color="text-green-500" />
+        <SummaryCard label="Total Expense" value={`${totalExpense} BDT`} color="text-red-500" />
+        <SummaryCard label="Net Balance" value={`${netBalance} BDT`} color="text-blue-500" />
       </div>
 
-      {/* Transactions List */}
-      <motion.div
-        variants={fadeUp}
-        className="rounded-2xl 
-        bg-white/80 dark:bg-[#0c1a2b]/80
-        backdrop-blur-xl
-        border border-blue-200 dark:border-blue-900
-        shadow-md overflow-hidden"
-      >
-        {transactions.map((tx, i) => {
-          const isIncome = tx.type === "income";
-
-          return (
-            <motion.div
-              key={tx.id}
-              custom={i}
-              variants={slideIn}
-              initial="hidden"
-              animate="show"
-              whileHover={{ scale: 1.01 }}
-              transition={{ type: "spring", stiffness: 150 }}
-              className="flex flex-col sm:flex-row sm:items-center sm:justify-between
-              gap-3 sm:gap-0
-              px-4 sm:px-6 py-4 border-b last:border-none
-              border-blue-100 dark:border-blue-900
-              hover:bg-blue-50 dark:hover:bg-blue-900/30
-              transition"
-            >
-              <div className="flex items-center gap-4">
-                <motion.div
-                  whileHover={{ rotate: isIncome ? -10 : 10 }}
-                  className={`p-3 rounded-xl ${
-                    isIncome
-                      ? "bg-green-100 dark:bg-green-900/30"
-                      : "bg-red-100 dark:bg-red-900/30"
-                  }`}
-                >
-                  {isIncome ? (
-                    <ArrowDownLeft className="text-green-500" size={18} />
-                  ) : (
-                    <ArrowUpRight className="text-red-500" size={18} />
-                  )}
-                </motion.div>
-
-                <div>
-                  <p className="font-medium text-sm sm:text-base text-blue-900 dark:text-blue-100">
-                    {tx.name}
-                  </p>
-                  <p className="text-xs text-blue-500 dark:text-blue-400">
-                    {tx.date}
-                  </p>
+      {/* Transactions List - লুপ ঘুরিয়ে ডাটা দেখানো */}
+      <div className="rounded-2xl bg-white/80 dark:bg-[#0c1a2b]/80 border border-blue-200 dark:border-blue-900 shadow-md overflow-hidden">
+        {transactions.length > 0 ? (
+          // উল্টো করে দেখাচ্ছি যাতে লেটেস্ট ট্রানজেকশন আগে আসে
+          [...transactions].reverse().map((tx: any, i: number) => {
+            const isIncome = tx.type === "deposit";
+            return (
+              <div key={tx.transactionId} className="flex items-center justify-between px-6 py-4 border-b dark:border-blue-900">
+                <div className="flex items-center gap-4">
+                  <div className={`p-3 rounded-xl ${isIncome ? "bg-green-100 dark:bg-green-900/30" : "bg-red-100 dark:bg-red-900/30"}`}>
+                    {isIncome ? <ArrowDownLeft className="text-green-500" size={18} /> : <ArrowUpRight className="text-red-500" size={18} />}
+                  </div>
+                  <div>
+                    <p className="font-medium text-blue-900 dark:text-blue-100">{tx.description || tx.type}</p>
+                    <p className="text-xs text-blue-500">{new Date(tx.date).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <div className={`font-semibold ${isIncome ? "text-green-500" : "text-red-500"}`}>
+                  {isIncome ? "+" : "-"}{tx.amount} {tx.currency}
                 </div>
               </div>
-
-              <motion.div
-                initial={{ scale: 0.9 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2 + i * 0.05 }}
-                className={`font-semibold text-sm sm:text-base ${
-                  isIncome ? "text-green-500" : "text-red-500"
-                }`}
-              >
-                {isIncome ? "+" : "-"}${tx.amount}
-              </motion.div>
-            </motion.div>
-          );
-        })}
-      </motion.div>
+            );
+          })
+        ) : (
+          <p className="p-10 text-center text-gray-500">No transactions found.</p>
+        )}
+      </div>
     </motion.div>
+  );
+}
+
+// ছোট কম্পোনেন্ট কার্ডের জন্য
+function SummaryCard({ label, value, color }: any) {
+  return (
+    <div className="p-6 rounded-2xl bg-white dark:bg-[#0c1a2b] border border-blue-200 dark:border-blue-900 shadow-md">
+      <p className="text-sm text-blue-600 dark:text-blue-400">{label}</p>
+      <h2 className={`text-2xl font-bold ${color}`}>{value}</h2>
+    </div>
   );
 }
