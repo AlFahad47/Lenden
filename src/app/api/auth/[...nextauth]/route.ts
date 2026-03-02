@@ -1,10 +1,18 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import clientPromise from "@/lib/mongodb";
 
 const handler = NextAuth({
   providers: [
+    // Google Login Provider
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    
+    // Email/Password Login Provider
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -43,6 +51,41 @@ const handler = NextAuth({
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
   secret: process.env.NEXTAUTH_SECRET,
+  
+  callbacks: {
+    async signIn({ user, account }) {
+      // Google দিয়ে লগিন করলে ইউজারকে ডাটাবেজে সেভ করা (যদি আগে না থাকে)
+      if (account?.provider === "google") {
+        try {
+          const client = await clientPromise;
+          const db = client.db();
+          
+          const existingUser = await db.collection("users").findOne({ email: user.email });
+          
+          if (!existingUser) {
+            await db.collection("users").insertOne({
+              name: user.name,
+              email: user.email,
+              image: user.image,
+              provider: "google",
+              createdAt: new Date(),
+            });
+          }
+        } catch (error) {
+          console.error("Google Sign-in Error:", error);
+          return false;
+        }
+      }
+      return true;
+    },
+    
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.sub as string;
+      }
+      return session;
+    },
+  },
 });
 
 export { handler as GET, handler as POST };
