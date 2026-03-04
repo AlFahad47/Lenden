@@ -39,11 +39,12 @@ const handler = NextAuth({
           throw new Error("পাসওয়ার্ড ভুল হয়েছে!");
         }
 
-        // লগিন সাকসেস হলে এই ডাটাগুলো সেশনে পাঠাবে
+        // Login success — return these fields to be stored in the JWT token
         return {
           id: user._id.toString(),
           name: user.name,
           email: user.email,
+          role: user.role ?? "User", // include role from database (fallback to "User")
         };
       }
     })
@@ -79,9 +80,19 @@ const handler = NextAuth({
       return true;
     },
     
+    async jwt({ token, user }) {
+      // When the user logs in, NextAuth calls this with the user object
+      // We copy role into the token so it persists across requests
+      if (user) {
+        token.role = (user as { role?: string }).role ?? "User";
+      }
+      return token;
+    },
+
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub as string;
+        session.user.role = token.role as string; // copy role from token into session
       }
       return session;
     },
