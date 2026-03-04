@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { email, type, amount, currency, sender, receiver, description, requestId } = body;
 
-    // basic
+    // basic validation
     if (!email || !amount) {
       return NextResponse.json({ message: "Email and Amount are required" }, { status: 400 });
     }
@@ -16,18 +16,19 @@ export async function POST(request: Request) {
     const db = client.db("novapay_db");
     const usersCollection = db.collection("users");
 
-    // sender
+    // sender check
     const user = await usersCollection.findOne({ email });
     if (!user) return NextResponse.json({ message: "Sender user not found" }, { status: 404 });
 
     const txAmount = Number(amount);
     const normalizedType = type.toLowerCase().trim().replace(/\s+/g, '_');
+    const EXCHANGE_RATE = 120; // ১ ডলার = ১২০ টাকা ধরে
 
-    // expense
+    // expense checking
     const expenseTypes = ["withdraw", "send_money", "bill_payment", "cash_out", "pay_bill", "mobile_recharge"];
     const isExpense = expenseTypes.includes(normalizedType);
 
-    // balance
+    // balance checking
     if (isExpense && (user.balance || 0) < txAmount) {
       return NextResponse.json({ message: "Insufficient balance" }, { status: 400 });
     }
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
     const transactionId = `TXN${Date.now()}${Math.floor(Math.random() * 1000)}`;
 
     // ---------------------------------------------------------
-    //
+    // Recipient & KYC Check Logic
     // ---------------------------------------------------------
     let recipientUser = null;
     if (receiver) {
@@ -45,7 +46,6 @@ export async function POST(request: Request) {
         return NextResponse.json({ message: "Recipient user not found" }, { status: 404 });
       }
 
-      // **KYC check**
       if (recipientUser.kycStatus !== "approved") {
         return NextResponse.json({ 
           message: "Recipient is not KYC verified. Money cannot be sent/requested." 
@@ -54,18 +54,29 @@ export async function POST(request: Request) {
     }
 
     // ---------------------------------------------------------
-    // SEND MONEY LOGIC
+    // SEND MONEY LOGIC (With Currency Conversion)
     // ---------------------------------------------------------
     if (normalizedType === "send_money") {
       if (!receiver) return NextResponse.json({ message: "Recipient email is required" }, { status: 400 });
       if (email === receiver) return NextResponse.json({ message: "Cannot send money to yourself" }, { status: 400 });
 
-      // Transactions Histories
+      // **কারেন্সি লজিক ইমপ্লিমেন্টেশন**
+      const senderCurrency = user.currency || "BDT";
+      const receiverCurrency = recipientUser.currency || "BDT";
+      let receiverFinalAmount = txAmount;
+
+      // এক্সচেঞ্জ রেট ক্যালকুলেশন
+      if (senderCurrency === "USD" && receiverCurrency === "BDT") {
+        receiverFinalAmount = txAmount * EXCHANGE_RATE;
+      } else if (senderCurrency === "BDT" && receiverCurrency === "USD") {
+        receiverFinalAmount = txAmount / EXCHANGE_RATE;
+      }
+
       const senderTx = {
         transactionId,
         type: "Send Money",
         amount: txAmount,
-        currency: currency || "BDT",
+        currency: senderCurrency,
         receiver: receiver,
         description: description || `Sent money to ${receiver}`,
         status: "completed",
@@ -75,15 +86,15 @@ export async function POST(request: Request) {
       const receiverTx = {
         transactionId,
         type: "Receive Money",
-        amount: txAmount,
-        currency: currency || "BDT",
+        amount: Number(receiverFinalAmount.toFixed(2)), // ২ দশমিক ঘর পর্যন্ত
+        currency: receiverCurrency,
         sender: email,
         description: description || `Received money from ${email}`,
         status: "completed",
         date: new Date()
       };
 
-      // Update Sender
+      // Update Sender (ব্যালেন্স কমবে সেন্ডার কারেন্সিতে)
       await usersCollection.updateOne(
         { email: email },
         { 
@@ -93,45 +104,39 @@ export async function POST(request: Request) {
         }
       );
 
-      // Update Receiver
+      // Update Receiver (ব্যালেন্স বাড়বে রিসিভার কারেন্সিতে)
       await usersCollection.updateOne(
         { email: receiver },
         { 
-          $inc: { balance: txAmount },
+          $inc: { balance: Number(receiverFinalAmount.toFixed(2)) },
           $push: { history: { $each: [receiverTx], $position: 0 } } as any,
           $set: { updatedAt: new Date() }
         }
       );
 
-      //  (Request Money এর ক্ষেত্রে)
       if (requestId) {
         try {
-          await db.collection("notifications").deleteOne({
-            _id: new ObjectId(requestId)
-          });
+          await db.collection("notifications").deleteOne({ _id: new ObjectId(requestId) });
         } catch (err) {
           console.error("Failed to delete notification:", err);
         }
       }
 
-      return NextResponse.json({ 
-        success: true, 
-        message: "Money sent successfully", 
-        transactionId 
-      }, { status: 200 });
+      return NextResponse.json({ success: true, message: "Money sent successfully", transactionId }, { status: 200 });
     } 
 
     // ---------------------------------------------------------
-    //  (Deposit, Bill etc.)
+    // (Deposit, Bill etc.) - Other Logic Remains Same
     // ---------------------------------------------------------
     else {
       const balanceAdjustment = isExpense ? -txAmount : txAmount;
+      const currentCurrency = currency || user.currency || "BDT";
 
       const newTransaction = {
         transactionId,
         type: type,
         amount: txAmount,
-        currency: currency || "BDT",
+        currency: currentCurrency,
         status: "completed",
         sender: sender || "Wallet",
         receiver: receiver || "System",
