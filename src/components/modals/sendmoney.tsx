@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Send, User, Banknote, Loader2, Info } from "lucide-react";
 import Swal from "sweetalert2";
@@ -9,9 +9,31 @@ export default function SendMoneyForm({ onSuccess }: { onSuccess?: () => void })
   const [receiverEmail, setReceiverEmail] = useState("");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  
+  const [userCurrency, setUserCurrency] = useState("BDT");
+  const [currencySymbol, setCurrencySymbol] = useState("৳");
+
+  
+  useEffect(() => {
+    const fetchUserCurrency = async () => {
+      if (session?.user?.email) {
+        try {
+          const res = await fetch(`/api/user/update?email=${session.user.email}`);
+          const data = await res.json();
+          if (data.currency) {
+            setUserCurrency(data.currency);
+            setCurrencySymbol(data.currency === "USD" ? "$" : "৳");
+          }
+        } catch (error) {
+          console.error("Currency fetch failed:", error);
+        }
+      }
+    };
+    fetchUserCurrency();
+  }, [session]);
 
   const handleSend = async () => {
-    // validation
     if (!receiverEmail || !amount) {
       return Swal.fire("Error", "Please fill in all fields", "error");
     }
@@ -33,6 +55,7 @@ export default function SendMoneyForm({ onSuccess }: { onSuccess?: () => void })
           email: session?.user?.email,
           type: "send_money",
           amount: Number(amount),
+          currency: userCurrency, 
           receiver: receiverEmail.toLowerCase().trim(),
           description: `Sent to ${receiverEmail}`,
         }),
@@ -43,14 +66,11 @@ export default function SendMoneyForm({ onSuccess }: { onSuccess?: () => void })
         Swal.fire({
           icon: "success",
           title: "Transfer Successful!",
-          text: `৳${amount} has been sent to ${receiverEmail}`,
+          text: `${currencySymbol}${amount} has been sent to ${receiverEmail}`,
           confirmButtonColor: "#2563eb",
         });
         
-        //balance update
         window.dispatchEvent(new Event("balanceUpdated"));
-        
-        // modal off
         if (onSuccess) onSuccess();
       } else {
         Swal.fire("Transfer Failed", data.message, "error");
@@ -64,8 +84,6 @@ export default function SendMoneyForm({ onSuccess }: { onSuccess?: () => void })
 
   return (
     <div className="w-full max-w-md mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      
-      {/* Header Info */}
       <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl flex items-start gap-3 border border-blue-100 dark:border-blue-900/30">
         <Info className="text-blue-500 mt-0.5" size={18} />
         <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
@@ -74,7 +92,6 @@ export default function SendMoneyForm({ onSuccess }: { onSuccess?: () => void })
       </div>
 
       <div className="space-y-4">
-        {/* Recipient Email Input */}
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-500 ml-1">Recipient Email</label>
           <div className="relative group">
@@ -91,7 +108,6 @@ export default function SendMoneyForm({ onSuccess }: { onSuccess?: () => void })
           </div>
         </div>
 
-        {/* Amount Input */}
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-500 ml-1">Transfer Amount</label>
           <div className="relative group">
@@ -106,13 +122,12 @@ export default function SendMoneyForm({ onSuccess }: { onSuccess?: () => void })
               onChange={(e) => setAmount(e.target.value)}
             />
             <div className="absolute inset-y-0 right-4 flex items-center font-bold text-gray-400">
-              BDT
+              {userCurrency} 
             </div>
           </div>
         </div>
       </div>
 
-      {/* Quick Amount Selection */}
       <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
         {[500, 1000, 2000, 5000].map((val) => (
           <button
@@ -120,12 +135,11 @@ export default function SendMoneyForm({ onSuccess }: { onSuccess?: () => void })
             onClick={() => setAmount(val.toString())}
             className="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-blue-600 hover:text-white transition-all whitespace-nowrap"
           >
-            +৳{val}
+            +{currencySymbol}{val} 
           </button>
         ))}
       </div>
 
-      {/* Submit Button */}
       <button
         onClick={handleSend}
         disabled={loading}
