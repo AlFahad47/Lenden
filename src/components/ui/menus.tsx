@@ -1,21 +1,22 @@
 "use client";
-import React, { useState, useEffect, Suspense } from "react"; // Suspense ইমপোর্ট করুন
+import React, { useState, useEffect, Suspense } from "react";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import {
   FaPaperPlane, FaHandHoldingUsd, FaMoneyBillWave, FaWallet,
   FaMobileAlt, FaReceipt, FaHistory, FaPiggyBank, FaCreditCard,
-  FaSyncAlt, FaBolt, FaLock
+  FaSyncAlt, FaBolt, FaLock, FaCheckCircle, FaExclamationTriangle, FaClock
 } from "react-icons/fa";
 import { IconType } from "react-icons";
 import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation"; // useSearchParams যোগ করুন
+import { useRouter, useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
 import BillForm from "../modals/bill";
 import RechargeForm from "../modals/mobilerecharge";
 import SendMoneyForm from "../modals/sendmoney";
 import RequestMoneyForm from "../modals/RequestMoney";
 import CashOutForm from "../modals/CashOutForm";
-import AddMoneyForm from "../modals/AddMoneyForm"
+import AddMoneyForm from "../modals/AddMoneyForm";
+
 type MenuItem = {
   name: string;
   icon: IconType;
@@ -36,7 +37,6 @@ const quickActions: MenuItem[] = [
   { name: "Subscriptions",       icon: FaSyncAlt,        route: "/subscriptions",    requiresAuth: false },
 ];
 
-
 const QuickActionsContent = () => {
   const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
@@ -48,15 +48,12 @@ const QuickActionsContent = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
- 
   useEffect(() => {
     const action = searchParams.get("action");
     if (action === "sendmoney") {
       setActiveModal("Send Money");
       setIsModalOpen(true);
-      setActiveIndex(0); // Send Money 
-      
-     
+      setActiveIndex(0);
       const newUrl = window.location.pathname;
       window.history.replaceState(null, '', newUrl);
     }
@@ -136,6 +133,39 @@ const QuickActionsContent = () => {
     };
   };
 
+  // KYC Status Message Component (সেন্টার করার জন্য আপডেট করা হয়েছে)
+  const renderKycInfo = () => {
+    if (!isLoggedIn) return null;
+
+    if (kycStatus === "approved") {
+      return (
+        <div className="flex items-center justify-center w-full gap-1.5 text-green-500 text-sm font-medium mt-2">
+          <FaCheckCircle size={14} /> Verified Account
+        </div>
+      );
+    }
+
+    if (kycStatus === "pending") {
+      return (
+        <div className="flex items-center justify-center w-full gap-1.5 text-amber-500 text-sm font-medium mt-2 animate-pulse">
+          <FaClock size={14} /> Verification Pending
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex justify-center w-full">
+        <button 
+          onClick={() => router.push("/dashboard/kyc")}
+          className="flex items-center gap-1.5 text-red-500 text-sm font-semibold mt-2 hover:underline decoration-2 underline-offset-4 transition-all"
+        >
+          <FaExclamationTriangle size={14} /> 
+          {kycStatus === "rejected" ? "KYC Rejected - Re-apply now" : "Complete KYC to Unlock All Features"}
+        </button>
+      </div>
+    );
+  };
+
   return (
     <section className="w-full bg-gray-50 dark:bg-[#0A0E17] pb-10 overflow-hidden relative border-y border-gray-200 dark:border-gray-800/60">
       <svg width="0" height="0" className="absolute">
@@ -154,6 +184,8 @@ const QuickActionsContent = () => {
           <h2 className="text-2xl md:text-3xl font-extrabold text-gray-800 dark:text-white">
             Everything You Need, <span className="bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] bg-clip-text text-transparent">One Tap Away</span>
           </h2>
+          {/* Dynamic KYC Info - এখন সেন্টার হবে */}
+          {renderKycInfo()}
         </div>
 
         <div className="relative w-full h-[280px] md:h-[340px] flex items-center justify-between">
@@ -207,7 +239,6 @@ const QuickActionsContent = () => {
     </section>
   );
 };
-
 
 const QuickActions = () => {
   return (
