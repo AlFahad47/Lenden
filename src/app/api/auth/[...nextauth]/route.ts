@@ -81,10 +81,15 @@ const handler = NextAuth({
     },
     
     async jwt({ token, user }) {
-      // When the user logs in, NextAuth calls this with the user object
-      // We copy role into the token so it persists across requests
+      // When the user logs in, look up their role directly from MongoDB
+      // This works for BOTH Google and Credentials login
+      // (Google user object has no role field, so we must read it from DB)
       if (user) {
-        token.role = (user as { role?: string }).role ?? "User";
+        const client = await clientPromise;
+        const db = client.db("novapay_db");
+        const dbUser = await db.collection("users").findOne({ email: token.email });
+        token.role = dbUser?.role ?? "User";
+        token.id = dbUser?._id.toString() ?? token.sub;
       }
       return token;
     },
