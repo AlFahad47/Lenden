@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import clientPromise from "@/lib/mongodb";
 import pusherServer from "@/lib/pusher";
 
 export async function POST(req: NextRequest) {
   // 1. Check if user is logged in
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   if (!session?.user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
@@ -35,15 +36,19 @@ export async function POST(req: NextRequest) {
   await db.collection("messages").insertOne(message);
 
   // 5. Trigger Pusher — this pushes the message to all browsers subscribed to this channel
-  // "new-message" is the event name — the browser listens for exactly this event name
-  await pusherServer.trigger(channelId, "new-message", {
-    senderId: session.user.id,
-    senderName: session.user.name,
-    senderImage: session.user.image,
-    text,
-    timestamp: message.timestamp,
-    read: false,
-  });
-
-  return NextResponse.json({ success: true });
+  console.log("🔍 Triggering Pusher on channel:", channelId, "| senderId:", session.user.id);
+  try {
+    await pusherServer.trigger(channelId, "new-message", {
+      senderId: session.user.id,
+      senderName: session.user.name,
+      senderImage: session.user.image,
+      text,
+      timestamp: message.timestamp,
+      read: false,
+    });
+    return NextResponse.json({ success: true, pusher: "ok" });
+  } catch (err) {
+    console.error("❌ Pusher trigger failed:", err);
+    return NextResponse.json({ success: true, pusher: "failed", error: String(err) });
+  }
 }

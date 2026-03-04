@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   LayoutDashboard,
   Users,
@@ -17,20 +18,19 @@ import {
   UserCog,
   ShieldCheckIcon,
   FileCheck,
+  MessageSquare,
 } from "lucide-react";
 
-const sidebarItems = [
+const sidebarItems: { icon: React.ElementType; label: string; path: string; adminOnly?: boolean; userOnly?: boolean }[] = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
   { icon: UserCog, label: "Admin", path: "/dashboard/admin" },
-  {
-    icon: ShieldCheckIcon,
-    label: "User Request",
-    path: "/dashboard/userRequest",
-  },
+  { icon: ShieldCheckIcon, label: "User Request", path: "/dashboard/userRequest" },
   { icon: Users, label: "Users", path: "/dashboard/users" },
   { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
   { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
   { icon: FileCheck, label: "KYC", path: "/dashboard/kyc" },
+  { icon: MessageSquare, label: "Support", path: "/dashboard/support", adminOnly: true },
+  { icon: MessageSquare, label: "Support", path: "/chat/support", userOnly: true },
   { icon: Settings, label: "Settings", path: "/dashboard/settings" },
 ];
 
@@ -42,10 +42,25 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role?.toLowerCase() === "admin";
+
+  // Show adminOnly items to admins only, userOnly items to non-admins only
+  const visibleItems = sidebarItems.filter(item => {
+    if (item.adminOnly) return isAdmin;
+    if (item.userOnly) return !isAdmin;
+    return true;
+  });
 
   const getPageTitle = () => {
-    const segment = pathname.split("/").filter(Boolean).pop();
+    const parts = pathname.split("/").filter(Boolean);
+    const segment = parts.pop();
     if (!segment || segment === "dashboard") return "Dashboard";
+    // If the segment looks like a MongoDB ObjectId (24 hex chars), use the parent segment name
+    if (/^[a-f0-9]{24}$/i.test(segment)) {
+      const parent = parts.pop();
+      return parent ? parent.replace(/-/g, " ") : "Details";
+    }
     return segment.replace(/-/g, " ");
   };
 
@@ -97,7 +112,7 @@ export default function DashboardLayout({
         </div>
 
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          {sidebarItems.map((item) => {
+          {visibleItems.map((item) => {
             const isActive =
               item.path === "/dashboard"
                 ? pathname === "/dashboard"
