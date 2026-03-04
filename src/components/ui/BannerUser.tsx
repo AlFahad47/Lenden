@@ -9,6 +9,8 @@ import {
   TrendingUp, CreditCard, ShieldCheck, Wifi, Bell, Lock, X, UserCircle2
 } from "lucide-react";
 import Swal from "sweetalert2";
+import StatusOnboarding from "../../components/StatusOnboarding";
+
 
 const BannerUser: React.FC = () => {
   const { data: session } = useSession();
@@ -16,6 +18,7 @@ const BannerUser: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [scrollY, setScrollY] = useState(0);
   const [greeting, setGreeting] = useState("");
+  const [showOnboarding, setShowOnboarding] = useState(false);
   
   // নোটিফিকেশন স্টেট
   const [pendingRequests, setPendingRequests] = useState<number>(0);
@@ -42,6 +45,13 @@ const BannerUser: React.FC = () => {
           const userRes = await fetch(`/api/user/update?email=${session.user.email}`);
           const userData = await userRes.json();
           setDbUser(userData);
+
+
+          if (userData?.kycStatus !== "approved" && userData?.kycStatus !== "pending") {
+          setShowOnboarding(true);
+        } else {
+          setShowOnboarding(false); // ফর্ম জমা দিলে আর দেখাবে না
+        }
 
           // ২. নোটিফিকেশন চেক (আপনার ডাটাবেজ ফিল্ড 'to' অনুযায়ী)
           const notifRes = await fetch(`/api/notifications?email=${session.user.email}`);
@@ -286,6 +296,12 @@ const processPayment = async (data: any) => {
             </motion.div>
           </div>
         )}
+        {showOnboarding && (
+        <StatusOnboarding 
+          status={dbUser?.kycStatus} 
+          onClose={() => setShowOnboarding(false)} 
+        />
+      )}
       </AnimatePresence>
     </section>
   );
