@@ -51,6 +51,13 @@ export async function POST(request: Request) {
         kycDetails: {
           ...kycData, 
         },
+
+        // Loyalty System
+        points: existingUser?.points ?? existingUser?.points ?? 0,
+    rank: existingUser?.rank ?? "Bronze",
+    pointsHistory: existingUser?.pointsHistory ?? [],
+
+    
         // If these fields are missing in the database, set defaults. 
         // If they exist, keep the original values (existingUser?.field)
         balance: existingUser?.balance ?? 0,
