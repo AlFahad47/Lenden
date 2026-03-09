@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
 // Supported currencies in our app
-const SUPPORTED_CURRENCIES = ["USD", "EUR", "GBP", "PHP", "BDT", "INR", "SGD", "AUD"];
+// Note: BDT is NOT supported by frankfurter.app — removed from list
+const SUPPORTED_CURRENCIES = ["USD", "EUR", "GBP", "PHP", "INR", "SGD", "AUD", "JPY", "CAD"];
 
 export async function GET(request: Request) {
   try {
