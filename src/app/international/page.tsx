@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Globe, Wallet, RefreshCw, CheckCircle2, AlertCircle, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Globe, Wallet, RefreshCw, CheckCircle2, AlertCircle, ArrowLeft, PlusCircle } from "lucide-react";
 import { CURRENCY_META, SupportedCurrency, TransferPreview } from "@/types/international";
 
 type Step = "form" | "preview" | "success";
@@ -388,15 +389,23 @@ export default function InternationalTransferPage() {
 
         </AnimatePresence>
 
-        {/* Wallet info hint */}
+        {/* Wallet info hint + Top Up link */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="flex items-center gap-2 text-sm text-gray-500 dark:text-blue-400 bg-white dark:bg-[#0c1a2b] rounded-xl p-4 border border-gray-200 dark:border-blue-800"
+          className="flex items-center justify-between gap-2 text-sm text-gray-500 dark:text-blue-400 bg-white dark:bg-[#0c1a2b] rounded-xl p-4 border border-gray-200 dark:border-blue-800"
         >
-          <Wallet size={16} />
-          <span>Make sure you have topped up your international wallet before sending.</span>
+          <div className="flex items-center gap-2">
+            <Wallet size={16} />
+            <span>Need to fund your wallet first?</span>
+          </div>
+          <Link
+            href="/international/topup"
+            className="flex items-center gap-1 text-[#0070ff] font-semibold hover:underline whitespace-nowrap"
+          >
+            <PlusCircle size={15} /> Top Up
+          </Link>
         </motion.div>
 
       </div>
