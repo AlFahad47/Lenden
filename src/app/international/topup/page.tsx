@@ -73,7 +73,8 @@ export default function TopUpPage() {
         if (mainCurrency === targetCurrency) {
           setEstimatedDeduction(Number(amount));
         } else {
-          const res = await fetch(`/api/exchange-rate?from=${targetCurrency}&to=${mainCurrency}`);
+          // Use open.er-api.com to support BDT and all currencies
+          const res = await fetch(`https://open.er-api.com/v6/latest/${targetCurrency}`);
           const data = await res.json();
           const rate: number = data.rates?.[mainCurrency];
           if (rate) {
@@ -212,7 +213,11 @@ export default function TopUpPage() {
                 if (!meta) return null;
                 return (
                   <div key={currency} className="flex items-center gap-2 bg-gray-50 dark:bg-[#071120] rounded-xl p-3">
-                    <span className="text-xl">{meta.flag}</span>
+                    <img
+                      src={`https://flagcdn.com/w40/${meta.countryCode}.png`}
+                      alt={currency}
+                      className="w-8 h-5 object-cover rounded"
+                    />
                     <div>
                       <p className="text-xs text-gray-400">{currency}</p>
                       <p className="text-sm font-semibold text-gray-800 dark:text-blue-100">

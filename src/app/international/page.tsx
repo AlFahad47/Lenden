@@ -20,6 +20,9 @@ export default function InternationalTransferPage() {
   const [accessChecked, setAccessChecked] = useState(false);
   const [hasAccess, setHasAccess] = useState(false);
 
+  // Wallet balances
+  const [wallets, setWallets] = useState<Record<string, number>>({});
+
   // Form state
   const [step, setStep] = useState<Step>("form");
   const [recipientEmail, setRecipientEmail] = useState("");
@@ -51,6 +54,7 @@ export default function InternationalTransferPage() {
         const unlocked: string[] = data?.unlockedFeatures || [];
         if (unlocked.includes("International Pay")) {
           setHasAccess(true);
+          setWallets(data?.wallets ?? {});
         } else {
           // Not unlocked → redirect to home
           router.push("/");
@@ -125,6 +129,11 @@ export default function InternationalTransferPage() {
       }
 
       setTransactionId(data.transactionId);
+      // Update wallet balance locally so UI reflects the deduction
+      setWallets((prev) => ({
+        ...prev,
+        [fromCurrency]: Math.max(0, (prev[fromCurrency] ?? 0) - (preview?.totalDeducted ?? 0)),
+      }));
       setStep("success");
     } catch {
       setError("Something went wrong. Please try again.");
@@ -183,6 +192,56 @@ export default function InternationalTransferPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* Wallet Balances */}
+        {Object.keys(wallets).length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white dark:bg-[#0c1a2b] rounded-2xl p-5 border border-gray-200 dark:border-blue-800 space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-blue-400">Your Wallets</p>
+              <Link href="/international/topup" className="text-xs text-[#0070ff] font-semibold hover:underline flex items-center gap-1">
+                <PlusCircle size={13} /> Top Up
+              </Link>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {Object.entries(wallets).map(([currency, balance]) => {
+                const meta = CURRENCY_META[currency as SupportedCurrency];
+                if (!meta) return null;
+                return (
+                  <div key={currency} className="bg-gray-50 dark:bg-[#071120] rounded-xl p-3 text-center">
+                    <img
+                      src={`https://flagcdn.com/w40/${meta.countryCode}.png`}
+                      alt={currency}
+                      className="w-8 h-5 object-cover rounded mx-auto mb-1"
+                    />
+                    <p className="text-xs font-bold text-gray-700 dark:text-blue-200">{currency}</p>
+                    <p className="text-sm font-semibold text-[#0070ff]">{meta.symbol}{(balance as number).toFixed(2)}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* No wallets yet — prompt to top up */}
+        {Object.keys(wallets).length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-800 rounded-2xl p-4 flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2 text-sm text-yellow-700 dark:text-yellow-400">
+              <Wallet size={16} />
+              <span>You have no international wallet balance yet.</span>
+            </div>
+            <Link href="/international/topup" className="text-xs font-bold text-[#0070ff] hover:underline whitespace-nowrap flex items-center gap-1">
+              <PlusCircle size={13} /> Top Up Now
+            </Link>
+          </motion.div>
+        )}
 
         <AnimatePresence mode="wait">
 
