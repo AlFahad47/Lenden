@@ -34,7 +34,7 @@ const quickActions: MenuItem[] = [
   { name: "Transaction History", icon: FaHistory,        route: "/dashboard/transactions", requiresAuth: true  },
   { name: "Wallet",              icon: FaPiggyBank,      route: "/wallet",           requiresAuth: true  },
   { name: "Cards & Banks",       icon: FaCreditCard,     route: "/cardsbank",      requiresAuth: true  },
-  { name: "Subscriptions",       icon: FaSyncAlt,        route: "/subscriptions",    requiresAuth: false },
+  { name: "Subscriptions",       icon: FaSyncAlt,        route: "/dashboard/subscription", requiresAuth: true },
 ];
 
 const QuickActionsContent = () => {
@@ -45,6 +45,7 @@ const QuickActionsContent = () => {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [kycStatus, setKycStatus] = useState<string | null>(null);
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
@@ -63,10 +64,16 @@ const QuickActionsContent = () => {
     const fetchStatus = async () => {
       if (isLoggedIn && session?.user?.email) {
         try {
-          const res = await fetch(`/api/kyc?email=${session.user.email}`); 
+          const res = await fetch(`/api/kyc?email=${session.user.email}`);
           const data = await res.json();
           if (data && data.kycStatus) setKycStatus(data.kycStatus);
         } catch (err) { console.error("Error fetching KYC:", err); }
+
+        try {
+          const subRes = await fetch(`/api/subscription/status?email=${session.user.email}`);
+          const subData = await subRes.json();
+          setIsSubscribed(subData.subscribed === true);
+        } catch (err) { console.error("Error fetching subscription:", err); }
       }
     };
     fetchStatus();
@@ -77,6 +84,7 @@ const QuickActionsContent = () => {
   const checkIsLocked = (item: MenuItem) => {
     if (!item.requiresAuth) return false;
     if (!isLoggedIn) return true;
+    if (isSubscribed) return false;
     return kycStatus !== "approved";
   };
 
