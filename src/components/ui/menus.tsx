@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import {
   FaPaperPlane, FaHandHoldingUsd, FaMoneyBillWave, FaWallet,
   FaMobileAlt, FaReceipt, FaHistory, FaPiggyBank, FaCreditCard,
-  FaSyncAlt, FaBolt, FaLock, FaCheckCircle, FaExclamationTriangle, FaClock
+  FaSyncAlt, FaBolt, FaLock, FaCheckCircle, FaExclamationTriangle, FaClock, FaGlobe
 } from "react-icons/fa";
 import { IconType } from "react-icons";
 import { useSession } from "next-auth/react";
@@ -22,19 +22,21 @@ type MenuItem = {
   icon: IconType;
   route: string;
   requiresAuth: boolean;
+  points?: number; // Added points type
 };
 
 const quickActions: MenuItem[] = [
-  { name: "Send Money",          icon: FaPaperPlane,      route: "/send-money",       requiresAuth: true  },
-  { name: "Request Money",       icon: FaHandHoldingUsd, route: "/request-money",    requiresAuth: true  },
-  { name: "Cash Out",            icon: FaMoneyBillWave,  route: "/cash-out",         requiresAuth: true  },
-  { name: "Add Money",           icon: FaWallet,         route: "/add-money",        requiresAuth: true  },
-  { name: "Mobile Recharge",     icon: FaMobileAlt,      route: "/mobile-recharge",  requiresAuth: false },
-  { name: "Pay Bill",            icon: FaReceipt,        route: "/pay-bill",         requiresAuth: false },
-  { name: "Transaction History", icon: FaHistory,        route: "/dashboard/transactions", requiresAuth: true  },
-  { name: "Wallet",              icon: FaPiggyBank,      route: "/wallet",           requiresAuth: true  },
-  { name: "Cards & Banks",       icon: FaCreditCard,     route: "/cardsbank",      requiresAuth: true  },
-  { name: "Subscriptions",       icon: FaSyncAlt,        route: "/subscriptions",    requiresAuth: false },
+  { name: "Send Money",          icon: FaPaperPlane,      route: "/send-money",       requiresAuth: true,  points: 100 },
+  { name: "Request Money",       icon: FaHandHoldingUsd,  route: "/request-money",    requiresAuth: true,  points: 20  },
+  { name: "Cash Out",            icon: FaMoneyBillWave,   route: "/cash-out",         requiresAuth: true,  points: 50  },
+  { name: "Add Money",           icon: FaWallet,          route: "/add-money",        requiresAuth: true,  points: 100 },
+  { name: "Mobile Recharge",     icon: FaMobileAlt,       route: "/mobile-recharge",  requiresAuth: false, points: 20  },
+  { name: "Pay Bill",            icon: FaReceipt,         route: "/pay-bill",         requiresAuth: false, points: 25  },
+  { name: "Transaction History", icon: FaHistory,         route: "/dashboard/transactions", requiresAuth: true  },
+  { name: "Wallet",              icon: FaPiggyBank,       route: "/wallet",           requiresAuth: true  },
+  { name: "Cards & Banks",       icon: FaCreditCard,      route: "/cardsbank",        requiresAuth: true  },
+  { name: "International Pay",   icon: FaGlobe,           route: "/international",    requiresAuth: true  },
+  { name: "Subscriptions",       icon: FaSyncAlt,         route: "/dashboard/subscription", requiresAuth: true },
 ];
 
 const QuickActionsContent = () => {
@@ -45,6 +47,7 @@ const QuickActionsContent = () => {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [kycStatus, setKycStatus] = useState<string | null>(null);
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
@@ -63,10 +66,16 @@ const QuickActionsContent = () => {
     const fetchStatus = async () => {
       if (isLoggedIn && session?.user?.email) {
         try {
-          const res = await fetch(`/api/kyc?email=${session.user.email}`); 
+          const res = await fetch(`/api/kyc?email=${session.user.email}`);
           const data = await res.json();
           if (data && data.kycStatus) setKycStatus(data.kycStatus);
         } catch (err) { console.error("Error fetching KYC:", err); }
+
+        try {
+          const subRes = await fetch(`/api/subscription/status?email=${session.user.email}`);
+          const subData = await subRes.json();
+          setIsSubscribed(subData.subscribed === true);
+        } catch (err) { console.error("Error fetching subscription:", err); }
       }
     };
     fetchStatus();
@@ -77,6 +86,7 @@ const QuickActionsContent = () => {
   const checkIsLocked = (item: MenuItem) => {
     if (!item.requiresAuth) return false;
     if (!isLoggedIn) return true;
+    if (isSubscribed) return false;
     return kycStatus !== "approved";
   };
 
@@ -184,7 +194,6 @@ const QuickActionsContent = () => {
           <h2 className="text-2xl md:text-4xl font-extrabold text-gray-800 dark:text-white">
             Everything You Need, <span className="bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] bg-clip-text text-transparent">One Tap Away</span>
           </h2>
-          {/* Dynamic KYC Info - এখন সেন্টার হবে */}
           {renderKycInfo()}
         </div>
 
@@ -201,6 +210,43 @@ const QuickActionsContent = () => {
               return (
                 <div key={index} onClick={() => handleItemClick(index, item)} className={`absolute left-1/2 top-1/2 flex flex-col items-center justify-center transition-all duration-[600ms] w-[160px] md:w-[200px] cursor-pointer`} style={getItemStyles(index)}>
                   <div className={`relative mb-4 transition-all ${isCenter ? "scale-110" : ""} ${isLocked ? "opacity-35" : ""}`}>
+                    
+                    {/* Points Badge - Only visible when centered */}
+                   {item.points && (
+  <div
+    className={`absolute -top-10 left-1/2 -translate-x-1/2 z-30 transition-all duration-500 ease-out 
+      ${isCenter ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-2 scale-90"}`}
+  >
+    {/* Glassmorphic Container */}
+    <div className="relative group">
+      {/* Outer Glow Effect */}
+      <div className="absolute inset-0 bg-amber-400/20 blur-xl rounded-full animate-pulse" />
+      
+      <div className="relative flex flex-col items-center justify-center min-w-[50px] px-3 py-1.5 
+        bg-white/80 dark:bg-gray-900/80 backdrop-blur-md 
+        border border-amber-200/50 dark:border-amber-500/30 
+        rounded-2xl shadow-[0_8px_16px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)]">
+        
+        {/* Shine highlight */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-300/50 to-transparent" />
+
+        <div className="flex items-center gap-1">
+          <span className="text-[12px] font-black bg-gradient-to-br from-amber-500 to-orange-600 bg-clip-text text-transparent">
+            +{item.points}
+          </span>
+          <span className="text-[9px] font-bold text-amber-600/80 dark:text-amber-400/80 tracking-tighter uppercase">
+            Points
+          </span>
+        </div>
+        
+        {/* Bottom "Diamond" indicator */}
+        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 
+          bg-white/80 dark:bg-gray-900/80 border-r border-b border-amber-200/50 dark:border-amber-500/30" />
+      </div>
+    </div>
+  </div>
+)}
+
                     <Icon size={isCenter ? 64 : 52} style={isCenter && !isLocked ? { fill: "url(#iconGradient)" } : {}} className={!isCenter || isLocked ? "text-gray-400" : ""} />
                     {isLocked && <div className="absolute -bottom-1 -right-1 bg-white dark:bg-gray-800 p-1 rounded-full shadow"><FaLock size={10} className="text-gray-400"/></div>}
                   </div>

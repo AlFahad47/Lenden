@@ -218,9 +218,25 @@ export default function DashboardLayout({
                 fill
                 className="rounded-full object-cover"
               />
+              {isSubscribed && (
+                <span className="absolute -top-2 -right-2 bg-yellow-400 rounded-full p-0.5 shadow">
+                  <Crown size={10} className="text-white" />
+                </span>
+              )}
             </div>
           </div>
         </header>
+
+        {/* Subscription expiry warning */}
+        {isSubscribed && daysLeft !== null && daysLeft <= 3 && (
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-700 px-6 py-2 flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-300">
+            <Crown size={14} className="text-yellow-500 shrink-0" />
+            <span>
+              Your Elite subscription expires in <strong>{daysLeft} day{daysLeft !== 1 ? "s" : ""}</strong>.{" "}
+              <Link href="/dashboard/subscription" className="underline font-medium">Renew now</Link>
+            </span>
+          </div>
+        )}
 
         {/* PAGE CONTENT */}
 
