@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import {
   FaPaperPlane, FaHandHoldingUsd, FaMoneyBillWave, FaWallet,
   FaMobileAlt, FaReceipt, FaHistory, FaPiggyBank, FaCreditCard,
-  FaSyncAlt, FaBolt, FaLock, FaCheckCircle, FaExclamationTriangle, FaClock
+  FaSyncAlt, FaBolt, FaLock, FaCheckCircle, FaExclamationTriangle, FaClock, FaGlobe
 } from "react-icons/fa";
 import { IconType } from "react-icons";
 import { useSession } from "next-auth/react";
@@ -34,6 +34,7 @@ const quickActions: MenuItem[] = [
   { name: "Transaction History", icon: FaHistory,        route: "/dashboard/transactions", requiresAuth: true  },
   { name: "Wallet",              icon: FaPiggyBank,      route: "/wallet",           requiresAuth: true  },
   { name: "Cards & Banks",       icon: FaCreditCard,     route: "/cardsbank",      requiresAuth: true  },
+  { name: "International Pay",   icon: FaGlobe,          route: "/international", requiresAuth: true },
   { name: "Subscriptions",       icon: FaSyncAlt,        route: "/dashboard/subscription", requiresAuth: true },
 ];
 
