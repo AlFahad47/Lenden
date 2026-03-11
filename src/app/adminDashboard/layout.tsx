@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -9,28 +7,26 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   LayoutDashboard,
-  CreditCard,
+  Users,
   BarChart3,
-  Settings,
+  MessageSquare,
+  FileCheck,
   Bell,
   ChevronLeft,
   ChevronRight,
-  FileCheck,
-  MessageSquare,
   Menu,
   X,
 } from "lucide-react";
 
-const sidebarItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
-  { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
-  { icon: FileCheck, label: "KYC", path: "/dashboard/kyc" },
-  { icon: MessageSquare, label: "Support", path: "/chat/support" },
-  { icon: Settings, label: "Settings", path: "/dashboard/settings" },
+const adminItems = [
+  { icon: LayoutDashboard, label: "Dashboard", path: "/adminDashboard" },
+  { icon: Users, label: "Users", path: "/adminDashboard/users" },
+  { icon: FileCheck, label: "Requests", path: "/adminDashboard/requests" },
+  { icon: BarChart3, label: "Analytics", path: "/adminDashboard/analytics" },
+  // { icon: MessageSquare, label: "Support", path: "/adminDashboard/support" },
 ];
 
-export default function DashboardLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -42,29 +38,25 @@ export default function DashboardLayout({
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  /* ---------------- PROTECT USER DASHBOARD ---------------- */
+  /* -------------------- PROTECT ADMIN -------------------- */
 
   useEffect(() => {
     if (status === "loading") return;
 
-    if (!session) {
-      router.push("/login");
-    }
-
-    if (session?.user?.role === "admin") {
-      router.push("/adminDashboard");
+    if (!session || session.user.role !== "admin") {
+      router.push("/dashboard");
     }
   }, [session, status, router]);
 
   if (status === "loading") {
     return (
       <div className="h-screen flex items-center justify-center text-gray-600 dark:text-gray-300">
-        Loading dashboard...
+        Loading admin panel...
       </div>
     );
   }
 
-  /* ---------------- PAGE TITLE ---------------- */
+  /* -------------------- PAGE TITLE -------------------- */
 
   const pageTitle = pathname
     .split("/")
@@ -72,7 +64,7 @@ export default function DashboardLayout({
     ?.replace("-", " ")
     .replace(/^\w/, (c) => c.toUpperCase());
 
-  /* ---------------- SIDEBAR ---------------- */
+  /* -------------------- SIDEBAR -------------------- */
 
   const Sidebar = (
     <aside
@@ -87,9 +79,11 @@ export default function DashboardLayout({
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-700">
         {!desktopCollapsed && (
           <h1 className="font-bold text-blue-600 dark:text-blue-400">
-            LENDEN
+            LENDEN Admin
           </h1>
         )}
+
+        {/* collapse desktop */}
 
         <button
           onClick={() => setDesktopCollapsed(!desktopCollapsed)}
@@ -102,6 +96,8 @@ export default function DashboardLayout({
           )}
         </button>
 
+        {/* close mobile */}
+
         <button
           onClick={() => setMobileOpen(false)}
           className="lg:hidden text-gray-600 dark:text-gray-300"
@@ -113,10 +109,10 @@ export default function DashboardLayout({
       {/* NAVIGATION */}
 
       <nav className="p-3 space-y-1">
-        {sidebarItems.map((item) => {
+        {adminItems.map((item) => {
           const active =
-            item.path === "/dashboard"
-              ? pathname === "/dashboard"
+            item.path === "/adminDashboard"
+              ? pathname === "/adminDashboard"
               : pathname.startsWith(item.path);
 
           return (
@@ -144,7 +140,7 @@ export default function DashboardLayout({
     </aside>
   );
 
-  /* ---------------- LAYOUT ---------------- */
+  /* -------------------- LAYOUT -------------------- */
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-[#04090f]">
@@ -161,17 +157,17 @@ export default function DashboardLayout({
 
       <div
         className={`
-        fixed lg:relative top-0 left-0 h-full z-40
-        ${desktopCollapsed ? "lg:w-20" : "lg:w-64"} w-64
-        transform transition-transform duration-300
-        ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0
-      `}
+  fixed lg:relative top-0 left-0 h-full z-40
+  ${desktopCollapsed ? "lg:w-20" : "lg:w-64"} w-64
+  transform transition-transform duration-300
+  ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
+  lg:translate-x-0
+`}
       >
         {Sidebar}
       </div>
 
-      {/* MAIN */}
+      {/* MAIN AREA */}
 
       <div className="flex-1 flex flex-col">
         {/* HEADER */}
@@ -184,6 +180,8 @@ export default function DashboardLayout({
           {/* LEFT */}
 
           <div className="flex items-center gap-3">
+            {/* mobile menu */}
+
             <button
               className="lg:hidden text-gray-700 dark:text-gray-300"
               onClick={() => setMobileOpen(true)}
