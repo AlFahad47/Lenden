@@ -26,11 +26,15 @@ export const authOptions: NextAuthOptions = {
         }
 
         const client = await clientPromise;
-        const db = client.db();
+        const db = client.db("novapay_db");
 
         const user = await db.collection("users").findOne({ email: credentials.email });
         if (!user) {
           throw new Error("এই ইমেইল দিয়ে কোনো একাউন্ট পাওয়া যায়নি!");
+        }
+
+        if (!user.password) {
+          throw new Error("This account uses Google sign-in. Please use Google to log in.");
         }
 
         const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
@@ -57,7 +61,7 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider === "google") {
         try {
           const client = await clientPromise;
-          const db = client.db();
+          const db = client.db("novapay_db");
           const existingUser = await db.collection("users").findOne({ email: user.email });
           if (!existingUser) {
             await db.collection("users").insertOne({
@@ -76,24 +80,22 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
 
-    async jwt({ token, user }) {
-      // On login, read role from MongoDB (works for both Google and Credentials)
-      if (user) {
-        const client = await clientPromise;
-        const db = client.db("novapay_db");
-        const dbUser = await db.collection("users").findOne({ email: token.email });
-        token.role = dbUser?.role ?? "User";
-        token.id = dbUser?._id.toString() ?? token.sub;
-      }
-      return token;
-    },
+   async jwt({ token, user }) {
 
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.sub as string;
-        session.user.role = token.role as string;
-      }
-      return session;
-    },
+  if (user) {
+    token.role = (user as any).role;
+    token.id = user.id;
+  }
+  return token;
+},
+
+async session({ session, token }) {
+  if (session.user) {
+    
+    session.user.id = token.id as string;
+    session.user.role = token.role as string;
+  }
+  return session;
+},
   },
 };

@@ -1,36 +1,32 @@
+
+
 "use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   LayoutDashboard,
-  Users,
   CreditCard,
   BarChart3,
   Settings,
-  ShieldCheck,
   Bell,
   ChevronLeft,
   ChevronRight,
-  UserCog,
-  ShieldCheckIcon,
   FileCheck,
   MessageSquare,
+  Menu,
+  X,
 } from "lucide-react";
 
-const sidebarItems: { icon: React.ElementType; label: string; path: string; adminOnly?: boolean; userOnly?: boolean }[] = [
+const sidebarItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  { icon: UserCog, label: "Admin", path: "/dashboard/admin" },
-  { icon: ShieldCheckIcon, label: "User Request", path: "/dashboard/userRequest" },
-  { icon: Users, label: "Users", path: "/dashboard/users" },
   { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
   { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
   { icon: FileCheck, label: "KYC", path: "/dashboard/kyc" },
-  { icon: MessageSquare, label: "Support", path: "/dashboard/support", adminOnly: true },
-  { icon: MessageSquare, label: "Support", path: "/chat/support", userOnly: true },
+  { icon: MessageSquare, label: "Support", path: "/chat/support" },
   { icon: Settings, label: "Settings", path: "/dashboard/settings" },
 ];
 
@@ -40,184 +36,211 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { data: session } = useSession();
-  const isAdmin = session?.user?.role?.toLowerCase() === "admin";
 
-  // Show adminOnly items to admins only, userOnly items to non-admins only
-  const visibleItems = sidebarItems.filter(item => {
-    if (item.adminOnly) return isAdmin;
-    if (item.userOnly) return !isAdmin;
-    return true;
-  });
+  /* ---------------- PROTECT USER DASHBOARD ---------------- */
 
-  const [unreadSupport, setUnreadSupport] = useState(0);
-
-  // Fetch unread support message count
   useEffect(() => {
-    if (!session?.user) return;
-    const fetchUnread = () => {
-      fetch("/api/chat/unread-count")
-        .then((r) => r.json())
-        .then((data) => setUnreadSupport(data.support ?? 0));
-    };
-    fetchUnread();
-    // Refresh every 30 seconds
-    const interval = setInterval(fetchUnread, 30000);
-    return () => clearInterval(interval);
-  }, [session]);
+    if (status === "loading") return;
 
-  const getPageTitle = () => {
-    const parts = pathname.split("/").filter(Boolean);
-    const segment = parts.pop();
-    if (!segment || segment === "dashboard") return "Dashboard";
-    // If the segment looks like a MongoDB ObjectId (24 hex chars), use the parent segment name
-    if (/^[a-f0-9]{24}$/i.test(segment)) {
-      const parent = parts.pop();
-      return parent ? parent.replace(/-/g, " ") : "Details";
+    if (!session) {
+      router.push("/login");
     }
-    return segment.replace(/-/g, " ");
-  };
 
-  React.useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "auto";
-  }, [mobileOpen]);
+    if (session?.user?.role === "admin") {
+      router.push("/adminDashboard");
+    }
+  }, [session, status, router]);
+
+  if (status === "loading") {
+    return (
+      <div className="h-screen flex items-center justify-center text-gray-600 dark:text-gray-300">
+        Loading dashboard...
+      </div>
+    );
+  }
+
+  /* ---------------- PAGE TITLE ---------------- */
+
+  const pageTitle = pathname
+    .split("/")
+    .pop()
+    ?.replace("-", " ")
+    .replace(/^\w/, (c) => c.toUpperCase());
+
+  /* ---------------- SIDEBAR ---------------- */
+
+  const Sidebar = (
+    <aside
+      className={`h-full w-full
+      ${desktopCollapsed ? "lg:w-20" : "lg:w-64"} w-64
+      bg-white dark:bg-[#0c1a2b]
+      border-r border-gray-200 dark:border-gray-700
+      transition-all duration-300`}
+    >
+      {/* LOGO */}
+
+      <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-700">
+        {!desktopCollapsed && (
+          <h1 className="font-bold text-blue-600 dark:text-blue-400">
+            LENDEN
+          </h1>
+        )}
+
+        <button
+          onClick={() => setDesktopCollapsed(!desktopCollapsed)}
+          className="hidden lg:block text-gray-600 dark:text-gray-300"
+        >
+          {desktopCollapsed ? (
+            <ChevronRight size={18} />
+          ) : (
+            <ChevronLeft size={18} />
+          )}
+        </button>
+
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="lg:hidden text-gray-600 dark:text-gray-300"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      {/* NAVIGATION */}
+
+      <nav className="p-3 space-y-1">
+        {sidebarItems.map((item) => {
+          const active =
+            item.path === "/dashboard"
+              ? pathname === "/dashboard"
+              : pathname.startsWith(item.path);
+
+          return (
+            <Link
+              key={item.path}
+              href={item.path}
+              onClick={() => setMobileOpen(false)}
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition
+              
+              ${
+                active
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+              }`}
+            >
+              <item.icon size={20} />
+
+              {!desktopCollapsed && (
+                <span className="text-sm font-medium">{item.label}</span>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+    </aside>
+  );
+
+  /* ---------------- LAYOUT ---------------- */
 
   return (
-    <div
-      className="flex h-screen overflow-hidden relative 
-      bg-blue-50 dark:bg-[#04090f]"
-    >
-      {/* Sidebar */}
-      <aside
-        className={`
-        fixed md:static top-0 left-0 h-full md:h-auto
-        ${collapsed ? "w-20" : "w-64"}
-        bg-white dark:bg-[#0c1a2b]
-        border-r border-blue-200 dark:border-blue-900
-        transition-all duration-300 flex flex-col z-40
-        ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
-        md:translate-x-0
-      `}
-      >
-        <div
-          className="h-16 flex items-center justify-between px-4 
-          border-b border-blue-200 dark:border-blue-900"
-        >
-          {!collapsed && (
-            <h1
-              className="text-lg font-bold 
-              text-[#0070ff] dark:text-[#00b4ff] tracking-wide"
-            >
-              NovaPay
-            </h1>
-          )}
+    <div className="flex h-screen bg-gray-50 dark:bg-[#04090f]">
+      {/* MOBILE OVERLAY */}
 
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="p-1 rounded-md 
-            hover:bg-blue-100 dark:hover:bg-blue-900/40"
-          >
-            {collapsed ? (
-              <ChevronRight size={18} className="text-blue-400" />
-            ) : (
-              <ChevronLeft size={18} className="text-blue-400" />
-            )}
-          </button>
-        </div>
-
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          {visibleItems.map((item) => {
-            const isActive =
-              item.path === "/dashboard"
-                ? pathname === "/dashboard"
-                : pathname.startsWith(item.path);
-
-            return (
-              <Link
-                key={item.path}
-                href={item.path}
-                onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  isActive
-                    ? "bg-[#0070ff] text-white shadow-md"
-                    : "text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40"
-                }`}
-              >
-                <item.icon size={18} className="text-blue-400" />
-                {!collapsed && <span className="flex-1">{item.label}</span>}
-                {/* Unread badge on Support link */}
-                {item.label === "Support" && unreadSupport > 0 && (
-                  <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
-                    {unreadSupport > 99 ? "99+" : unreadSupport}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-      </aside>
-
-      {/* Overlay */}
       {mobileOpen && (
         <div
+          className="fixed inset-0 bg-black/40 z-30 lg:hidden"
           onClick={() => setMobileOpen(false)}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 md:hidden"
         />
       )}
 
-      {/* Main */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      {/* SIDEBAR */}
+
+      <div
+        className={`
+        fixed lg:relative top-0 left-0 h-full z-40
+        ${desktopCollapsed ? "lg:w-20" : "lg:w-64"} w-64
+        transform transition-transform duration-300
+        ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
+        lg:translate-x-0
+      `}
+      >
+        {Sidebar}
+      </div>
+
+      {/* MAIN */}
+
+      <div className="flex-1 flex flex-col">
+        {/* HEADER */}
+
         <header
-          className="h-16 
-          bg-white dark:bg-[#0c1a2b]
-          border-b border-blue-200 dark:border-blue-900
-          flex items-center justify-between px-6"
+          className="h-16 bg-white dark:bg-[#0c1a2b]
+          border-b border-gray-200 dark:border-gray-700
+          flex items-center justify-between px-4 lg:px-6"
         >
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="md:hidden p-2 
-            text-blue-500 dark:text-blue-400 
-            rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/40"
-          >
-            ☰
-          </button>
+          {/* LEFT */}
 
-          <h2
-            className="text-lg font-semibold capitalize 
-            text-blue-800 dark:text-blue-200"
-          >
-            {getPageTitle()}
-          </h2>
-
-          <div className="flex items-center gap-5">
-            <button className="relative" onClick={() => window.location.href = isAdmin ? "/dashboard/support" : "/chat/support"}>
-              <Bell className="w-5 h-5 text-blue-400" />
-              {unreadSupport > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-0.5">
-                  {unreadSupport > 99 ? "99+" : unreadSupport}
-                </span>
-              )}
+          <div className="flex items-center gap-3">
+            <button
+              className="lg:hidden text-gray-700 dark:text-gray-300"
+              onClick={() => setMobileOpen(true)}
+            >
+              <Menu size={22} />
             </button>
+
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 capitalize">
+              {pageTitle}
+            </h2>
+          </div>
+
+          {/* RIGHT */}
+
+          <div className="flex items-center gap-4">
+            <Bell className="text-gray-500 dark:text-gray-300 cursor-pointer" />
+
+            <div className="hidden sm:flex flex-col text-right">
+              <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                {session?.user?.name}
+              </span>
+
+              <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                {session?.user?.role}
+              </span>
+            </div>
+
             <div className="w-9 h-9 relative">
               <Image
-                src="/dashboard.jfif"
-                alt="Profile"
+                src={session?.user?.image || "/dashboard.jfif"}
+                alt="profile"
                 fill
-                className="rounded-full object-cover 
-                border border-blue-300 dark:border-blue-700/50"
+                className="rounded-full object-cover"
               />
+              {isSubscribed && (
+                <span className="absolute -top-2 -right-2 bg-yellow-400 rounded-full p-0.5 shadow">
+                  <Crown size={10} className="text-white" />
+                </span>
+              )}
             </div>
           </div>
         </header>
 
-        <main
-          className="flex-1 overflow-y-auto p-6 
-          text-blue-900 dark:text-blue-100/80"
-        >
-          {children}
-        </main>
+        {/* Subscription expiry warning */}
+        {isSubscribed && daysLeft !== null && daysLeft <= 3 && (
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-700 px-6 py-2 flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-300">
+            <Crown size={14} className="text-yellow-500 shrink-0" />
+            <span>
+              Your Elite subscription expires in <strong>{daysLeft} day{daysLeft !== 1 ? "s" : ""}</strong>.{" "}
+              <Link href="/dashboard/subscription" className="underline font-medium">Renew now</Link>
+            </span>
+          </div>
+        )}
+
+        {/* PAGE CONTENT */}
+
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6">{children}</main>
       </div>
     </div>
   );

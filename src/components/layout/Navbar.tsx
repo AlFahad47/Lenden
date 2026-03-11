@@ -92,7 +92,7 @@ useEffect(() => {
 
 const [fullUser, setFullUser] = useState<any>(null);
 
-// সরাসরি ডাটাবেস থেকে লেটেস্ট ডাটা ফেচ করার জন্য
+
 useEffect(() => {
   const fetchUserData = async () => {
     if (session?.user?.email) {
@@ -109,7 +109,7 @@ useEffect(() => {
   };
 
   fetchUserData();
-  // যদি চান পয়েন্ট বাড়লে সাথে সাথে আপডেট হোক, তবে এখানে একটি ইন্টারভ্যাল দিতে পারেন
+  
   const interval = setInterval(fetchUserData, 10000); 
   return () => clearInterval(interval);
 }, [session]);
@@ -145,7 +145,7 @@ console.log(fullUser?.rank)
         className={`pointer-events-auto relative flex items-center justify-between p-2  rounded-[2rem] transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
           isScrolled 
             ? 'w-full max-w-7xl bg-white/[0.03] backdrop-blur-[24px] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]' 
-            : 'w-full max-w-5xl bg-[#0f172a]/20 backdrop-blur-xl border border-white/5 shadow-2xl'
+            : 'w-full max-w-5xl bg-[#0f172a]/20 backdrop-blur-xl border border-white/5 shadow-2xl '
         }`}
       >
         {/* Subtle inner glass shine */}
@@ -160,7 +160,7 @@ console.log(fullUser?.rank)
         </div>
 
         {/* Desktop Links (Center) */}
-        <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2 bg-white/[0.02] p-1 rounded-full border border-white/[0.05]">
+        <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2 bg-white/[0.02] p-1 rounded-full border border-white/[0.05] ">
           {navLinks.map((link) => {
             const isActive = link.path.startsWith("/#")
   ? activeHash === link.path.replace("/", "")
@@ -195,7 +195,7 @@ console.log(fullUser?.rank)
             {/* Dark Mode Toggle (always visible) */}
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="pl-5 h-14 w-14 rounded-full bg-white/10 hover:bg-white/20 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+              className="flex items-center justify-center h-14 w-14 rounded-full bg-white/10 hover:bg-white/20 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
             >
               {darkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-gray-800" />}
             </button>
@@ -209,9 +209,9 @@ console.log(fullUser?.rank)
         setIsRankModalOpen(true);
       }}
       className={`absolute -top-2 left-1/2 -translate-x-1/2 z-30 px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md backdrop-blur-sm border  transition-transform duration-300 hover:scale-110 active:scale-95
-      ${fullUser?.rank === 'PLATINUM' ? 'bg-slate-900 border-slate-700 text-white' : 
-        fullUser?.rank === 'GOLD' ? 'bg-amber-400 border-amber-300 text-amber-950' : 
-        fullUser?.rank === 'SILVER' ? 'bg-slate-200 border-slate-300 text-slate-800' : 
+      ${fullUser?.rank === 'Platinum' ? 'bg-slate-900 border-slate-700 text-white' : 
+        fullUser?.rank === 'Gold' ? 'bg-amber-400 border-amber-300 text-amber-950' : 
+        fullUser?.rank === 'Silver' ? 'bg-slate-200 border-slate-300 text-slate-800' : 
         'bg-[#E63946] border-red-400 text-white'}`}
     >
       <span className="flex items-center justify-center">
