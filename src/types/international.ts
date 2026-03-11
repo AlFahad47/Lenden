@@ -2,16 +2,16 @@
 export type SupportedCurrency = "USD" | "EUR" | "GBP" | "PHP" | "INR" | "SGD" | "AUD" | "JPY" | "CAD";
 
 // Currency display info for the UI (flag, symbol, name)
-export const CURRENCY_META: Record<SupportedCurrency, { symbol: string; name: string; flag: string }> = {
-  USD: { symbol: "$",  name: "US Dollar",        flag: "🇺🇸" },
-  EUR: { symbol: "€",  name: "Euro",              flag: "🇪🇺" },
-  GBP: { symbol: "£",  name: "British Pound",     flag: "🇬🇧" },
-  PHP: { symbol: "₱",  name: "Philippine Peso",   flag: "🇵🇭" },
-  INR: { symbol: "₹",  name: "Indian Rupee",      flag: "🇮🇳" },
-  SGD: { symbol: "S$", name: "Singapore Dollar",  flag: "🇸🇬" },
-  AUD: { symbol: "A$", name: "Australian Dollar", flag: "🇦🇺" },
-  JPY: { symbol: "¥",  name: "Japanese Yen",      flag: "🇯🇵" },
-  CAD: { symbol: "C$", name: "Canadian Dollar",   flag: "🇨🇦" },
+export const CURRENCY_META: Record<SupportedCurrency, { symbol: string; name: string; flag: string; countryCode: string }> = {
+  USD: { symbol: "$",  name: "US Dollar",        flag: "🇺🇸", countryCode: "us" },
+  EUR: { symbol: "€",  name: "Euro",              flag: "🇪🇺", countryCode: "eu" },
+  GBP: { symbol: "£",  name: "British Pound",     flag: "🇬🇧", countryCode: "gb" },
+  PHP: { symbol: "₱",  name: "Philippine Peso",   flag: "🇵🇭", countryCode: "ph" },
+  INR: { symbol: "₹",  name: "Indian Rupee",      flag: "🇮🇳", countryCode: "in" },
+  SGD: { symbol: "S$", name: "Singapore Dollar",  flag: "🇸🇬", countryCode: "sg" },
+  AUD: { symbol: "A$", name: "Australian Dollar", flag: "🇦🇺", countryCode: "au" },
+  JPY: { symbol: "¥",  name: "Japanese Yen",      flag: "🇯🇵", countryCode: "jp" },
+  CAD: { symbol: "C$", name: "Canadian Dollar",   flag: "🇨🇦", countryCode: "ca" },
 };
 
 // FX fee percentage (2% charged on every international transfer)

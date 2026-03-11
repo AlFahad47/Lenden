@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     if (newGoal) {
       const goalWithId = {
         ...newGoal,
-        id: Math.random().toString(36).substring(2, 11), // 9 digits id
+        id: Math.random().toString(36).substring(2, 11),
         createdAt: new Date(),
         savingsBalance: 0, 
       };
@@ -114,6 +114,7 @@ export async function POST(request: Request) {
       }
     };
 
+    // Correctly handle the nested array update
     if (bankId && targetBank) {
       updatePayload.$set["linkedBanks.$.balance"] = finalBankBalance;
     }
