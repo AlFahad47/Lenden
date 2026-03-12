@@ -90,9 +90,9 @@ const BannerUser: React.FC = () => {
 
   const stats = [
     { label: "Balance", value: isApproved ? `${currencySymbol}${dbUser?.balance || "0.00"}` : "Locked", icon: <Wallet size={15} />, color: "text-[#4DA1FF]" },
-    { label: "Transactions", value: isApproved ? (dbUser?.history.length || "0") : "0", icon: <CreditCard size={15} />, color: "text-purple-400" },
+    { label: "Transactions", value: isApproved ? (dbUser?.history?.length || "0") : "0", icon: <CreditCard size={15} />, color: "text-purple-400" },
 
-    { label: "Points", value: isApproved ? `${dbUser?.points || "0"}` : "N/A", icon: <BsCoin size={15} />, color: "text-green-400" },
+    { label: "Points Earned", value: isApproved ? `${dbUser?.totalXP || "0"}` : "N/A", icon: <BsCoin size={15} />, color: "text-green-400" },
 
     { label: "Rank", value: isApproved ? `${dbUser?.rank || "Bronze"}` : "N/A", icon: <FaRankingStar size={15} />, color: "text-green-400", onClick: () => setIsRankModalOpen(true)},
     

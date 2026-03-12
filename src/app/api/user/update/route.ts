@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
+// --- GET: User profile fetch ---
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -20,15 +21,20 @@ export async function GET(request: Request) {
   }
 }
 
+// --- POST: Wallet Balance, Goals and History update ---
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { 
       email, 
-      bankId, 
-      amount, 
-      actionType, 
-      newBank // Contains: brand, name, accNo, expiry, cvv
+      newGoal,
+      bankBalance,
+      wallet,
+      wallethistory,
+      bankId,
+      amount,
+      actionType,
+      newBank 
     } = body;
 
     if (!email) return NextResponse.json({ error: "Email required" }, { status: 400 });
@@ -38,6 +44,28 @@ export async function POST(request: Request) {
     const usersCollection = db.collection("users");
 
     // --- 1. HANDLE LINKING NEW BANK (REALISTIC) ---
+    // --- LOGIC A: New Microsaving Goal Add ---
+    if (newGoal) {
+      const goalWithId = {
+        ...newGoal,
+        id: Math.random().toString(36).substring(2, 11),
+        createdAt: new Date(),
+        savingsBalance: 0, 
+      };
+
+      await usersCollection.updateOne(
+        { email },
+        { 
+          // @ts-ignore
+          $push: { microsaving: goalWithId },
+          $set: { updatedAt: new Date() }
+        },
+        { upsert: true }
+      );
+      return NextResponse.json({ success: true, message: "Smart Goal Created Successfully!" });
+    }
+
+    // --- LOGIC B: Handle Linking New Bank ---
     if (newBank) {
       // Security: Only store the last 4 digits
       const maskedAccNo = `**** **** **** ${newBank.accNo.slice(-4)}`;
@@ -62,6 +90,7 @@ export async function POST(request: Request) {
     }
 
     // --- 2. TRANSACTION LOGIC ---
+    // --- LOGIC C: Transaction Logic for existing User ---
     const existingUser = await usersCollection.findOne({ email });
     if (!existingUser) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
@@ -86,6 +115,7 @@ export async function POST(request: Request) {
     }
 
     // --- 3. DATABASE UPDATE ---
+    // Database Update
     const updateQuery: any = { email: email };
     if (bankId) updateQuery["linkedBanks.id"] = bankId;
 
@@ -96,6 +126,7 @@ export async function POST(request: Request) {
       }
     };
 
+    // Correctly handle the nested array update
     if (bankId && targetBank) {
       updatePayload.$set["linkedBanks.$.balance"] = finalBankBalance;
     }
@@ -109,6 +140,9 @@ export async function POST(request: Request) {
 
   } catch (error) {
     console.error("Database Update Error:", error);
-    return NextResponse.json({ error: "Failed to update database" }, { status: 500 });
+    return NextResponse.json({ 
+      error: "Failed to update database", 
+      details: error.message 
+    }, { status: 500 });
   }
 }

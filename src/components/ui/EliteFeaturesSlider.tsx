@@ -9,6 +9,7 @@ import {
 import { IoCloseCircleOutline } from "react-icons/io5"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
+import Link from "next/link"
 
 type EliteMenuItem = {
   name: string
@@ -58,6 +59,7 @@ export default function EliteFeaturesSlider() {
   const router = useRouter()
   const scrollRef = useRef<HTMLDivElement>(null)
   const [dbUser, setDbUser] = useState<any>(null);
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const [selectedLock, setSelectedLock] = useState<EliteMenuItem | null>(null)
   const [loading, setLoading] = useState(false)
   const { data: session } = useSession();
@@ -80,8 +82,8 @@ export default function EliteFeaturesSlider() {
       return;
     }
 
-    // Logic: Check if feature is already unlocked
-    const isAlreadyUnlocked = unlockedFeatures.includes(item.name);
+    // Subscribed users have all features unlocked
+    const isAlreadyUnlocked = isSubscribed || unlockedFeatures.includes(item.name);
 
     if (isAlreadyUnlocked) {
       router.push(item.route)
@@ -122,10 +124,18 @@ export default function EliteFeaturesSlider() {
     const fetchAllData = async () => {
       if (!session?.user?.email) return;
       try {
-        const userRes = await fetch(`/api/user/update?email=${session.user.email}`);
-        if (!userRes.ok) throw new Error('Failed to fetch');
-        const userData = await userRes.json();
-        setDbUser(userData);
+        const [userRes, subRes] = await Promise.all([
+          fetch(`/api/user/update?email=${session.user.email}`),
+          fetch(`/api/subscription/status?email=${session.user.email}`),
+        ]);
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          setDbUser(userData);
+        }
+        if (subRes.ok) {
+          const subData = await subRes.json();
+          setIsSubscribed(subData.subscribed === true);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -159,7 +169,7 @@ export default function EliteFeaturesSlider() {
         <div ref={scrollRef} className="flex gap-8 overflow-x-auto no-scrollbar pb-10 px-2" style={{ scrollbarWidth: 'none' }}>
           {eliteActions.map((item, index) => {
             const Icon = item.icon
-            const isUnlocked = unlockedFeatures.includes(item.name);
+            const isUnlocked = isSubscribed || unlockedFeatures.includes(item.name);
 
             return (
               <motion.div
@@ -172,7 +182,7 @@ export default function EliteFeaturesSlider() {
                   <span className={`text-[10px] font-bold px-3 py-1 rounded-full shadow-sm ${
                     isUnlocked ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600'
                   }`}>
-                    {isUnlocked ? "Unlocked" : `${item.pointsNeeded} Coins`}
+                    {isUnlocked ? "Unlocked" : isSubscribed ? "Elite" : `${item.pointsNeeded} Coins`}
                   </span>
                 </div>
 
@@ -211,11 +221,32 @@ export default function EliteFeaturesSlider() {
                   <FaInfoCircle size={32} />
                 </div>
                 
-                <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Unlock Feature?</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">
-                  Unlock <span className="font-bold text-gray-800 dark:text-white">{selectedLock.name}</span> for 
-                  <span className="text-blue-600 font-bold ml-1">{selectedLock.pointsNeeded} coins</span>.
-                </p>
+                <div className="flex flex-col items-center">
+  <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+    Unlock Feature?
+  </h3>
+  
+  <p className="text-gray-500 dark:text-gray-400 text-sm mb-8 text-center">
+    Unlock <span className="font-bold text-gray-800 dark:text-white">{selectedLock.name}</span> for 
+    <span className="text-blue-600 font-bold ml-1">{selectedLock.pointsNeeded} coins</span>.
+  </p>
+
+  {/* Visual Separator */}
+  <div className="flex items-center w-full mb-6">
+    <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+    <span className="px-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Or</span>
+    <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+  </div>
+
+ <Link href={"/dashboard/subscription"}>
+  <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 transform transition-all active:scale-95 duration-200 cursor-pointer">
+    Get NovaPay Subscription
+  </button></Link>
+  
+  <p className="mt-3 text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-tighter">
+    Unlimited access to all elite features
+  </p>
+</div>
 
                 <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-5 mb-8 border dark:border-gray-800">
                   <div className="flex justify-between text-xs mb-2 font-bold text-gray-400 uppercase">
