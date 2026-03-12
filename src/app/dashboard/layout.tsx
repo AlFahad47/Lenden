@@ -19,6 +19,7 @@ import {
   MessageSquare,
   Menu,
   X,
+  Crown,
 } from "lucide-react";
 
 const sidebarItems = [
@@ -27,6 +28,7 @@ const sidebarItems = [
   { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
   { icon: FileCheck, label: "KYC", path: "/dashboard/kyc" },
   { icon: MessageSquare, label: "Support", path: "/chat/support" },
+  { icon: Crown, label: "Subscription", path: "/dashboard/subscription" },
   { icon: Settings, label: "Settings", path: "/dashboard/settings" },
 ];
 
@@ -41,7 +43,8 @@ export default function DashboardLayout({
 
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const[isSubscribed, setSubscribed]=useState(false)
+  const [isSubscribed, setSubscribed] = useState(false);
+  const [daysLeft, setDaysLeft] = useState<number | null>(null);
 
   /* ---------------- PROTECT USER DASHBOARD ---------------- */
 
@@ -50,12 +53,33 @@ export default function DashboardLayout({
 
     if (!session) {
       router.push("/login");
+      return;
     }
 
-    if (session?.user?.role === "admin") {
+    if (session?.user?.role === "Admin") {
       router.push("/adminDashboard");
     }
   }, [session, status, router]);
+
+  useEffect(() => {
+    const fetchSubscriptionStatus = async () => {
+      if (!session?.user?.email) return;
+
+      try {
+        const res = await fetch(`/api/subscription/status?email=${session.user.email}`);
+        const data = await res.json();
+
+        setSubscribed(data?.subscribed === true);
+        setDaysLeft(typeof data?.daysLeft === "number" ? data.daysLeft : null);
+      } catch (error) {
+        console.error("Subscription status fetch failed:", error);
+        setSubscribed(false);
+        setDaysLeft(null);
+      }
+    };
+
+    fetchSubscriptionStatus();
+  }, [session?.user?.email]);
 
   if (status === "loading") {
     return (
