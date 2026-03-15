@@ -284,10 +284,6 @@ const sidebarItems = [
   { icon: MessageSquare, label: "Support", path: "/chat/support" },
   { icon: Settings, label: "Settings", path: "/dashboard/settings" },
 ];
-
-export default function DashboardLayout({
-  children,
-}: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();

@@ -517,7 +517,7 @@ export default function AdminLayout({
         className={`fixed lg:relative z-40 h-full w-64 bg-white dark:bg-[#0c1a2b] border-r border-gray-200 dark:border-gray-700 transition-transform lg:translate-x-0 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="p-6 font-bold text-blue-600 border-b dark:border-gray-700 text-xl">
-          LENDEN ADMIN
+          NovaPay ADMIN
         </div>
         <nav className="p-4 space-y-2">
           {adminItems.map((item) => (
