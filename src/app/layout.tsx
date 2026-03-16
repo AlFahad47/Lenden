@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google"; // বা তোমার যে ফন্ট আছে
+import { Inter, Geist } from "next/font/google"; // বা তোমার যে ফন্ট আছে
 import "./globals.css";
 import AuthProvider from "@/components/AuthProvider";
 import { Toaster } from "react-hot-toast"; // ১. এই লাইনটি ইমপোর্ট করো
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className={inter.className}>
         <AuthProvider>
           <Navbar />

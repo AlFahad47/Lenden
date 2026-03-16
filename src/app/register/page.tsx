@@ -71,15 +71,15 @@ const PandaRegister: React.FC = () => {
     ), { duration: Infinity });
 
     try {
-      const res = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          name: nameInput, 
-          email: emailInput, 
-          password: passwordInput 
-        })
-      });
+        const res = await fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            name: nameInput, 
+            email: emailInput, 
+            password: passwordInput 
+          })
+        });
 
       const data = await res.json();
       toast.dismiss(toastId);

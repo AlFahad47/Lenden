@@ -114,8 +114,6 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, [session]);
 
-
-console.log(fullUser?.rank)
   const navLinks = user
     ? [
         { name: "Home", path: "/" },

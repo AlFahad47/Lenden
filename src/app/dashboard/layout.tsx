@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import type { SubscriptionStatusResponse } from "@/types/subscription";
 import {
   LayoutDashboard,
   CreditCard,
@@ -19,6 +20,7 @@ import {
   MessageSquare,
   Menu,
   X,
+  Crown,
 } from "lucide-react";
 
 const sidebarItems = [
@@ -41,6 +43,15 @@ export default function DashboardLayout({
 
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [subscriptionStatus, setSubscriptionStatus] =
+    useState<SubscriptionStatusResponse>({
+      subscribed: false,
+      subscription: null,
+      daysLeft: null,
+    });
+
+  const isSubscribed = subscriptionStatus.subscribed;
+  const daysLeft = subscriptionStatus.daysLeft;
 
   /* ---------------- PROTECT USER DASHBOARD ---------------- */
 
@@ -55,6 +66,53 @@ export default function DashboardLayout({
       router.push("/adminDashboard");
     }
   }, [session, status, router]);
+
+  useEffect(() => {
+    const email = session?.user?.email;
+
+    if (!email) {
+      setSubscriptionStatus({
+        subscribed: false,
+        subscription: null,
+        daysLeft: null,
+      });
+      return;
+    }
+
+    let isMounted = true;
+
+    const fetchSubscriptionStatus = async () => {
+      try {
+        const res = await fetch(
+          `/api/subscription/status?email=${encodeURIComponent(email)}`
+        );
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch subscription status");
+        }
+
+        const data: SubscriptionStatusResponse = await res.json();
+
+        if (isMounted) {
+          setSubscriptionStatus(data);
+        }
+      } catch {
+        if (isMounted) {
+          setSubscriptionStatus({
+            subscribed: false,
+            subscription: null,
+            daysLeft: null,
+          });
+        }
+      }
+    };
+
+    fetchSubscriptionStatus();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [session?.user?.email]);
 
   if (status === "loading") {
     return (
