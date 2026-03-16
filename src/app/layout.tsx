@@ -3,7 +3,6 @@ import { Inter, Geist } from "next/font/google"; // বা তোমার য�
 import "./globals.css";
 import AuthProvider from "@/components/AuthProvider";
 import { Toaster } from "react-hot-toast"; // Toast notifications
-import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import Footer from "@/components/layout/Footer";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -29,7 +28,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("font-sans", geist.variable)}
     >
-      <body className={inter.className}>
+      <body suppressHydrationWarning className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
             <Navbar />

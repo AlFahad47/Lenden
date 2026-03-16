@@ -40,6 +40,7 @@ const BannerUser: React.FC = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [notificationData, setNotificationData] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isListModalOpen, setIsListModalOpen] = useState(false);
   const [isRankModalOpen, setIsRankModalOpen] = useState(false);
 
   useEffect(() => {
