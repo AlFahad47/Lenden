@@ -250,7 +250,7 @@ const QuickActionsContent = () => {
       {/* Ambient Glow Background */}
       <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-100 w-120 -translate-x-1/2 rounded-full bg-[#4DA1FF]/5 blur-[120px] dark:bg-[#1E50FF]/10"></div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-350 flex-col items-center px-4">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1280px] flex-col items-center px-4">
         {/* Header Area */}
         <div className="mb-7 w-full text-center">
           <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white md:text-[2.5rem]">

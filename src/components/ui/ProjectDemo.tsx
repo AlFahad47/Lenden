@@ -8,8 +8,7 @@ export default function ProjectDemo() {
 
   return (
     <section className="w-full py-16 bg-[#f0f7ff] dark:bg-[#04090f] border-t-2 border-[#0061ff] dark:border-[#0095ff] transition-colors duration-300">
-      <div className="w-11/12 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
+      <div className="w-11/12 max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Text Side */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
@@ -35,8 +34,13 @@ export default function ProjectDemo() {
               "AI-powered spending insights",
               "Instant alerts for every transaction",
             ].map((item) => (
-              <li key={item} className="flex items-center gap-3 text-gray-600 dark:text-gray-300 text-sm">
-                <span className="w-5 h-5 rounded-full bg-[#0061ff] flex items-center justify-center text-white font-bold text-xs">✓</span>
+              <li
+                key={item}
+                className="flex items-center gap-3 text-gray-600 dark:text-gray-300 text-sm"
+              >
+                <span className="w-5 h-5 rounded-full bg-[#0061ff] flex items-center justify-center text-white font-bold text-xs">
+                  ✓
+                </span>
                 {item}
               </li>
             ))}
@@ -78,7 +82,6 @@ export default function ProjectDemo() {
             NovaPay Demo
           </span>
         </motion.div>
-
       </div>
     </section>
   );

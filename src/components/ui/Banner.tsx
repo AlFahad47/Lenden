@@ -170,7 +170,7 @@ const Banner: React.FC = () => {
 
       {/* --- TOP CONTENT SECTION --- */}
       <div
-        className="flex flex-col items-center text-center px-4 mb-12 z-10"
+        className="mx-auto w-full max-w-[1280px] flex flex-col items-center text-center px-4 mb-12 z-10"
         style={{ opacity: Math.max(0, 1 - scatterProgress * 2.5) }}
       >
         {/* Badge */}
@@ -268,8 +268,12 @@ const Banner: React.FC = () => {
                 </div>
                 <div className="flex items-center w-full pl-12 md:pl-16 mt-0.5">
                   <div className="flex flex-col items-start leading-[0.8] mr-1.5 opacity-60">
-                    <span className="text-[5px] md:text-[6px] text-slate-600 font-bold uppercase">Valid</span>
-                    <span className="text-[5px] md:text-[6px] text-slate-600 font-bold uppercase">Thru</span>
+                    <span className="text-[5px] md:text-[6px] text-slate-600 font-bold uppercase">
+                      Valid
+                    </span>
+                    <span className="text-[5px] md:text-[6px] text-slate-600 font-bold uppercase">
+                      Thru
+                    </span>
                   </div>
                   <span className="font-mono text-[12px] md:text-[14px] font-semibold text-slate-600">
                     08/22
@@ -287,7 +291,7 @@ const Banner: React.FC = () => {
           >
             <div className="relative w-[280px] h-[175px] md:w-[320px] md:h-[200px] rounded-[1.25rem] border border-slate-700/80 bg-gradient-to-br from-[#1e293b] to-[#0f172a] p-5 md:p-6 flex flex-col justify-between overflow-hidden transition-all duration-300 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.05),transparent_50%)] pointer-events-none"></div>
-              
+
               {/* Top Right: Bank Name */}
               <div className="flex justify-end w-full z-10 relative">
                 <span className="text-slate-300 text-[13px] md:text-[14px] font-medium tracking-widest uppercase">
@@ -317,8 +321,12 @@ const Banner: React.FC = () => {
                 </div>
                 <div className="flex items-center w-full pl-12 md:pl-16 mt-0.5">
                   <div className="flex flex-col items-start leading-[0.8] mr-1.5 opacity-60">
-                    <span className="text-[5px] md:text-[6px] text-slate-300 font-bold uppercase">Valid</span>
-                    <span className="text-[5px] md:text-[6px] text-slate-300 font-bold uppercase">Thru</span>
+                    <span className="text-[5px] md:text-[6px] text-slate-300 font-bold uppercase">
+                      Valid
+                    </span>
+                    <span className="text-[5px] md:text-[6px] text-slate-300 font-bold uppercase">
+                      Thru
+                    </span>
                   </div>
                   <span className="font-mono text-[12px] md:text-[14px] font-semibold text-slate-200">
                     08/22
@@ -346,7 +354,9 @@ const Banner: React.FC = () => {
 
               <div
                 className={`w-full h-full flex flex-col justify-between z-10 relative ${
-                  isSwipingMainToBase && activeCard === 1 ? "animate-swipe-main-to-base" : ""
+                  isSwipingMainToBase && activeCard === 1
+                    ? "animate-swipe-main-to-base"
+                    : ""
                 }`}
               >
                 {/* Top Left: Minimalist Logo */}
@@ -361,7 +371,7 @@ const Banner: React.FC = () => {
                   <span className="text-white/95 text-[15px] md:text-[17px] font-medium tracking-wide">
                     debit
                   </span>
-                  
+
                   {/* Overlapping Circles (Mastercard aesthetic) */}
                   <div className="relative flex items-center h-8 w-[52px] md:h-10 md:w-[65px]">
                     <div className="absolute left-0 w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#EB001B] z-10 shadow-sm"></div>

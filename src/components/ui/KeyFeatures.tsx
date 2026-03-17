@@ -43,7 +43,7 @@ export default function KeyFeatures() {
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-500/20 dark:bg-blue-700/20 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-300/20 dark:bg-[#00b4ff]/20 rounded-full blur-3xl animate-pulse" />
 
-      <div className="w-11/12 mx-auto">
+      <div className="w-11/12 max-w-[1280px] mx-auto">
         {/* Heading */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}

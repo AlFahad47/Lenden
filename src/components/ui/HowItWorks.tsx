@@ -53,7 +53,7 @@ export default function HowItWorksPage() {
       <div className="absolute -top-40 -left-40 w-60 md:w-80 h-60 md:h-80 bg-blue-500/20 dark:bg-blue-700/20 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-0 right-0 w-60 md:w-80 h-60 md:h-80 bg-blue-300/20 dark:bg-[#00b4ff]/20 rounded-full blur-3xl animate-pulse" />
 
-      <div className="w-11/12 mx-auto">
+      <div className="w-11/12 max-w-[1280px] mx-auto">
         {/* Hero */}
         <section className="relative text-center space-y-4 md:space-y-6">
           <motion.h1
