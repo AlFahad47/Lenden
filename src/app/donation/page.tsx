@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Users, Target, CheckCircle2, AlertCircle, RefreshCw, ArrowLeft, X } from "lucide-react";
+import { Heart, Users, Target, CheckCircle2, AlertCircle, RefreshCw, ArrowLeft, X, Crown, Lock } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Campaign {
   _id: string;
@@ -18,7 +19,12 @@ interface Campaign {
 }
 
 export default function DonationPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Access guard
+  const [accessChecked, setAccessChecked] = useState(false);
+  const [hasAccess, setHasAccess] = useState(false);
 
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loadingCampaigns, setLoadingCampaigns] = useState(true);
@@ -30,7 +36,25 @@ export default function DonationPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState<{ transactionId: string; campaignTitle: string; amount: number } | null>(null);
 
+  // ── Access Guard: subscription check ─────────────────────────────
   useEffect(() => {
+    if (status === "loading") return;
+    if (!session?.user?.email) {
+      router.push("/login");
+      return;
+    }
+    fetch(`/api/subscription/status?email=${session.user.email}`)
+      .then((r) => r.json())
+      .then((data) => {
+        setHasAccess(data?.subscribed === true);
+        setAccessChecked(true);
+      })
+      .catch(() => setAccessChecked(true));
+  }, [session, status, router]);
+
+  // ── Fetch campaigns (only if access granted) ──────────────────────
+  useEffect(() => {
+    if (!hasAccess) return;
     fetch("/api/donation/campaigns")
       .then((r) => r.json())
       .then((data) => {
@@ -38,7 +62,7 @@ export default function DonationPage() {
         setLoadingCampaigns(false);
       })
       .catch(() => setLoadingCampaigns(false));
-  }, []);
+  }, [hasAccess]);
 
   function openModal(campaign: Campaign) {
     setSelectedCampaign(campaign);
@@ -107,6 +131,42 @@ export default function DonationPage() {
   }
 
   const QUICK_AMOUNTS = [50, 100, 200, 500];
+
+  // ── Verifying access ──────────────────────────────────────────────
+  if (!accessChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#04090f]">
+        <div className="flex flex-col items-center gap-4 text-gray-400">
+          <RefreshCw size={32} className="animate-spin text-[#e63b60]" />
+          <p className="text-sm">Verifying access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Locked screen ─────────────────────────────────────────────────
+  if (!hasAccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#04090f] px-4">
+        <div className="flex flex-col items-center gap-4 text-center max-w-sm">
+          <div className="w-16 h-16 rounded-full bg-pink-50 dark:bg-pink-900/30 flex items-center justify-center">
+            <Lock size={28} className="text-[#e63b60]" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-800 dark:text-blue-100">Elite Feature</h2>
+          <p className="text-sm text-gray-500 dark:text-blue-400">
+            Donation is available for Elite subscribers. Subscribe to unlock and support campaigns.
+          </p>
+          <Link
+            href="/dashboard/subscription"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#e63b60] hover:bg-[#cf2f52] text-white text-sm font-semibold rounded-xl transition-all"
+          >
+            <Crown size={14} className="text-yellow-300" />
+            Get Elite Subscription
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#04090f] py-10 px-4">
