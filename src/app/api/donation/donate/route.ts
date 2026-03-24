@@ -42,8 +42,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Insufficient balance." }, { status: 400 });
     }
 
-    // ── 5. Find admin ─────────────────────────────────────────────────
-    const admin = await users.findOne({ role: "Admin" });
+    // ── 5. Find admin (case-insensitive) ─────────────────────────────
+    const admin = await users.findOne({
+      role: { $regex: /^admin$/i },
+    });
     if (!admin) {
       return NextResponse.json({ message: "Admin account not found." }, { status: 500 });
     }

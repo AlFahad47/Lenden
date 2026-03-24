@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const users = db.collection("users");
 
     // Verify admin
-    const admin = await users.findOne({ email: adminEmail, role: "Admin" });
+    const admin = await users.findOne({ email: adminEmail, role: { $regex: /^admin$/i } });
     if (!admin) {
       return NextResponse.json({ message: "Unauthorized. Admin only." }, { status: 403 });
     }
@@ -65,7 +65,7 @@ export async function PATCH(request: Request) {
     const db = client.db("novapay_db");
     const users = db.collection("users");
 
-    const admin = await users.findOne({ email: adminEmail, role: "Admin" });
+    const admin = await users.findOne({ email: adminEmail, role: { $regex: /^admin$/i } });
     if (!admin) {
       return NextResponse.json({ message: "Unauthorized. Admin only." }, { status: 403 });
     }
