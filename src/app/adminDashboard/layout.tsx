@@ -14,6 +14,7 @@ import {
   Menu,
   Landmark,
   Crown,
+  Heart,
 } from "lucide-react";
 
 const adminItems = [
@@ -22,7 +23,8 @@ const adminItems = [
   { icon: ShieldAlert, label: "Fraud", path: "/adminDashboard/fraud" },
   { icon: FileCheck, label: "Requests", path: "/adminDashboard/requests" },
   { icon: BarChart3, label: "Analytics", path: "/adminDashboard/analytics" },
-   { icon: Crown, label: "Subscription", path:"/adminDashboard/subscription" },
+  { icon: Crown, label: "Subscription", path: "/adminDashboard/subscription" },
+  { icon: Heart, label: "Campaigns", path: "/adminDashboard/campaigns" },
   {
     icon: Landmark,
     label: "Savings Withdrawals",
@@ -66,7 +68,7 @@ export default function AdminLayout({
       <aside
         className={`fixed lg:relative z-40 h-full w-64 bg-white dark:bg-[#0c1a2b] border-r border-gray-200 dark:border-gray-700 transition-transform lg:translate-x-0 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="p-6 font-bold text-blue-600 border-b dark:border-gray-700 text-xl">
+        <div className="p-6 font-bold text-blue-600 text-xl no-underline">
           NovaPay ADMIN
         </div>
         <nav className="p-4 space-y-2">

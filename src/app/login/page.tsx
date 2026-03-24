@@ -675,8 +675,16 @@ const PandaLogin: React.FC = () => {
         </div>
       ));
 
+      // Check role and redirect accordingly
+      const userRes = await fetch(`/api/user/update?email=${usernameInput}`);
+      const userData = await userRes.json();
+
       setTimeout(() => {
-        router.push("/");
+        if (userData?.role === "Admin") {
+          router.push("/adminDashboard");
+        } else {
+          router.push("/");
+        }
         router.refresh();
       }, 2000);
     }
