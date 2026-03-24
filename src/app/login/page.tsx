@@ -680,7 +680,7 @@ const PandaLogin: React.FC = () => {
       const userData = await userRes.json();
 
       setTimeout(() => {
-        if (userData?.role === "Admin") {
+        if (userData?.role?.toLowerCase() === "admin") {
           router.push("/adminDashboard");
         } else {
           router.push("/");

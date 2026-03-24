@@ -46,7 +46,7 @@ export default function AdminLayout({
     if (status === "loading") return;
 
     // ১. অ্যাডমিন প্রোটেকশন
-    if (!session || session.user.role !== "admin") {
+    if (!session || session.user.role?.toLowerCase() !== "admin") {
       router.push("/dashboard");
     }
 
