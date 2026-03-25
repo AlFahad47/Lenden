@@ -111,8 +111,8 @@ export const authOptions: NextAuthOptions = {
         token.accountStatus = (user as any).accountStatus || "active"; // ✅ Added status
       }
 
-      // Sync with DB to ensure latest role/status (especially for Google users)
-      if (!token.role || token.role === "User") {
+      // Always sync role from DB so changes in MongoDB take effect immediately
+      try {
         const client = await clientPromise;
         const db = client.db("novapay_db");
         const dbUser = await db
@@ -122,8 +122,10 @@ export const authOptions: NextAuthOptions = {
         if (dbUser) {
           token.role = dbUser.role || "User";
           token.id = dbUser._id.toString();
-          token.accountStatus = dbUser.accountStatus || "active"; // ✅ Added status
+          token.accountStatus = dbUser.accountStatus || "active";
         }
+      } catch {
+        // keep existing token values on DB error
       }
 
       return token;

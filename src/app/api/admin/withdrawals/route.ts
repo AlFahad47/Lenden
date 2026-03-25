@@ -46,55 +46,32 @@ export async function GET() {
 
 export async function PATCH(req: Request) {
   try {
-    const { status, goalId, email } = await req.json();
-
-    // Field validation
-    if (!status || !goalId || !email) {
-      return NextResponse.json(
-        { success: false, message: "Missing required fields" }, 
-        { status: 400 }
-      );
-    }
-
+    const { status, goalId, email, amount } = await req.json();
     const client = await clientPromise;
     const db = client.db("novapay_db");
 
-    // 1. Withdrawal Request update 
-    const withdrawUpdate = await db.collection("withdraw-microsaving").updateOne(
-      { goalId: goalId, email: email }, 
-      { $set: { status: status, processedAt: new Date() } }
-    );
-
-    if (withdrawUpdate.matchedCount === 0) {
-      return NextResponse.json(
-        { success: false, message: "Request not found" }, 
-        { status: 404 }
-      );
+    let finalAmount = Number(amount);
+    
+    // Status approved 3% fee
+    if (status === "approved") {
+      const fee = finalAmount * 0.03;
+      finalAmount = finalAmount - fee;
     }
 
-    // 2. Main Goal collection / User array status update
-    if (status === 'approved') {
-      
-      
-      await db.collection("users").updateOne(
-        { email: email, "microsaving.id": goalId }, 
-        { 
-          $set: { "microsaving.$.status": "approved" } 
-        }
-      );
-
-      
-    }
-
-    return NextResponse.json({ 
-      success: true, 
-      message: "Status updated in both collections successfully!" 
-    });
-
-  } catch (error: any) {
-    return NextResponse.json(
-      { success: false, message: error.message }, 
-      { status: 500 }
+    // Update withdrawal collection with net amount
+    await db.collection("withdraw-microsaving").updateOne(
+      { goalId, email },
+      { $set: { status, netAmount: finalAmount, processedAt: new Date() } }
     );
+
+    // Update user's microsaving status
+    await db.collection("users").updateOne(
+      { email, "microsaving.id": goalId },
+      { $set: { "microsaving.$.status": status } }
+    );
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json({ success: false }, { status: 500 });
   }
 }
