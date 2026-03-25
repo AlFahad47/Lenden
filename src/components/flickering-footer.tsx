@@ -1172,7 +1172,6 @@ export const Component = () => {
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 py-12 md:flex-row md:items-start md:justify-between md:px-10">
         <div className="mx-0 flex max-w-sm flex-col items-start justify-start gap-y-5 md:pl-10">
           <Link href="/" className="flex items-center gap-2">
-            <Icons.logo className="size-8" />
             <p className="text-xl font-semibold text-primary">NovaPay</p>
           </Link>
           <p className="text-sm font-medium tracking-tight text-muted-foreground md:text-base">

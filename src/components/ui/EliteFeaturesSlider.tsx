@@ -159,17 +159,14 @@ export default function EliteFeaturesSlider() {
   }, [session?.user?.email]);
 
   return (
-    <div className="w-full bg-gray-50 dark:bg-[#0A0E17] border-y border-gray-200 dark:border-gray-800/60 transition-colors duration-300">
-      <div className="max-w-[1280px] mx-auto px-4">
+    <section className="home-section bg-[#F8FAFC] py-14 dark:bg-[#070E1A]">
+      <div className="home-container">
         <div className="w-full text-center pt-14 pb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4DA1FF]/10 border border-[#4DA1FF]/20 text-[#1E50FF] dark:text-[#4DA1FF] text-xs font-semibold mb-3">
             <FaBolt size={10} /> Your Coins: {userPoints}
           </div>
-          <h2 className="text-2xl md:text-4xl font-extrabold text-gray-800 dark:text-white">
-            Elite{" "}
-            <span className="bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] bg-clip-text text-transparent">
-              Privileges
-            </span>
+          <h2 className="home-heading text-2xl md:text-4xl">
+            Elite <span className="home-gradient-text">Privileges</span>
           </h2>
 
           <div className="flex items-center justify-center gap-4 mt-8">
@@ -179,9 +176,7 @@ export default function EliteFeaturesSlider() {
             >
               <FaChevronLeft size={14} />
             </button>
-            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium italic">
-              Explore premium features
-            </p>
+            <p className="home-body text-sm italic">Explore premium features</p>
             <button
               onClick={() => scroll("right")}
               className="p-3 rounded-full bg-white dark:bg-[#121928] border border-gray-200 dark:border-gray-800 text-gray-400 hover:text-[#1E50FF] transition shadow-sm"
@@ -206,7 +201,7 @@ export default function EliteFeaturesSlider() {
                 key={index}
                 whileHover={{ y: -5 }}
                 onClick={() => handleActionClick(item)}
-                className="min-w-[300px] md:min-w-[350px] group relative p-8 rounded-[2rem] bg-white dark:bg-[#121928] border border-gray-200 dark:border-gray-800 shadow-sm cursor-pointer transition-all duration-300"
+                className="group relative min-w-75 p-8 rounded-[2rem] border border-gray-200 bg-white shadow-sm transition-all duration-300 cursor-pointer md:min-w-87.5 dark:border-gray-800 dark:bg-[#121928]"
               >
                 <div className="absolute top-6 right-8">
                   <span
@@ -258,7 +253,7 @@ export default function EliteFeaturesSlider() {
 
       <AnimatePresence>
         {selectedLock && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
+          <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -304,7 +299,7 @@ export default function EliteFeaturesSlider() {
                   </div>
 
                   <Link href={"/dashboard/subscription"}>
-                    <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 transform transition-all active:scale-95 duration-200 cursor-pointer">
+                    <button className="w-full cursor-pointer rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 px-6 py-3 font-bold text-white shadow-lg shadow-blue-500/25 transition-all duration-200 active:scale-95 hover:from-blue-700 hover:to-indigo-700">
                       Get NovaPay Subscription
                     </button>
                   </Link>
@@ -358,6 +353,6 @@ export default function EliteFeaturesSlider() {
           </div>
         )}
       </AnimatePresence>
-    </div>
+    </section>
   );
 }

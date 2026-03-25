@@ -64,12 +64,12 @@ export default function TopReviews() {
   }, []);
 
   return (
-    <section className="py-20 bg-[#F0F7FF] dark:bg-[#040911] overflow-hidden relative">
+    <section className="home-section py-20">
       {/* Background Glows */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 blur-[120px] rounded-full" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/10 blur-[120px] rounded-full" />
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="home-container px-6">
         {/* Header Section */}
         <div className="mb-16 flex flex-col justify-between gap-6 text-left md:flex-row md:items-end">
           <div>
@@ -77,18 +77,15 @@ export default function TopReviews() {
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="mt-3 text-2xl font-extrabold text-gray-800 dark:text-white md:text-4xl"
+              className="home-heading mt-3 text-2xl md:text-4xl"
             >
-              What Our Users{" "}
-              <span className="bg-linear-to-r from-[#4DA1FF] to-[#1E50FF] bg-clip-text text-transparent">
-                Say
-              </span>
+              What Our Users <span className="home-gradient-text">Say</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.10 }}
-              className="mt-3 max-w-2xl text-sm text-gray-600 dark:text-gray-300 md:text-base"
+              transition={{ delay: 0.1 }}
+              className="home-body mt-3 max-w-2xl text-sm md:text-base"
             >
               Real feedback from NovaPay users worldwide, sharing how faster
               payments and smarter money tools improved their daily lives.
@@ -101,7 +98,7 @@ export default function TopReviews() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="group rounded-2xl border-gray-200 px-6 font-bold dark:border-white/10"
+                className="group rounded-full border-slate-200 px-6 font-bold text-slate-700 hover:border-[#4DA1FF]/40 hover:text-[#1E50FF] dark:border-white/10 dark:text-slate-200"
               >
                 <Link href="/review">
                   Share Your Experience
@@ -113,7 +110,7 @@ export default function TopReviews() {
                 onClick={() => signIn("google")}
                 variant="novapay"
                 size="lg"
-                className="rounded-2xl px-6 font-bold"
+                className="home-btn-primary rounded-full px-6"
                 aria-label="Login to Review"
               >
                 <FaLock size={14} />
@@ -140,7 +137,7 @@ export default function TopReviews() {
             />
           </div>
         ) : (
-          <div className="rounded-3xl border border-gray-200 bg-white/70 px-6 py-16 text-center text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-gray-400">
+          <div className="rounded-3xl border border-slate-200 bg-white/70 px-6 py-16 text-center text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
             No reviews yet. Be the first to share your experience.
           </div>
         )}
@@ -149,7 +146,7 @@ export default function TopReviews() {
         <div className="mt-16 text-center">
           <Link
             href="/review"
-            className="text-gray-500 hover:text-[#1E50FF] font-semibold flex items-center justify-center gap-2 transition-colors"
+            className="flex items-center justify-center gap-2 font-semibold text-slate-500 transition-colors hover:text-[#1E50FF]"
           >
             See all community feedback <FaArrowRight size={12} />
           </Link>

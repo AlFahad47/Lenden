@@ -1,3 +1,12 @@
+"use client";
+
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { cn } from "@/lib/utils";
 import {
   TestimonialCard,
@@ -21,13 +30,106 @@ export function TestimonialsSection({
   testimonials,
   className,
 }: TestimonialsSectionProps) {
+  const PIXELS_PER_SECOND = 85;
+
+  const topTrackRef = useRef<HTMLDivElement>(null);
+  const bottomTrackRef = useRef<HTMLDivElement>(null);
+  const [hoveredRow, setHoveredRow] = useState<"top" | "bottom" | null>(null);
+  const [halfWidths, setHalfWidths] = useState({ top: 0, bottom: 0 });
+  const topPositionRef = useRef(0);
+  const bottomPositionRef = useRef(0);
+
   const hasHeader = Boolean(title || description);
-  const cleanTestimonials = testimonials.filter((item) => item.text?.trim());
+  const cleanTestimonials = useMemo(
+    () => testimonials.filter((item) => item.text?.trim()),
+    [testimonials],
+  );
   const firstRow = cleanTestimonials.filter((_, index) => index % 2 === 0);
   const secondRow = cleanTestimonials.filter((_, index) => index % 2 === 1);
   const bottomRow = secondRow.length > 0 ? secondRow : firstRow;
   const loopTopRow = [...firstRow, ...firstRow];
   const loopBottomRow = [...bottomRow, ...bottomRow];
+
+  useEffect(() => {
+    const updateHalfWidths = () => {
+      const topWidth = topTrackRef.current?.scrollWidth ?? 0;
+      const bottomWidth = bottomTrackRef.current?.scrollWidth ?? 0;
+
+      const nextTopHalf = topWidth / 2;
+      const nextBottomHalf = bottomWidth / 2;
+
+      setHalfWidths({ top: nextTopHalf, bottom: nextBottomHalf });
+
+      // Start from the middle so the beginning is never visible.
+      topPositionRef.current = nextTopHalf > 0 ? -nextTopHalf / 2 : 0;
+      bottomPositionRef.current = nextBottomHalf > 0 ? -nextBottomHalf / 2 : 0;
+    };
+
+    updateHalfWidths();
+    const resizeObserver = new ResizeObserver(updateHalfWidths);
+
+    if (topTrackRef.current) {
+      resizeObserver.observe(topTrackRef.current);
+    }
+
+    if (bottomTrackRef.current) {
+      resizeObserver.observe(bottomTrackRef.current);
+    }
+
+    return () => resizeObserver.disconnect();
+  }, [loopTopRow.length, loopBottomRow.length]);
+
+  useEffect(() => {
+    let frameId = 0;
+    let lastTime = performance.now();
+
+    const animate = (time: number) => {
+      const deltaSeconds = (time - lastTime) / 1000;
+      lastTime = time;
+
+      if (topTrackRef.current && halfWidths.top > 0 && hoveredRow !== "top") {
+        topPositionRef.current -= PIXELS_PER_SECOND * deltaSeconds;
+
+        if (topPositionRef.current <= -halfWidths.top) {
+          topPositionRef.current += halfWidths.top;
+        }
+
+        if (topPositionRef.current > 0) {
+          topPositionRef.current -= halfWidths.top;
+        }
+
+        topTrackRef.current.style.transform = `translate3d(${topPositionRef.current}px, 0, 0)`;
+      }
+
+      if (
+        bottomTrackRef.current &&
+        halfWidths.bottom > 0 &&
+        hoveredRow !== "bottom"
+      ) {
+        bottomPositionRef.current += PIXELS_PER_SECOND * deltaSeconds;
+
+        if (bottomPositionRef.current >= 0) {
+          bottomPositionRef.current -= halfWidths.bottom;
+        }
+
+        if (bottomPositionRef.current < -halfWidths.bottom) {
+          bottomPositionRef.current += halfWidths.bottom;
+        }
+
+        bottomTrackRef.current.style.transform = `translate3d(${bottomPositionRef.current}px, 0, 0)`;
+      }
+
+      frameId = requestAnimationFrame(animate);
+    };
+
+    frameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frameId);
+  }, [halfWidths, hoveredRow]);
+
+  const commonTrackStyle: CSSProperties = {
+    transform: "translate3d(0, 0, 0)",
+    backfaceVisibility: "hidden",
+  };
 
   return (
     <section className={cn("text-foreground px-0 py-0", className)}>
@@ -48,16 +150,36 @@ export function TestimonialsSection({
         )}
 
         <div className="relative flex w-full flex-col gap-4 overflow-hidden">
-          <div className="group relative flex overflow-hidden p-2 [--gap:1rem] [--duration:48s]">
-            <div className="marquee-track marquee-left flex shrink-0 flex-row justify-around gap-(--gap) group-hover:paused">
+          <div
+            className="relative flex overflow-hidden p-2 [--gap:1rem]"
+            onMouseEnter={() => setHoveredRow("top")}
+            onMouseLeave={() =>
+              setHoveredRow((value) => (value === "top" ? null : value))
+            }
+          >
+            <div
+              ref={topTrackRef}
+              style={commonTrackStyle}
+              className="flex w-max shrink-0 flex-row justify-around gap-(--gap) will-change-transform"
+            >
               {loopTopRow.map((testimonial, i) => (
                 <TestimonialCard key={`top-${i}`} {...testimonial} />
               ))}
             </div>
           </div>
 
-          <div className="group relative flex overflow-hidden p-2 [--gap:1rem] [--duration:50s]">
-            <div className="marquee-track marquee-right flex shrink-0 flex-row justify-around gap-(--gap) group-hover:paused">
+          <div
+            className="relative flex overflow-hidden p-2 [--gap:1rem]"
+            onMouseEnter={() => setHoveredRow("bottom")}
+            onMouseLeave={() =>
+              setHoveredRow((value) => (value === "bottom" ? null : value))
+            }
+          >
+            <div
+              ref={bottomTrackRef}
+              style={commonTrackStyle}
+              className="flex w-max shrink-0 flex-row justify-around gap-(--gap) will-change-transform"
+            >
               {loopBottomRow.map((testimonial, i) => (
                 <TestimonialCard key={`bottom-${i}`} {...testimonial} />
               ))}

@@ -236,7 +236,7 @@ const QuickActionsContent = () => {
   );
 
   return (
-    <section className="relative w-full overflow-hidden border-y border-slate-200 bg-[#F8FAFC] py-15 transition-colors duration-700 dark:border-white/5 dark:bg-[#050B14]">
+    <section className="home-section py-16">
       {/* Hardware Accelerated SVG Gradient Definition */}
       <svg width="0" height="0" className="absolute">
         <defs>
@@ -248,12 +248,12 @@ const QuickActionsContent = () => {
       </svg>
 
       {/* Ambient Glow Background */}
-      <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-100 w-120 -translate-x-1/2 rounded-full bg-[#4DA1FF]/5 blur-[120px] dark:bg-[#1E50FF]/10"></div>
+      <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-100 w-120 -translate-x-1/2 rounded-full bg-[#4DA1FF]/10 blur-[110px] dark:bg-[#4DA1FF]/16"></div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1280px] flex-col items-center px-4">
+      <div className="home-container flex flex-col items-center px-4">
         {/* Header Area */}
         <div className="mb-7 w-full text-center">
-          <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white md:text-[2.5rem]">
+          <h2 className="home-heading text-3xl md:text-[2.5rem]">
             Everything You Need,{" "}
             <span className="bg-linear-to-r from-[#4DA1FF] to-[#1E50FF] bg-clip-text text-transparent">
               One Tap Away
@@ -300,7 +300,7 @@ const QuickActionsContent = () => {
 
           <div className="relative h-full flex-1 overflow-hidden">
             {/* Center Background Hub (Adds depth) */}
-            <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.05)] transition-colors dark:bg-[#0B1221] md:h-55 md:w-55" />
+            <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/95 shadow-[0_16px_42px_rgba(37,99,235,0.08)] transition-colors dark:bg-[#11203a] md:h-55 md:w-55" />
 
             {quickActions.map((item, index) => {
               const isCenter = index === activeIndex;
@@ -318,8 +318,8 @@ const QuickActionsContent = () => {
                 >
                   <div
                     className={`relative mb-3 flex items-center justify-center rounded-[1.5rem] transition-all duration-500
-                    ${isCenter ? "h-20 w-20 md:h-24 md:w-24 bg-white dark:bg-[#0F1B2D] shadow-[0_8px_28px_rgba(29,78,216,0.18)] border border-blue-100/80 dark:border-blue-900/60" : "h-16 w-16 bg-slate-100/80 dark:bg-slate-800/40"}
-                    ${isLocked ? "opacity-50" : ""}
+                    ${isCenter ? "h-20 w-20 md:h-24 md:w-24 bg-white dark:bg-[#17304f] shadow-[0_8px_24px_rgba(29,78,216,0.14)] border border-blue-100/90 dark:border-blue-300/35" : "h-16 w-16 md:h-22 md:w-22 bg-slate-200/80 dark:bg-slate-700/40"}
+                    ${isLocked ? "opacity-85" : ""}
                   `}
                   >
                     <Icon
@@ -329,7 +329,7 @@ const QuickActionsContent = () => {
                           ? { fill: "url(#iconGradient)" }
                           : {}
                       }
-                      className={`transition-colors duration-500 ${isCenter && !isLocked ? "" : "text-slate-400 dark:text-slate-500"}`}
+                      className={`transition-colors duration-500 ${isCenter && !isLocked ? "" : "text-slate-700 dark:text-slate-200"}`}
                     />
 
                     {/* Minimalist Lock Indicator */}
@@ -342,7 +342,7 @@ const QuickActionsContent = () => {
 
                   <span
                     className={`text-center font-bold tracking-wide transition-colors duration-500
-                    ${isCenter ? "text-[15px] text-slate-900 dark:text-white" : "text-[13px] text-slate-400 dark:text-slate-500"}
+                    ${isCenter ? "text-[15px] text-slate-800 dark:text-slate-100" : "text-[13px] text-slate-500 dark:text-slate-400"}
                   `}
                   >
                     {item.name}
@@ -363,9 +363,9 @@ const QuickActionsContent = () => {
 
         {/* Modular Modals */}
         {isModalOpen && ActiveModalComponent && (
-          <div className="fixed inset-0 z-100 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-in fade-in duration-200 dark:bg-black/80">
-            <div className="w-full max-w-md overflow-hidden rounded-[2rem] border border-slate-100 bg-white shadow-2xl animate-in zoom-in-95 duration-200 dark:border-slate-800 dark:bg-[#0F172A]">
-              <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-6 py-5 dark:border-slate-800 dark:bg-transparent">
+          <div className="fixed inset-0 z-100 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm animate-in fade-in duration-200 dark:bg-black/70">
+            <div className="w-full max-w-md overflow-hidden rounded-[2rem] border border-slate-100 bg-white shadow-[0_24px_64px_-20px_rgba(15,23,42,0.4)] animate-in zoom-in-95 duration-200 dark:border-white/10 dark:bg-[#12233c]">
+              <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-6 py-5 dark:border-white/10 dark:bg-transparent">
                 <h3 className="flex items-center gap-3 text-lg font-extrabold text-slate-800 dark:text-white">
                   {activeModal === "Pay Bill" ? (
                     <FaReceipt className="text-blue-500" />
@@ -376,7 +376,7 @@ const QuickActionsContent = () => {
                 </h3>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-full p-2 transition-colors hover:bg-slate-200 dark:hover:bg-slate-800"
+                  className="rounded-full p-2 transition-colors hover:bg-slate-200 dark:hover:bg-white/10"
                   aria-label="Close modal"
                 >
                   <X size={20} className="text-slate-500 dark:text-slate-400" />
@@ -397,7 +397,7 @@ export default function QuickActions() {
   return (
     <Suspense
       fallback={
-        <div className="flex h-100 w-full items-center justify-center bg-[#F8FAFC] dark:bg-[#050B14]">
+        <div className="flex h-100 w-full items-center justify-center bg-[#FCFEFF] dark:bg-[#081325]">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600"></div>
         </div>
       }
