@@ -41,7 +41,7 @@ export default function LanguageSwitcher() {
         <div className="absolute right-0 top-full mt-2 w-44
           bg-white dark:bg-[#0c1a2b]
           border border-gray-200 dark:border-gray-700
-          rounded-2xl shadow-xl z-50 overflow-hidden">
+          rounded-2xl shadow-xl z-[999] overflow-hidden">
           {locales.map((lang) => {
             const info = localeLabels[lang as Locale];
             const isActive = locale === lang;

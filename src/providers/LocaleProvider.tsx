@@ -48,8 +48,6 @@ export default function LocaleProvider({
     document.documentElement.lang = newLocale;
   };
 
-  if (!mounted) return null;
-
   return (
     <LocaleContext.Provider value={{ locale, setLocale }}>
       <NextIntlClientProvider locale={locale} messages={messages[locale]}>
