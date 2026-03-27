@@ -264,6 +264,7 @@ import DashboardHome from "@/components/dashboard/DashboardHome";
 import { CreditCard, Bell, Clock, Edit, Activity, DollarSign } from "lucide-react";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import T from "@/components/T";
 
 export default function DashboardPage() {
   const { data: session, status, update } = useSession();

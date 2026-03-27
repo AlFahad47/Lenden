@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { Crown, Check, Loader2, Zap, Globe, Calculator, PiggyBank } from "lucide-react";
 import { SUBSCRIPTION_PRICES, SubscriptionPlan, ELITE_FEATURES } from "@/types/subscription";
+import T from "@/components/T";
 
 const FEATURE_ICONS: Record<string, React.ElementType> = {
   "International Pay": Globe,
@@ -88,10 +89,10 @@ export default function SubscriptionPage() {
       <div className="text-center space-y-2">
         <div className="flex items-center justify-center gap-2">
           <Crown className="text-yellow-400" size={28} />
-          <h1 className="text-2xl font-bold text-blue-900 dark:text-blue-100">Elite Subscription</h1>
+          <h1 className="text-2xl font-bold text-blue-900 dark:text-blue-100"><T>Elite Subscription</T></h1>
         </div>
         <p className="text-blue-500 dark:text-blue-400 text-sm">
-          Unlock all premium features with one simple subscription
+          <T>Unlock all premium features with one simple subscription</T>
         </p>
       </div>
 
@@ -100,9 +101,9 @@ export default function SubscriptionPage() {
         <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-2xl p-5 flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
           <Crown className="text-yellow-400 shrink-0" size={28} />
           <div>
-            <p className="font-semibold text-green-800 dark:text-green-300">You are an Elite Member!</p>
+            <p className="font-semibold text-green-800 dark:text-green-300"><T>You are an Elite Member!</T></p>
             <p className="text-sm text-green-600 dark:text-green-400">
-              {status.daysLeft} days remaining · Plan: {status.subscription?.plan}
+              {status.daysLeft} <T>days remaining · Plan:</T> {status.subscription?.plan}
             </p>
           </div>
         </div>
@@ -112,7 +113,7 @@ export default function SubscriptionPage() {
       <div className="bg-white dark:bg-[#0c1a2b] rounded-2xl border border-blue-100 dark:border-blue-900 p-6 space-y-4 shadow-sm">
         <h2 className="font-semibold text-blue-800 dark:text-blue-200 flex items-center gap-2">
           <Zap size={16} className="text-yellow-400" />
-          What you get
+          <T>What you get</T>
         </h2>
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {ELITE_FEATURES.map((feature) => {
@@ -130,7 +131,7 @@ export default function SubscriptionPage() {
             <span className="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-900/40 flex items-center justify-center shrink-0">
               <Check size={14} className="text-blue-500" />
             </span>
-            All future Elite features
+            <T>All future Elite features</T>
           </li>
         </ul>
       </div>
@@ -155,7 +156,7 @@ export default function SubscriptionPage() {
                   </span>
                   {plan === "yearly" && (
                     <span className="text-xs bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full font-medium">
-                      Save 30%
+                      <T>Save 30%</T>
                     </span>
                   )}
                 </div>
@@ -163,7 +164,7 @@ export default function SubscriptionPage() {
                   ৳{SUBSCRIPTION_PRICES[plan].toLocaleString()}
                 </p>
                 <p className="text-xs text-blue-400 mt-0.5">
-                  {plan === "monthly" ? "per month" : "per year"}
+                  {plan === "monthly" ? <T>per month</T> : <T>per year</T>}
                 </p>
               </button>
             ))}
@@ -192,12 +193,12 @@ export default function SubscriptionPage() {
               <Crown size={16} className="text-yellow-300" />
             )}
             {purchasing
-              ? "Processing payment..."
-              : `Subscribe for ৳${SUBSCRIPTION_PRICES[selectedPlan].toLocaleString()}`}
+              ? <T>Processing payment...</T>
+              : <><T>Subscribe for</T> ৳{SUBSCRIPTION_PRICES[selectedPlan].toLocaleString()}</>}
           </button>
 
           <p className="text-center text-[11px] text-blue-400/80">
-            Deducted directly from your NovaPay BDT wallet. Subscription is non-refundable.
+            <T>Deducted directly from your NovaPay BDT wallet. Subscription is non-refundable.</T>
           </p>
         </div>
       )}

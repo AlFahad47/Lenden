@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
 import { useSession } from "next-auth/react";
+import T from "@/components/T";
 
 export default function KYCPage() {
   const { data: session } = useSession();
@@ -60,7 +61,7 @@ export default function KYCPage() {
     }
   };
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center dark:text-white">Loading...</div>;
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center dark:text-white"><T>Loading...</T></div>;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#04090f] transition-colors duration-500 px-6 py-16">
@@ -68,9 +69,9 @@ export default function KYCPage() {
         
         {/* Case 1: Pending status */}
         {kycStatus === "pending" && (
-          <StatusCard 
-            title="Verification Pending" 
-            desc="We are reviewing your documents. Balance and Wallet features will be fully unlocked after approval."
+          <StatusCard
+            title="Verification Pending"
+            desc="Your documents are under review. Balance and Wallet features will be fully unlocked after approval."
             icon="⏳"
             color="text-yellow-500"
           />
@@ -129,7 +130,7 @@ export default function KYCPage() {
                 </Section>
 
                 <motion.button disabled={isSubmitting} type="submit" className="w-full mt-8 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-[#0095ff] to-[#0061ff] shadow-lg disabled:opacity-50">
-                  {isSubmitting ? "Submitting..." : `Submit ${role} KYC`}
+                  {isSubmitting ? <T>Submitting...</T> : <><T>Submit</T> {role} <T>KYC</T></>}
                 </motion.button>
               </motion.form>
             </AnimatePresence>
@@ -146,9 +147,9 @@ function StatusCard({ title, desc, icon, color }: any) {
   return (
     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-[#0c1a2b] p-10 rounded-3xl border border-gray-200 dark:border-blue-700/40 text-center shadow-2xl">
       <div className="text-6xl mb-6">{icon}</div>
-      <h2 className={`text-3xl font-bold mb-4 ${color}`}>{title}</h2>
-      <p className="text-gray-600 dark:text-blue-200 text-lg max-w-md mx-auto">{desc}</p>
-      <button onClick={() => window.location.href = "/dashboard"} className="mt-8 px-8 py-3 bg-gradient-to-r from-[#0095ff] to-[#0061ff] text-white rounded-xl font-semibold">Go to Dashboard</button>
+      <h2 className={`text-3xl font-bold mb-4 ${color}`}><T>{title}</T></h2>
+      <p className="text-gray-600 dark:text-blue-200 text-lg max-w-md mx-auto"><T>{desc}</T></p>
+      <button onClick={() => window.location.href = "/dashboard"} className="mt-8 px-8 py-3 bg-gradient-to-r from-[#0095ff] to-[#0061ff] text-white rounded-xl font-semibold"><T>Go to Dashboard</T></button>
     </motion.div>
   );
 }
@@ -156,7 +157,7 @@ function StatusCard({ title, desc, icon, color }: any) {
 function Section({ title, children }: any) {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-      <h2 className="text-xl font-semibold mb-6 bg-gradient-to-r from-[#0095ff] to-[#0061ff] bg-clip-text text-transparent">{title}</h2>
+      <h2 className="text-xl font-semibold mb-6 bg-gradient-to-r from-[#0095ff] to-[#0061ff] bg-clip-text text-transparent"><T>{title}</T></h2>
       <div className="grid md:grid-cols-2 gap-6">{children}</div>
     </motion.div>
   );
@@ -165,7 +166,7 @@ function Section({ title, children }: any) {
 function Input({ label, name, type = "text", required = false, defaultValue = "", readOnly = false, placeholder = "" }: any) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm text-gray-700 dark:text-blue-300">{label}</label>
+      <label className="text-sm text-gray-700 dark:text-blue-300"><T>{label}</T></label>
       <input name={name} type={type} required={required} defaultValue={defaultValue} readOnly={readOnly} placeholder={placeholder} className={`bg-gray-100 dark:bg-blue-900/20 text-gray-800 dark:text-blue-100 border border-gray-300 dark:border-blue-700/40 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0095ff] outline-none ${readOnly ? "opacity-60" : ""}`} />
     </div>
   );
@@ -174,7 +175,7 @@ function Input({ label, name, type = "text", required = false, defaultValue = ""
 function Textarea({ label, name, required = false }: any) {
   return (
     <div className="flex flex-col gap-2 md:col-span-2">
-      <label className="text-sm text-gray-700 dark:text-blue-300">{label}</label>
+      <label className="text-sm text-gray-700 dark:text-blue-300"><T>{label}</T></label>
       <textarea name={name} required={required} rows={2} className="bg-gray-100 dark:bg-blue-900/20 text-gray-800 dark:text-blue-100 border border-gray-300 dark:border-blue-700/40 rounded-lg px-4 py-2 outline-none" />
     </div>
   );
@@ -183,7 +184,7 @@ function Textarea({ label, name, required = false }: any) {
 function Select({ label, name, options }: any) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm text-gray-700 dark:text-blue-300">{label}</label>
+      <label className="text-sm text-gray-700 dark:text-blue-300"><T>{label}</T></label>
       <select name={name} className="bg-gray-100 dark:bg-blue-900/20 text-gray-800 dark:text-blue-100 border border-gray-300 dark:border-blue-700/40 rounded-lg px-4 py-2 outline-none">
         {options.map((opt: string) => <option key={opt} value={opt}>{opt}</option>)}
       </select>
@@ -194,7 +195,7 @@ function Select({ label, name, options }: any) {
 function FileInput({ label, name }: any) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm text-gray-700 dark:text-blue-300">{label}</label>
+      <label className="text-sm text-gray-700 dark:text-blue-300"><T>{label}</T></label>
       <input type="file" name={name} className="bg-gray-100 dark:bg-blue-900/20 text-gray-800 dark:text-blue-100 border border-gray-300 dark:border-blue-700/40 rounded-lg px-4 py-2 file:bg-blue-600 file:text-white file:border-0 file:rounded-md" />
     </div>
   ); 
