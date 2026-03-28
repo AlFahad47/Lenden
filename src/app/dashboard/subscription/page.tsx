@@ -123,7 +123,7 @@ export default function SubscriptionPage() {
                 <span className="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-900/40 flex items-center justify-center shrink-0">
                   <Icon size={14} className="text-blue-500" />
                 </span>
-                {feature}
+                <T>{feature}</T>
               </li>
             );
           })}
@@ -177,7 +177,7 @@ export default function SubscriptionPage() {
                 ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-700"
                 : "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-700"
             }`}>
-              {message.text}
+              <T>{message.text}</T>
             </div>
           )}
 

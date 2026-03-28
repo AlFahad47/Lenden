@@ -586,11 +586,11 @@ const PandaLogin: React.FC = () => {
           <div className="flex-1">
             <p className="text-[1em] font-black text-[#4DA1FF] tracking-widest uppercase">
               {" "}
-              Verifying{" "}
+              <T>Verifying</T>{" "}
             </p>
             <p className="text-[0.75em] font-medium text-slate-400 mt-0.5 tracking-wide">
               {" "}
-              Establishing secure connection...{" "}
+              <T>Establishing secure connection...</T>{" "}
             </p>
           </div>
         </div>
@@ -643,11 +643,11 @@ const PandaLogin: React.FC = () => {
             <div className="flex-1 z-10">
               <p className="text-[1em] font-black text-red-400 tracking-widest uppercase">
                 {" "}
-                Access Denied{" "}
+                <T>Access Denied</T>{" "}
               </p>
               <p className="text-[0.75em] font-medium text-slate-400 mt-0.5 tracking-wide">
                 {" "}
-                Invalid security credentials.{" "}
+                <T>Invalid security credentials.</T>{" "}
               </p>
             </div>
           </div>
@@ -666,11 +666,11 @@ const PandaLogin: React.FC = () => {
           <div className="flex-1 z-10">
             <p className="text-[1em] font-black text-[#4DA1FF] tracking-widest uppercase">
               {" "}
-              Access Granted{" "}
+              <T>Access Granted</T>{" "}
             </p>
             <p className="text-[0.75em] font-medium text-slate-400 mt-0.5 tracking-wide">
               {" "}
-              Identity confirmed. Routing to homepage...{" "}
+              <T>Identity confirmed. Routing to homepage...</T>{" "}
             </p>
           </div>
         </div>

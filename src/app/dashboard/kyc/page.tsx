@@ -292,7 +292,7 @@ export default function KYCPage() {
               animate={{ opacity: 1, y: 0 }}
               className="text-4xl md:text-5xl font-bold text-center mb-12 bg-gradient-to-r from-[#0095ff] to-[#0061ff] bg-clip-text text-transparent"
             >
-              User KYC Verification
+              <T>User KYC Verification</T>
             </motion.h1>
 
             <AnimatePresence mode="wait">

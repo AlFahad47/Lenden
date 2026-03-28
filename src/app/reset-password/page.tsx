@@ -203,7 +203,7 @@ const ResetPasswordForm = () => {
               {loading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Saving...
+                  <T>Saving...</T>
                 </>
               ) : (
                 <T>Reset Password</T>
@@ -245,7 +245,7 @@ const ResetPasswordWrapper: React.FC = () => {
       <Suspense fallback={
         <div className="flex flex-col items-center justify-center z-10">
           <div className="w-12 h-12 border-4 border-[#4DA1FF]/30 border-t-[#2C64FF] rounded-full animate-spin mb-4"></div>
-          <p className="text-[#0F172A] dark:text-white font-medium tracking-widest uppercase text-sm animate-pulse">Loading Security Module...</p>
+          <p className="text-[#0F172A] dark:text-white font-medium tracking-widest uppercase text-sm animate-pulse"><T>Loading Security Module...</T></p>
         </div>
       }>
         <ResetPasswordForm />
