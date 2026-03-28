@@ -74,7 +74,7 @@ export default function DashboardLayout({
       return;
     }
 
-    if (session?.user?.role === "Admin") {
+    if (session?.user?.role?.toLowerCase() === "admin") {
       router.push("/adminDashboard");
     }
   }, [session, status, router]);
