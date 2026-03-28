@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import T from "@/components/T";
 
 type User = {
   _id: string;
@@ -103,10 +104,10 @@ export default function AdminUsersPage() {
       {/* TITLE */}
       <div>
         <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-          Users List
+          <T>Users List</T>
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Manage all registered users
+          <T>Manage all registered users</T>
         </p>
       </div>
 
@@ -127,7 +128,7 @@ export default function AdminUsersPage() {
           }
           className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white"
         >
-          {sortOrder === "asc" ? "Newest ⬇️" : "Oldest ⬆️"}
+          {sortOrder === "asc" ? <><T>Newest</T> ⬇️</> : <><T>Oldest</T> ⬆️</>}
         </button>
       </div>
 
@@ -137,10 +138,10 @@ export default function AdminUsersPage() {
           <table className="min-w-full text-sm">
             <thead className="bg-gray-100 dark:bg-[#08111f]">
               <tr>
-                <th className="px-4 py-3 text-left">Name</th>
-                <th className="px-4 py-3 text-left">Email</th>
-                <th className="px-4 py-3 text-left">Role</th>
-                <th className="px-4 py-3 text-left">Created</th>
+                <th className="px-4 py-3 text-left"><T>Name</T></th>
+                <th className="px-4 py-3 text-left"><T>Email</T></th>
+                <th className="px-4 py-3 text-left"><T>Role</T></th>
+                <th className="px-4 py-3 text-left"><T>Created</T></th>
               </tr>
             </thead>
 
@@ -193,7 +194,7 @@ export default function AdminUsersPage() {
           onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
           className="px-3 py-1 rounded-lg bg-gray-200 dark:bg-[#111c2d]"
         >
-          Prev
+          <T>Prev</T>
         </button>
 
         {[...Array(totalPages)].map((_, i) => {
@@ -217,7 +218,7 @@ export default function AdminUsersPage() {
           onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
           className="px-3 py-1 rounded-lg bg-gray-200 dark:bg-[#111c2d]"
         >
-          Next
+          <T>Next</T>
         </button>
       </div>
 
@@ -299,7 +300,7 @@ export default function AdminUsersPage() {
                 onClick={() => setIsOpen(false)}
                 className="mt-6 w-full py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white"
               >
-                Close
+                <T>Close</T>
               </button>
             </motion.div>
           </motion.div>
@@ -315,7 +316,7 @@ function Info({ label, value }: { label: string; value: string }) {
       whileHover={{ scale: 1.05 }}
       className="bg-gray-50 dark:bg-[#08111f] p-3 rounded-lg"
     >
-      <p className="text-xs text-gray-500">{label}</p>
+      <p className="text-xs text-gray-500"><T>{label}</T></p>
       <p className="font-medium break-words">{value}</p>
     </motion.div>
   );

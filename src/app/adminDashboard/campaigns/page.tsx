@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Plus, RefreshCw, CheckCircle2, AlertCircle, ToggleLeft, ToggleRight, Trash2 } from "lucide-react";
+import T from "@/components/T";
 
 interface Campaign {
   _id: string;
@@ -117,8 +118,8 @@ export default function AdminCampaignsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-800 dark:text-blue-100">Donation Campaigns</h1>
-          <p className="text-sm text-gray-500 dark:text-blue-400 mt-0.5">Create and manage donation campaigns</p>
+          <h1 className="text-xl font-bold text-gray-800 dark:text-blue-100"><T>Donation Campaigns</T></h1>
+          <p className="text-sm text-gray-500 dark:text-blue-400 mt-0.5"><T>Create and manage donation campaigns</T></p>
         </div>
         <motion.button
           whileHover={{ scale: 1.03 }}
@@ -126,7 +127,7 @@ export default function AdminCampaignsPage() {
           onClick={() => { setShowForm(!showForm); setFormError(""); setFormSuccess(""); }}
           className="flex items-center gap-2 px-4 py-2 bg-[#e63b60] hover:bg-[#cf2f52] text-white text-sm font-semibold rounded-xl transition"
         >
-          <Plus size={16} /> New Campaign
+          <Plus size={16} /> <T>New Campaign</T>
         </motion.button>
       </div>
 
@@ -146,7 +147,7 @@ export default function AdminCampaignsPage() {
             exit={{ opacity: 0, y: -10 }}
             className="bg-white dark:bg-[#0c1a2b] rounded-2xl p-6 border border-gray-200 dark:border-blue-800 space-y-4"
           >
-            <h2 className="font-semibold text-gray-800 dark:text-blue-100">Create New Campaign</h2>
+            <h2 className="font-semibold text-gray-800 dark:text-blue-100"><T>Create New Campaign</T></h2>
 
             {formError && (
               <div className="flex items-center gap-2 text-red-500 bg-red-50 dark:bg-red-900/20 p-3 rounded-xl text-sm">
@@ -156,7 +157,7 @@ export default function AdminCampaignsPage() {
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-500 dark:text-blue-400 mb-1">Campaign Title *</label>
+                <label className="block text-xs font-medium text-gray-500 dark:text-blue-400 mb-1"><T>Campaign Title *</T></label>
                 <input
                   type="text"
                   value={title}
@@ -166,7 +167,7 @@ export default function AdminCampaignsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-500 dark:text-blue-400 mb-1">Goal Amount (৳) *</label>
+                <label className="block text-xs font-medium text-gray-500 dark:text-blue-400 mb-1"><T>Goal Amount (৳) *</T></label>
                 <input
                   type="number"
                   value={goalAmount}
@@ -179,7 +180,7 @@ export default function AdminCampaignsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-blue-400 mb-1">Description</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-blue-400 mb-1"><T>Description</T></label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -190,7 +191,7 @@ export default function AdminCampaignsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-blue-400 mb-1">Image URL (optional)</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-blue-400 mb-1"><T>Image URL (optional)</T></label>
               <input
                 type="text"
                 value={image}
@@ -205,7 +206,7 @@ export default function AdminCampaignsPage() {
                 onClick={() => setShowForm(false)}
                 className="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-blue-800 text-gray-600 dark:text-blue-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-blue-900/20 transition"
               >
-                Cancel
+                <T>Cancel</T>
               </button>
               <motion.button
                 whileTap={{ scale: 0.97 }}
@@ -214,7 +215,7 @@ export default function AdminCampaignsPage() {
                 className="flex-1 flex items-center justify-center gap-2 bg-[#e63b60] hover:bg-[#cf2f52] text-white text-sm font-semibold py-2.5 rounded-xl transition disabled:opacity-60"
               >
                 {creating ? <RefreshCw size={15} className="animate-spin" /> : <Plus size={15} />}
-                {creating ? "Creating..." : "Create Campaign"}
+                {creating ? <T>Creating...</T> : <T>Create Campaign</T>}
               </motion.button>
             </div>
           </motion.div>
@@ -229,7 +230,7 @@ export default function AdminCampaignsPage() {
       ) : campaigns.length === 0 ? (
         <div className="text-center py-16 text-gray-400 dark:text-blue-400">
           <Heart size={36} className="mx-auto mb-3 opacity-30" />
-          <p className="text-sm">No campaigns yet. Create your first one.</p>
+          <p className="text-sm"><T>No campaigns yet. Create your first one.</T></p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -247,14 +248,14 @@ export default function AdminCampaignsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-gray-800 dark:text-blue-100 text-sm truncate">
-                        {campaign.title}
+                        <T>{campaign.title}</T>
                       </h3>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${campaign.active ? "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400" : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"}`}>
-                        {campaign.active ? "Active" : "Inactive"}
+                        {campaign.active ? <T>Active</T> : <T>Inactive</T>}
                       </span>
                     </div>
                     {campaign.description && (
-                      <p className="text-xs text-gray-400 dark:text-blue-400 mt-0.5 line-clamp-1">{campaign.description}</p>
+                      <p className="text-xs text-gray-400 dark:text-blue-400 mt-0.5 line-clamp-1"><T>{campaign.description}</T></p>
                     )}
                   </div>
                   <button
@@ -278,8 +279,8 @@ export default function AdminCampaignsPage() {
                     />
                   </div>
                   <div className="flex justify-between text-xs text-gray-500 dark:text-blue-400">
-                    <span>৳{campaign.raisedAmount.toLocaleString()} raised · {campaign.donorCount} donors</span>
-                    <span>Goal: ৳{campaign.goalAmount.toLocaleString()}</span>
+                    <span>৳{campaign.raisedAmount.toLocaleString()} <T>raised</T> · {campaign.donorCount} <T>donors</T></span>
+                    <span><T>Goal</T>: ৳{campaign.goalAmount.toLocaleString()}</span>
                   </div>
                 </div>
               </div>

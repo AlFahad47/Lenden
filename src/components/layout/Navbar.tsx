@@ -11,6 +11,8 @@ import { IoLogOut } from "react-icons/io5";
 import { Crown, ShieldCheck, Star, Trophy } from "lucide-react";
 import RankDetailsModal from "../modals/RankDetailsModal";
 import { ThemeToggleButton2 } from "@/components/ui/skiper-ui/skiper4";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useTranslations } from "next-intl";
 
 type FullUser = {
   rank?: string;
@@ -108,20 +110,22 @@ const Navbar: React.FC = () => {
     return () => clearInterval(interval);
   }, [session]);
 
+  const t = useTranslations("nav");
+
   const navLinks = user
     ? [
-        { name: "Home", path: "/" },
-        { name: "Chat", path: "/chat" },
-        { name: "Review", path: "/review" },
-        { name: "FAQ", path: "/faq" },
-        { name: "Contact", path: "/contact" },
-        { name: "Blog", path: "/blog" },
+        { name: t("home"), path: "/" },
+        { name: t("chat"), path: "/chat" },
+        { name: t("review"), path: "/review" },
+        { name: t("faq"), path: "/faq" },
+        { name: t("contact"), path: "/contact" },
+        { name: t("blog"), path: "/blog" },
       ]
     : [
-        { name: "Home", path: "/#home" },
-        { name: "Offer", path: "/#offers" },
-        { name: "Features", path: "/#features" },
-        { name: "Reviews", path: "/#reviews" },
+        { name: t("home"), path: "/#home" },
+        { name: t("offer"), path: "/#offers" },
+        { name: t("features"), path: "/#features" },
+        { name: t("reviews"), path: "/#reviews" },
       ];
 
   return (
@@ -189,6 +193,9 @@ const Navbar: React.FC = () => {
           {/* Desktop Right - Dark Mode + Avatar / Get Started */}
           <div className="hidden md:flex shrink-0 pr-1 z-20">
             <div className="flex items-center gap-3">
+              {/* Language Switcher */}
+              <LanguageSwitcher />
+
               {/* Dark Mode Toggle (always visible) */}
               <ThemeToggleButton2 className="h-9 w-9 p-1 rounded-full bg-white/5  dark:bg-gray-900" />
 
@@ -276,7 +283,7 @@ const Navbar: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-[#3b82f6] to-[#2563eb] transition-all duration-500 group-hover:scale-110 group-hover:from-[#2563eb] group-hover:to-[#1d4ed8]"></div>
                   <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/30 to-transparent opacity-50 rounded-t-full"></div>
                   <span className="relative text-white text-sm font-semibold tracking-wide drop-shadow-sm">
-                    Get Started
+                    {t("register")}
                   </span>
                   <ArrowUpRight
                     size={16}
@@ -399,7 +406,7 @@ const Navbar: React.FC = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="mt-4 flex justify-center items-center gap-2 bg-linear-to-r from-[#3b82f6] to-[#2563eb] text-white px-5 py-3.5 rounded-xl text-sm font-bold shadow-[0_0_20px_-5px_rgba(59,130,246,0.6)]"
                 >
-                  Get Started <ArrowUpRight size={18} />
+                  {t("register")} <ArrowUpRight size={18} />
                 </Link>
               )}
             </div>

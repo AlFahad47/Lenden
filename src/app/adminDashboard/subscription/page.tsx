@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { Crown, Loader2, Users, TrendingUp } from "lucide-react";
+import T from "@/components/T";
 
 export default function SubscriptionPage() {
   const { data: session } = useSession();
@@ -40,7 +41,7 @@ export default function SubscriptionPage() {
   if (!isAdmin) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-slate-500">Access Denied: Admins Only</p>
+        <p className="text-slate-500"><T>Access Denied: Admins Only</T></p>
       </div>
     );
   }
@@ -50,7 +51,7 @@ export default function SubscriptionPage() {
       {/* Header */}
       <div className="flex items-center gap-2">
         <Crown className="text-yellow-400" size={24} />
-        <h1 className="text-2xl font-bold text-blue-900 dark:text-blue-100">Subscription Overview</h1>
+        <h1 className="text-2xl font-bold text-blue-900 dark:text-blue-100"><T>Subscription Overview</T></h1>
       </div>
 
       {/* Stats Grid */}
@@ -61,7 +62,7 @@ export default function SubscriptionPage() {
             <Users size={22} className="text-blue-500" />
           </div>
           <div>
-            <p className="text-sm text-blue-400">Total Subscribers</p>
+            <p className="text-sm text-blue-400"><T>Total Subscribers</T></p>
             <p className="text-3xl font-bold text-blue-900 dark:text-blue-100">
               {adminStats?.subscribers ?? 0}
             </p>
@@ -74,7 +75,7 @@ export default function SubscriptionPage() {
             <TrendingUp size={22} className="text-green-500" />
           </div>
           <div>
-            <p className="text-sm text-blue-400">Subscription Revenue</p>
+            <p className="text-sm text-blue-400"><T>Subscription Revenue</T></p>
             <p className="text-3xl font-bold text-blue-900 dark:text-blue-100">
               ৳{(adminStats?.revenue ?? 0).toLocaleString()}
             </p>

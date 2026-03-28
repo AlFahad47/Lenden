@@ -3,6 +3,7 @@
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import T from "@/components/T";
 import {
   LineChart,
   Line,
@@ -100,11 +101,11 @@ export default function AnalyticsPage() {
         animate={{ opacity: 1, y: 0 }}
       >
         <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Analytics Dashboard
+          <T>Analytics Dashboard</T>
         </h1>
 
         <p className="text-blue-600 dark:text-blue-400 text-sm mt-1">
-          Visual insights into your financial performance
+          <T>Visual insights into your financial performance</T>
         </p>
       </motion.div>
 
@@ -130,7 +131,7 @@ export default function AnalyticsPage() {
             shadow-xl overflow-hidden"
           >
             <p className="text-sm text-blue-600 dark:text-blue-400">
-              {card.label}
+              <T>{card.label}</T>
             </p>
 
             <h2 className="text-3xl font-bold text-blue-900 dark:text-white mt-2">
@@ -165,7 +166,7 @@ export default function AnalyticsPage() {
           className="p-6 rounded-2xl bg-white/70 dark:bg-[#0c1a2b]/80 backdrop-blur-xl border border-blue-200 dark:border-blue-900 shadow-xl h-80"
         >
           <h3 className="mb-4 font-semibold text-blue-900 dark:text-white">
-            Monthly Revenue
+            <T>Monthly Revenue</T>
           </h3>
 
           <ResponsiveContainer width="100%" height="100%">
@@ -193,7 +194,7 @@ export default function AnalyticsPage() {
           className="p-6 rounded-2xl bg-white/70 dark:bg-[#0c1a2b]/80 backdrop-blur-xl border border-blue-200 dark:border-blue-900 shadow-xl h-80"
         >
           <h3 className="mb-4 font-semibold text-blue-900 dark:text-white">
-            Income vs Expense
+            <T>Income vs Expense</T>
           </h3>
 
           <ResponsiveContainer width="100%" height="100%">
@@ -216,7 +217,7 @@ export default function AnalyticsPage() {
         className="p-6 rounded-2xl bg-white/70 dark:bg-[#0c1a2b]/80 backdrop-blur-xl border border-blue-200 dark:border-blue-900 shadow-xl h-96"
       >
         <h3 className="mb-4 font-semibold text-blue-900 dark:text-white">
-          Revenue Growth Trend
+          <T>Revenue Growth Trend</T>
         </h3>
 
         <ResponsiveContainer width="100%" height="100%">
