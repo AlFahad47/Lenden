@@ -10,6 +10,7 @@ import { IconType } from "react-icons";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
+import T from "@/components/T";
 import BillForm from "../modals/bill";
 import RechargeForm from "../modals/mobilerecharge";
 import SendMoneyForm from "../modals/sendmoney";
@@ -150,7 +151,7 @@ const QuickActionsContent = () => {
     if (kycStatus === "approved") {
       return (
         <div className="flex items-center justify-center w-full gap-1.5 text-green-500 text-sm font-medium mt-2">
-          <FaCheckCircle size={14} /> Verified Account
+          <FaCheckCircle size={14} /> <T>Verified Account</T>
         </div>
       );
     }
@@ -158,7 +159,7 @@ const QuickActionsContent = () => {
     if (kycStatus === "pending") {
       return (
         <div className="flex items-center justify-center w-full gap-1.5 text-amber-500 text-sm font-medium mt-2 animate-pulse">
-          <FaClock size={14} /> Verification Pending
+          <FaClock size={14} /> <T>Verification Pending</T>
         </div>
       );
     }
@@ -170,7 +171,7 @@ const QuickActionsContent = () => {
           className="flex items-center gap-1.5 text-red-500 text-sm font-semibold mt-2 hover:underline decoration-2 underline-offset-4 transition-all"
         >
           <FaExclamationTriangle size={14} /> 
-          {kycStatus === "rejected" ? "KYC Rejected - Re-apply now" : "Complete KYC to Unlock All Features"}
+          {kycStatus === "rejected" ? <T>KYC Rejected - Re-apply now</T> : <T>Complete KYC to Unlock All Features</T>}
         </button>
       </div>
     );
@@ -189,10 +190,10 @@ const QuickActionsContent = () => {
       <div className="max-w-[1400px] mx-auto px-4 relative flex flex-col items-center">
         <div className="w-full text-center pt-14 pb-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4DA1FF]/10 border border-[#4DA1FF]/20 text-[#4DA1FF] text-xs font-semibold mb-3">
-            <FaBolt size={10} /> Quick Actions
+            <FaBolt size={10} /> <T>Quick Actions</T>
           </div>
           <h2 className="text-2xl md:text-4xl font-extrabold text-gray-800 dark:text-white">
-            Everything You Need, <span className="bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] bg-clip-text text-transparent">One Tap Away</span>
+            <T>Everything You Need,</T> <span className="bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] bg-clip-text text-transparent"><T>One Tap Away</T></span>
           </h2>
           {renderKycInfo()}
         </div>
@@ -235,7 +236,7 @@ const QuickActionsContent = () => {
             +{item.points}
           </span>
           <span className="text-[9px] font-bold text-amber-600/80 dark:text-amber-400/80 tracking-tighter uppercase">
-            Points
+            <T>Points</T>
           </span>
         </div>
         
@@ -250,7 +251,7 @@ const QuickActionsContent = () => {
                     <Icon size={isCenter ? 64 : 52} style={isCenter && !isLocked ? { fill: "url(#iconGradient)" } : {}} className={!isCenter || isLocked ? "text-gray-400" : ""} />
                     {isLocked && <div className="absolute -bottom-1 -right-1 bg-white dark:bg-gray-800 p-1 rounded-full shadow"><FaLock size={10} className="text-gray-400"/></div>}
                   </div>
-                  <span className={`text-center font-bold ${isLocked ? "opacity-40" : ""} ${isCenter ? "text-blue-500 text-lg" : "text-gray-500"}`}>{item.name}</span>
+                  <span className={`text-center font-bold ${isLocked ? "opacity-40" : ""} ${isCenter ? "text-blue-500 text-lg" : "text-gray-500"}`}><T>{item.name}</T></span>
                 </div>
               );
             })}
@@ -288,7 +289,7 @@ const QuickActionsContent = () => {
 
 const QuickActions = () => {
   return (
-    <Suspense fallback={<div>Loading Actions...</div>}>
+    <Suspense fallback={<div><T>Loading Actions...</T></div>}>
       <QuickActionsContent />
     </Suspense>
   );
