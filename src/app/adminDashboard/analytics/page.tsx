@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from "recharts";
 import { motion } from "framer-motion";
+import T from "@/components/T";
 import {
   Users,
   DollarSign,
@@ -97,10 +98,10 @@ export default function AdminAnalyticsPage() {
       {/* HEADER */}
       <div>
         <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
-          Admin Analytics
+          <T>Admin Analytics</T>
         </h1>
         <p className="text-gray-500 dark:text-gray-400">
-          Deep insights into your platform 🚀
+          <T>Deep insights into your platform</T> 🚀
         </p>
       </div>
 
@@ -143,7 +144,7 @@ export default function AdminAnalyticsPage() {
           >
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-sm text-gray-500">{card.title}</p>
+                <p className="text-sm text-gray-500"><T>{card.title}</T></p>
                 <h2 className="text-2xl font-bold mt-1 text-gray-800 dark:text-white">
                   {card.value}
                 </h2>
@@ -163,25 +164,25 @@ export default function AdminAnalyticsPage() {
       <div className="grid md:grid-cols-3 gap-6">
         <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg">
           <TrendingUp className="mb-3" />
-          <h3 className="text-lg font-semibold">Growth Rate</h3>
+          <h3 className="text-lg font-semibold"><T>Growth Rate</T></h3>
           <p className="text-sm opacity-90 mt-1">
-            Users increasing over time 📈
+            <T>Users increasing over time</T> 📈
           </p>
         </div>
 
         <div className="p-6 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-400 text-white shadow-lg">
           <DollarSign className="mb-3" />
-          <h3 className="text-lg font-semibold">Revenue Trend</h3>
+          <h3 className="text-lg font-semibold"><T>Revenue Trend</T></h3>
           <p className="text-sm opacity-90 mt-1">
-            Strong financial performance 💰
+            <T>Strong financial performance</T> 💰
           </p>
         </div>
 
         <div className="p-6 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg">
           <Users className="mb-3" />
-          <h3 className="text-lg font-semibold">User Activity</h3>
+          <h3 className="text-lg font-semibold"><T>User Activity</T></h3>
           <p className="text-sm opacity-90 mt-1">
-            Active users are engaging 🔥
+            <T>Active users are engaging</T> 🔥
           </p>
         </div>
       </div>
@@ -192,7 +193,7 @@ export default function AdminAnalyticsPage() {
 
         <div className="bg-white dark:bg-[#0c1a2b] border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-lg">
           <h3 className="font-semibold mb-6 text-gray-800 dark:text-gray-200">
-            User Growth
+            <T>User Growth</T>
           </h3>
 
           <div className="h-[320px]">
@@ -247,7 +248,7 @@ export default function AdminAnalyticsPage() {
 
         <div className="bg-white dark:bg-[#0c1a2b] border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-lg">
           <h3 className="font-semibold mb-6 text-gray-800 dark:text-gray-200">
-            Monthly Revenue
+            <T>Monthly Revenue</T>
           </h3>
 
           <div className="h-[320px]">

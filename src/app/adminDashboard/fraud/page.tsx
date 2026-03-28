@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import T from "@/components/T";
 
 type User = {
   _id: string;
@@ -82,10 +83,10 @@ export default function FraudUsersPage() {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-red-600 dark:text-red-500">
-            🚨 Fraud Users
+            🚨 <T>Fraud Users</T>
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Users flagged for suspicious or fraudulent activity
+            <T>Users flagged for suspicious or fraudulent activity</T>
           </p>
         </div>
 
@@ -115,10 +116,10 @@ export default function FraudUsersPage() {
           <table className="min-w-full text-sm">
             <thead className="bg-red-50 dark:bg-red-950/30">
               <tr className="text-gray-700 dark:text-gray-300">
-                <th className="p-3 text-left font-medium">Name</th>
-                <th className="p-3 text-left font-medium">Email</th>
-                <th className="p-3 text-left font-medium">Status</th>
-                <th className="p-3 text-left font-medium">Created</th>
+                <th className="p-3 text-left font-medium"><T>Name</T></th>
+                <th className="p-3 text-left font-medium"><T>Email</T></th>
+                <th className="p-3 text-left font-medium"><T>Status</T></th>
+                <th className="p-3 text-left font-medium"><T>Created</T></th>
               </tr>
             </thead>
 
@@ -157,7 +158,7 @@ export default function FraudUsersPage() {
 
                   <td className="p-3">
                     <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400">
-                      FRAUD
+                      <T>FRAUD</T>
                     </span>
                   </td>
 
@@ -241,7 +242,7 @@ export default function FraudUsersPage() {
                 onClick={() => setSelectedUser(null)}
                 className="mt-6 w-full py-2 rounded-xl bg-gradient-to-r from-red-600 to-pink-500 text-white"
               >
-                Close
+                <T>Close</T>
               </button>
             </motion.div>
           </motion.div>
@@ -257,7 +258,7 @@ function Info({ label, value }: { label: string; value: string }) {
       whileHover={{ scale: 1.05 }}
       className="bg-gray-50 dark:bg-[#08111f] p-3 rounded-lg"
     >
-      <p className="text-xs text-gray-500">{label}</p>
+      <p className="text-xs text-gray-500"><T>{label}</T></p>
       <p className="font-medium break-words">{value}</p>
     </motion.div>
   );

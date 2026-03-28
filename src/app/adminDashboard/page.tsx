@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import DashboardHome from "@/components/dashboard/DashboardHome";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import T from "@/components/T";
 
 import {
   ResponsiveContainer,
@@ -72,7 +73,7 @@ export default function AdminDashboard() {
   if (status === "loading") {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-gray-600 dark:text-gray-300">Loading dashboard...</p>
+        <p className="text-gray-600 dark:text-gray-300"><T>Loading dashboard...</T></p>
       </div>
     );
   }
@@ -90,7 +91,7 @@ export default function AdminDashboard() {
       {/* ✅ FIXED Monthly Revenue */}
       <div className="bg-white dark:bg-[#0c1a2b] p-4 sm:p-6 lg:p-8 rounded-xl shadow border border-gray-200 dark:border-gray-700 w-full">
         <h3 className="font-semibold mb-6 text-gray-800 dark:text-gray-200 text-lg">
-          Monthly Revenue
+          <T>Monthly Revenue</T>
         </h3>
 
         <div className="w-full h-[260px] sm:h-[320px] md:h-[360px] lg:h-[400px]">
@@ -167,17 +168,17 @@ export default function AdminDashboard() {
       {/* Transactions */}
       <div className="bg-white dark:bg-[#0c1a2b] p-4 sm:p-6 lg:p-8 rounded-xl shadow border border-gray-200 dark:border-gray-700 w-full">
         <h3 className="font-semibold mb-6 text-gray-800 dark:text-gray-200 text-lg">
-          Recent Transactions
+          <T>Recent Transactions</T>
         </h3>
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[480px]">
             <thead className="border-b border-gray-200 dark:border-gray-700">
               <tr className="text-gray-600 dark:text-gray-400">
-                <th className="py-3 text-left">User</th>
-                <th className="text-left">Amount</th>
-                <th className="text-left">Status</th>
-                <th className="text-left">Date</th>
+                <th className="py-3 text-left"><T>User</T></th>
+                <th className="text-left"><T>Amount</T></th>
+                <th className="text-left"><T>Status</T></th>
+                <th className="text-left"><T>Date</T></th>
               </tr>
             </thead>
 
@@ -239,7 +240,7 @@ export default function AdminDashboard() {
 
           {transactions.length === 0 && (
             <p className="text-center text-gray-500 py-6">
-              No transactions yet
+              <T>No transactions yet</T>
             </p>
           )}
         </div>
@@ -262,7 +263,7 @@ export default function AdminDashboard() {
               animate={{ scale: 1 }}
               exit={{ scale: 0.7 }}
             >
-              <h2 className="text-xl font-bold mb-4">Transaction Details</h2>
+              <h2 className="text-xl font-bold mb-4"><T>Transaction Details</T></h2>
 
               <div className="space-y-2 text-sm">
                 <p>
@@ -286,7 +287,7 @@ export default function AdminDashboard() {
                 onClick={() => setIsOpen(false)}
                 className="mt-5 w-full bg-blue-600 text-white py-2 rounded-xl"
               >
-                Close
+                <T>Close</T>
               </button>
             </motion.div>
           </motion.div>
