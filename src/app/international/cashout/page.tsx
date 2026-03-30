@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Wallet, RefreshCw, CheckCircle2, AlertCircle, ArrowDownCircle } from "lucide-react";
 import { CURRENCY_META, SupportedCurrency } from "@/types/international";
+import T from "@/components/T";
 
 type Step = "form" | "success";
 
@@ -154,7 +155,7 @@ export default function CashOutPage() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#04090f]">
         <div className="flex flex-col items-center gap-4 text-gray-400">
           <RefreshCw size={32} className="animate-spin text-[#0070ff]" />
-          <p className="text-sm">Verifying access...</p>
+          <p className="text-sm"><T>Verifying access...</T></p>
         </div>
       </div>
     );
@@ -169,7 +170,7 @@ export default function CashOutPage() {
           onClick={() => router.push("/international")}
           className="flex items-center gap-2 text-sm text-gray-500 dark:text-blue-400 hover:text-[#0070ff] transition"
         >
-          <ArrowLeft size={16} /> Back to International Transfer
+          <ArrowLeft size={16} /> <T>Back to International Transfer</T>
         </button>
 
         {/* Header */}
@@ -181,8 +182,8 @@ export default function CashOutPage() {
           <div className="flex items-center gap-3">
             <ArrowDownCircle size={28} />
             <div>
-              <h1 className="text-2xl font-bold">Cash Out</h1>
-              <p className="text-sm opacity-80">Convert your foreign wallet balance back to BDT</p>
+              <h1 className="text-2xl font-bold"><T>Cash Out</T></h1>
+              <p className="text-sm opacity-80"><T>Convert your foreign wallet balance back to BDT</T></p>
             </div>
           </div>
         </motion.div>
@@ -198,7 +199,7 @@ export default function CashOutPage() {
               <Wallet size={20} className="text-[#7c3aed]" />
             </div>
             <div>
-              <p className="text-xs text-gray-400 dark:text-blue-400">Main BDT Balance</p>
+              <p className="text-xs text-gray-400 dark:text-blue-400"><T>Main BDT Balance</T></p>
               <p className="text-lg font-bold text-gray-800 dark:text-blue-100">
                 ৳{mainBalance.toLocaleString()} <span className="text-sm font-medium text-gray-400">BDT</span>
               </p>
@@ -215,7 +216,7 @@ export default function CashOutPage() {
           >
             <Wallet size={40} className="mx-auto text-gray-300 dark:text-blue-800" />
             <p className="text-gray-500 dark:text-blue-400 text-sm">
-              You have no foreign wallet balance to cash out.
+              <T>You have no foreign wallet balance to cash out.</T>
             </p>
             <motion.button
               whileHover={{ scale: 1.02 }}
@@ -223,7 +224,7 @@ export default function CashOutPage() {
               onClick={() => router.push("/international/topup")}
               className="px-5 py-2.5 bg-[#0070ff] text-white text-sm font-semibold rounded-xl transition"
             >
-              Top Up a Wallet First
+              <T>Top Up a Wallet First</T>
             </motion.button>
           </motion.div>
         ) : (
@@ -247,7 +248,7 @@ export default function CashOutPage() {
                 {/* Currency selector */}
                 <div>
                   <label className="block text-sm font-medium text-gray-600 dark:text-blue-300 mb-1">
-                    Select Wallet to Cash Out
+                    <T>Select Wallet to Cash Out</T>
                   </label>
                   <select
                     value={sourceCurrency}
@@ -270,14 +271,14 @@ export default function CashOutPage() {
                   </select>
                   {/* Wallet balance hint */}
                   <p className="text-xs text-gray-400 dark:text-blue-500 mt-1">
-                    Available: {CURRENCY_META[sourceCurrency]?.symbol}{(wallets[sourceCurrency] ?? 0).toFixed(2)} {sourceCurrency}
+                    <T>Available:</T> {CURRENCY_META[sourceCurrency]?.symbol}{(wallets[sourceCurrency] ?? 0).toFixed(2)} {sourceCurrency}
                   </p>
                 </div>
 
                 {/* Amount */}
                 <div>
                   <label className="block text-sm font-medium text-gray-600 dark:text-blue-300 mb-1">
-                    Amount ({sourceCurrency})
+                    <T>Amount</T> ({sourceCurrency})
                   </label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold">
@@ -312,18 +313,18 @@ export default function CashOutPage() {
                   >
                     {rateLoading ? (
                       <div className="flex items-center gap-2 text-purple-400">
-                        <RefreshCw size={14} className="animate-spin" /> Calculating...
+                        <RefreshCw size={14} className="animate-spin" /> <T>Calculating...</T>
                       </div>
                     ) : (
                       <>
                         <div className="flex justify-between text-gray-600 dark:text-blue-300">
-                          <span>You will cash out</span>
+                          <span><T>You will cash out</T></span>
                           <span className="font-semibold text-red-400">
                             −{CURRENCY_META[sourceCurrency]?.symbol}{Number(amount).toFixed(2)} {sourceCurrency}
                           </span>
                         </div>
                         <div className="flex justify-between text-gray-600 dark:text-blue-300">
-                          <span>You will receive</span>
+                          <span><T>You will receive</T></span>
                           <span className="font-semibold text-green-500">+৳{estimatedBDT?.toLocaleString()} BDT</span>
                         </div>
                       </>
@@ -339,7 +340,7 @@ export default function CashOutPage() {
                   className="w-full flex items-center justify-center gap-2 bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-semibold py-3 rounded-xl transition disabled:opacity-60"
                 >
                   {loading ? <RefreshCw size={18} className="animate-spin" /> : <ArrowDownCircle size={18} />}
-                  {loading ? "Processing..." : `Cash Out to BDT`}
+                  {loading ? <T>Processing...</T> : <T>Cash Out to BDT</T>}
                 </motion.button>
               </motion.div>
             )}
@@ -361,19 +362,19 @@ export default function CashOutPage() {
                   <CheckCircle2 size={36} className="text-green-500" />
                 </motion.div>
 
-                <h2 className="text-xl font-bold text-gray-800 dark:text-blue-100">Cash Out Successful!</h2>
+                <h2 className="text-xl font-bold text-gray-800 dark:text-blue-100"><T>Cash Out Successful!</T></h2>
 
                 <div className="bg-gray-50 dark:bg-[#071120] rounded-xl p-4 text-sm space-y-2 text-left">
                   <div className="flex justify-between">
-                    <span className="text-gray-500 dark:text-blue-400">Cashed out</span>
+                    <span className="text-gray-500 dark:text-blue-400"><T>Cashed out</T></span>
                     <span className="font-semibold text-red-400">{successSummary.deducted}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500 dark:text-blue-400">Added to BDT balance</span>
+                    <span className="text-gray-500 dark:text-blue-400"><T>Added to BDT balance</T></span>
                     <span className="font-semibold text-green-500">{successSummary.added}</span>
                   </div>
                   <div className="flex justify-between border-t border-gray-200 dark:border-blue-800 pt-2">
-                    <span className="text-gray-500 dark:text-blue-400">New BDT balance</span>
+                    <span className="text-gray-500 dark:text-blue-400"><T>New BDT balance</T></span>
                     <span className="font-bold text-gray-800 dark:text-blue-100">
                       ৳{successSummary.newBalance.toLocaleString()} BDT
                     </span>
@@ -386,7 +387,7 @@ export default function CashOutPage() {
                     onClick={handleReset}
                     className="flex-1 py-3 rounded-xl border border-gray-200 dark:border-blue-800 text-gray-600 dark:text-blue-300 font-medium hover:bg-gray-50 dark:hover:bg-blue-900/30 transition"
                   >
-                    Cash Out Again
+                    <T>Cash Out Again</T>
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.02 }}
@@ -394,7 +395,7 @@ export default function CashOutPage() {
                     onClick={() => router.push("/donation")}
                     className="flex-1 bg-[#e63b60] hover:bg-[#cf2f52] text-white font-semibold py-3 rounded-xl transition"
                   >
-                    Donate Now
+                    <T>Donate Now</T>
                   </motion.button>
                 </div>
               </motion.div>

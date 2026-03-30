@@ -10,6 +10,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import T from "@/components/T";
 
 const Footer: React.FC = () => {
   return (
@@ -30,7 +31,7 @@ const Footer: React.FC = () => {
                 NovaPay
               </span>
               <span className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">
-                Digital Wallet
+                <T>Digital Wallet</T>
               </span>
             </div>
           </div>
@@ -85,13 +86,13 @@ const Footer: React.FC = () => {
               href="/terms"
               className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#2C64FF] dark:hover:text-[#4DA1FF] transition-colors"
             >
-              Terms of Use
+              <T>Terms of Use</T>
             </Link>
             <Link
               href="/media"
               className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#2C64FF] dark:hover:text-[#4DA1FF] transition-colors"
             >
-              Media Center
+              <T>Media Center</T>
             </Link>
           </div>
 
@@ -100,13 +101,13 @@ const Footer: React.FC = () => {
               href="/contact"
               className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#2C64FF] dark:hover:text-[#4DA1FF] transition-colors"
             >
-              Contact Us
+              <T>Contact Us</T>
             </Link>
             <Link
               href="/faq"
               className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#2C64FF] dark:hover:text-[#4DA1FF] transition-colors"
             >
-              FAQ
+              <T>FAQ</T>
             </Link>
           </div>
 
@@ -115,20 +116,20 @@ const Footer: React.FC = () => {
               href="/privacy"
               className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#2C64FF] dark:hover:text-[#4DA1FF] transition-colors"
             >
-              Privacy Policy
+              <T>Privacy Policy</T>
             </Link>
           </div>
 
           <div className="col-span-2 flex flex-col items-start md:pl-10">
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">
-              Download NovaPay App
+              <T>Download NovaPay App</T>
             </h3>
             <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6">
-              To make your life easier Download NovaPay app and access all our
-              services from a single touchpoint.
+              <T>To make your life easier Download NovaPay app and access all our
+              services from a single touchpoint.</T>
             </p>
             <Button variant="novapay" size="pill" className="font-bold">
-              Download App
+              <T>Download App</T>
             </Button>
           </div>
         </div>

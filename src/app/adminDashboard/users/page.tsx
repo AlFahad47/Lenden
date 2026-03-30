@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import T from "@/components/T";
 
 type User = {
   _id: string;
@@ -9,6 +10,8 @@ type User = {
   email: string;
   role: string;
   createdAt?: string;
+
+  image?: string;
 
   balance?: number;
   bank?: string;
@@ -29,19 +32,19 @@ export default function AdminUsersPage() {
   const [isOpen, setIsOpen] = useState(false);
 
   const [search, setSearch] = useState("");
-
-  // ✅ NEW: sort toggle
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  // ✅ PAGINATION
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 8;
 
   useEffect(() => {
     async function fetchUsers() {
       try {
         const res = await fetch("/api/admin/users");
-
         if (!res.ok) throw new Error("Failed to fetch users");
 
         const data = await res.json();
-
         setUsers(data?.users || []);
       } catch (error) {
         console.error("Fetch users error:", error);
@@ -53,7 +56,6 @@ export default function AdminUsersPage() {
     fetchUsers();
   }, []);
 
-  // ✅ filter + dynamic sort
   const filteredUsers = useMemo(() => {
     return users
       .filter(
@@ -65,11 +67,20 @@ export default function AdminUsersPage() {
         const dateA = new Date(a.createdAt || 0).getTime();
         const dateB = new Date(b.createdAt || 0).getTime();
 
-        return sortOrder === "asc"
-          ? dateB - dateA // 🆕 New → Old
-          : dateA - dateB; // 📅 Old → New
+        return sortOrder === "asc" ? dateB - dateA : dateA - dateB;
       });
   }, [users, search, sortOrder]);
+
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+  const paginatedUsers = useMemo(() => {
+    const start = (currentPage - 1) * usersPerPage;
+    return filteredUsers.slice(start, start + usersPerPage);
+  }, [filteredUsers, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   if (loading) {
     return (
@@ -93,14 +104,14 @@ export default function AdminUsersPage() {
       {/* TITLE */}
       <div>
         <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-          Users List
+          <T>Users List</T>
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Manage all registered users
+          <T>Manage all registered users</T>
         </p>
       </div>
 
-      {/* 🔥 SEARCH + SORT */}
+      {/* SEARCH + SORT */}
       <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
         <motion.input
           initial={{ opacity: 0, y: -10 }}
@@ -111,14 +122,13 @@ export default function AdminUsersPage() {
           className="w-full md:w-80 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#0c1a2b] focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        {/* ✅ SORT BUTTON */}
         <button
           onClick={() =>
             setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
           }
           className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white"
         >
-          {sortOrder === "asc" ? "Newest ⬇️" : "Oldest ⬆️"}
+          {sortOrder === "asc" ? <><T>Newest</T> ⬇️</> : <><T>Oldest</T> ⬆️</>}
         </button>
       </div>
 
@@ -128,15 +138,15 @@ export default function AdminUsersPage() {
           <table className="min-w-full text-sm">
             <thead className="bg-gray-100 dark:bg-[#08111f]">
               <tr>
-                <th className="px-4 py-3 text-left">Name</th>
-                <th className="px-4 py-3 text-left">Email</th>
-                <th className="px-4 py-3 text-left">Role</th>
-                <th className="px-4 py-3 text-left">Created</th>
+                <th className="px-4 py-3 text-left"><T>Name</T></th>
+                <th className="px-4 py-3 text-left"><T>Email</T></th>
+                <th className="px-4 py-3 text-left"><T>Role</T></th>
+                <th className="px-4 py-3 text-left"><T>Created</T></th>
               </tr>
             </thead>
 
             <tbody>
-              {filteredUsers.map((user, index) => (
+              {paginatedUsers.map((user, index) => (
                 <motion.tr
                   key={user._id}
                   onClick={() => {
@@ -150,7 +160,20 @@ export default function AdminUsersPage() {
                   whileTap={{ scale: 0.98 }}
                   className="cursor-pointer border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#111c2d]"
                 >
-                  <td className="px-4 py-3">{user.name}</td>
+                  <td className="px-4 py-3 flex items-center gap-3">
+                    {user.image ? (
+                      <img
+                        src={user.image}
+                        className="w-9 h-9 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center text-white text-sm font-bold">
+                        {user.name.charAt(0)}
+                      </div>
+                    )}
+                    {user.name}
+                  </td>
+
                   <td className="px-4 py-3">{user.email}</td>
                   <td className="px-4 py-3">{user.role}</td>
                   <td className="px-4 py-3">
@@ -165,7 +188,41 @@ export default function AdminUsersPage() {
         </div>
       </motion.div>
 
-      {/* MODAL */}
+      {/* PAGINATION */}
+      <div className="flex justify-center items-center gap-2 flex-wrap">
+        <button
+          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+          className="px-3 py-1 rounded-lg bg-gray-200 dark:bg-[#111c2d]"
+        >
+          <T>Prev</T>
+        </button>
+
+        {[...Array(totalPages)].map((_, i) => {
+          const page = i + 1;
+          return (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-1 rounded-lg ${
+                currentPage === page
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 dark:bg-[#111c2d]"
+              }`}
+            >
+              {page}
+            </button>
+          );
+        })}
+
+        <button
+          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+          className="px-3 py-1 rounded-lg bg-gray-200 dark:bg-[#111c2d]"
+        >
+          <T>Next</T>
+        </button>
+      </div>
+
+      {/* ✅ UPDATED MODAL (YOUR OLD STYLE + IMAGE SUPPORT) */}
       <AnimatePresence>
         {isOpen && selectedUser && (
           <motion.div
@@ -187,9 +244,16 @@ export default function AdminUsersPage() {
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="h-20 w-20 mx-auto rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center text-white text-2xl font-bold"
+                  className="h-20 w-20 mx-auto rounded-full overflow-hidden bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center text-white text-2xl font-bold"
                 >
-                  {selectedUser.name.charAt(0)}
+                  {selectedUser.image ? (
+                    <img
+                      src={selectedUser.image}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    selectedUser.name.charAt(0)
+                  )}
                 </motion.div>
 
                 <h2 className="mt-3 text-xl font-bold">{selectedUser.name}</h2>
@@ -236,7 +300,7 @@ export default function AdminUsersPage() {
                 onClick={() => setIsOpen(false)}
                 className="mt-6 w-full py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white"
               >
-                Close
+                <T>Close</T>
               </button>
             </motion.div>
           </motion.div>
@@ -252,7 +316,7 @@ function Info({ label, value }: { label: string; value: string }) {
       whileHover={{ scale: 1.05 }}
       className="bg-gray-50 dark:bg-[#08111f] p-3 rounded-lg"
     >
-      <p className="text-xs text-gray-500">{label}</p>
+      <p className="text-xs text-gray-500"><T>{label}</T></p>
       <p className="font-medium break-words">{value}</p>
     </motion.div>
   );

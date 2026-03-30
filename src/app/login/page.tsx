@@ -475,7 +475,7 @@
 
 //               <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/30 to-transparent opacity-30 rounded-t-full pointer-events-none"></div>
 
-//               <span className="relative z-10 drop-shadow-sm">Sign In</span>
+//               <span className="relative z-10 drop-shadow-sm"><T>Sign In</T></span>
 //             </button>
 //           </div>
 
@@ -542,6 +542,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import T from "@/components/T";
 
 const PandaLogin: React.FC = () => {
   const [activeField, setActiveField] = useState<
@@ -585,11 +586,11 @@ const PandaLogin: React.FC = () => {
           <div className="flex-1">
             <p className="text-[1em] font-black text-[#4DA1FF] tracking-widest uppercase">
               {" "}
-              Verifying{" "}
+              <T>Verifying</T>{" "}
             </p>
             <p className="text-[0.75em] font-medium text-slate-400 mt-0.5 tracking-wide">
               {" "}
-              Establishing secure connection...{" "}
+              <T>Establishing secure connection...</T>{" "}
             </p>
           </div>
         </div>
@@ -642,11 +643,11 @@ const PandaLogin: React.FC = () => {
             <div className="flex-1 z-10">
               <p className="text-[1em] font-black text-red-400 tracking-widest uppercase">
                 {" "}
-                Access Denied{" "}
+                <T>Access Denied</T>{" "}
               </p>
               <p className="text-[0.75em] font-medium text-slate-400 mt-0.5 tracking-wide">
                 {" "}
-                Invalid security credentials.{" "}
+                <T>Invalid security credentials.</T>{" "}
               </p>
             </div>
           </div>
@@ -665,11 +666,11 @@ const PandaLogin: React.FC = () => {
           <div className="flex-1 z-10">
             <p className="text-[1em] font-black text-[#4DA1FF] tracking-widest uppercase">
               {" "}
-              Access Granted{" "}
+              <T>Access Granted</T>{" "}
             </p>
             <p className="text-[0.75em] font-medium text-slate-400 mt-0.5 tracking-wide">
               {" "}
-              Identity confirmed. Routing to homepage...{" "}
+              <T>Identity confirmed. Routing to homepage...</T>{" "}
             </p>
           </div>
         </div>
@@ -778,7 +779,7 @@ const PandaLogin: React.FC = () => {
           <div className="text-center w-full mt-2">
             <h2 className="text-[1.8em] font-extrabold text-[#0F172A] tracking-tight">
               {" "}
-              Sign in to Account{" "}
+              <T>Sign in to Account</T>{" "}
             </h2>
             <div className="w-[3em] h-[0.25em] bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] mx-auto mt-2 mb-4 rounded-full"></div>
             <div className="flex justify-center gap-4 mb-4">
@@ -813,13 +814,13 @@ const PandaLogin: React.FC = () => {
               </button>
             </div>
             <p className="text-[0.8em] font-medium text-slate-500 mb-6">
-              Don't have an account?{" "}
+              <T>Don't have an account?</T>{" "}
               <Link
                 href="/register"
                 className="text-[#2C64FF] font-bold hover:underline"
               >
                 {" "}
-                Sign up{" "}
+                <T>Sign up</T>{" "}
               </Link>
             </p>
           </div>
@@ -831,7 +832,7 @@ const PandaLogin: React.FC = () => {
                 className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#2C64FF] z-10"
               >
                 {" "}
-                Email{" "}
+                <T>Email</T>{" "}
               </label>
               <input
                 type="text"
@@ -851,7 +852,7 @@ const PandaLogin: React.FC = () => {
                 className="absolute -top-[0.6em] left-[1em] bg-white px-1 text-[0.7em] font-bold text-[#2C64FF] z-10"
               >
                 {" "}
-                Password{" "}
+                <T>Password</T>{" "}
               </label>
               <div className="relative w-full border border-slate-300 rounded-[0.5em] focus-within:border-[#2C64FF] focus-within:ring-1 focus-within:ring-[#2C64FF]/20 transition-all bg-transparent">
                 <input
@@ -882,7 +883,7 @@ const PandaLogin: React.FC = () => {
                 />
                 <span className="text-[0.8em] font-bold text-[#64748B]">
                   {" "}
-                  Remember me{" "}
+                  <T>Remember me</T>{" "}
                 </span>
               </label>
               <Link
@@ -890,7 +891,7 @@ const PandaLogin: React.FC = () => {
                 className="text-[0.8em] font-bold text-[#64748B] hover:text-[#2C64FF] transition-colors"
               >
                 {" "}
-                Forgot Password?{" "}
+                <T>Forgot Password?</T>{" "}
               </Link>
             </div>
 
@@ -899,7 +900,7 @@ const PandaLogin: React.FC = () => {
               className="relative overflow-hidden text-[0.95em] py-[1em] rounded-[2em] border-none outline-none text-white font-bold tracking-[0.05em] cursor-pointer transition-all duration-300 hover:-translate-y-[2px] shadow-[0_8px_20px_-5px_rgba(44,100,255,0.4)] hover:shadow-[0_12px_25px_-5px_rgba(44,100,255,0.6)] w-full group"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] transition-transform duration-500 ease-out group-hover:scale-[1.05]"></div>
-              <span className="relative z-10 drop-shadow-sm">Sign In</span>
+              <span className="relative z-10 drop-shadow-sm"><T>Sign In</T></span>
             </button>
           </div>
         </form>
