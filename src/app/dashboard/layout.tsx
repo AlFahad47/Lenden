@@ -17,10 +17,10 @@ import {
   ChevronRight,
   FileCheck,
   MessageSquare,
-  Crown,
   X,
   Menu,
   Heart,
+  Crown,
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -56,12 +56,10 @@ export default function DashboardLayout({
   const isSubscribed = subscriptionStatus.subscribed;
   const daysLeft = subscriptionStatus.daysLeft;
 
-  /* ---------------- PROTECT USER DASHBOARD ---------------- */
-
   useEffect(() => {
     if (status === "loading") return;
 
-    if (!session) {
+    if (!session) { 
       router.push("/login");
       return;
     }
@@ -261,7 +259,7 @@ export default function DashboardLayout({
               className="lg:hidden text-gray-700 dark:text-gray-300"
               onClick={() => setMobileOpen(true)}
             >
-              <Menu size={22} />
+              {/* Menu icon */}
             </button>
 
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 capitalize">
