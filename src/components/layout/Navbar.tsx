@@ -11,6 +11,7 @@ import { IoLogOut } from "react-icons/io5";
 import { Crown, ShieldCheck, Star, Trophy } from "lucide-react";
 import RankDetailsModal from "../modals/RankDetailsModal";
 import { ThemeToggleButton } from "@/components/ui/skiper-ui/skiper26";
+import { useTranslations } from 'next-intl';
 
 type FullUser = {
   rank?: string;
@@ -117,20 +118,22 @@ const Navbar: React.FC = () => {
     return () => clearInterval(interval);
   }, [session]);
 
+  const t = useTranslations("nav");
+
   const navLinks = user
     ? [
-        { name: "Home", path: "/" },
-        { name: "Chat", path: "/chat" },
-        { name: "Review", path: "/review" },
-        { name: "FAQ", path: "/faq" },
-        { name: "Contact", path: "/contact" },
-        { name: "Blog", path: "/blog" },
+        { name: t("home"), path: "/" },
+        { name: t("chat"), path: "/chat" },
+        { name: t("review"), path: "/review" },
+        { name: t("faq"), path: "/faq" },
+        { name: t("contact"), path: "/contact" },
+        { name: t("blog"), path: "/blog" },
       ]
     : [
-        { name: "Home", path: "/#home" },
-        { name: "Offer", path: "/#offers" },
-        { name: "Features", path: "/#features" },
-        { name: "Reviews", path: "/#reviews" },
+        { name: t("home"), path: "/#home" },
+        { name: t("offer"), path: "/#offers" },
+        { name: t("features"), path: "/#features" },
+        { name: t("reviews"), path: "/#reviews" },
       ];
 
   return (

@@ -1,20 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import T from "@/components/T";
 import Swal from "sweetalert2";
 
 type KycDetails = {
   phone?: string;
   status?: string;
-  nid?: string; // ✅ NEW
+  nid?: string;
 };
 
 type User = {
   _id: string;
   name: string;
   email: string;
+
+  image?: string; // ✅ ADDED
+
   kycDetails?: KycDetails;
 };
 
@@ -22,6 +26,9 @@ export default function AdminRequestsPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<string | null>(null);
+
+  const [currentPage, setCurrentPage] = useState(1); // ✅ PAGINATION
+  const usersPerPage = 6;
 
   async function loadRequests() {
     try {
@@ -47,6 +54,14 @@ export default function AdminRequestsPage() {
   useEffect(() => {
     loadRequests();
   }, []);
+
+  // ✅ PAGINATION LOGIC
+  const totalPages = Math.ceil(users.length / usersPerPage);
+
+  const paginatedUsers = useMemo(() => {
+    const start = (currentPage - 1) * usersPerPage;
+    return users.slice(start, start + usersPerPage);
+  }, [users, currentPage]);
 
   async function updateStatus(id: string, status: string) {
     const action =
@@ -122,23 +137,23 @@ export default function AdminRequestsPage() {
       {/* TITLE */}
       <div>
         <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-          KYC Requests
+          <T>KYC Requests</T>
         </h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm">
-          Review and verify user identity submissions
+          <T>Review and verify user identity submissions</T>
         </p>
       </div>
 
       {/* EMPTY */}
       {users.length === 0 && (
         <div className="text-center py-20 text-gray-500 dark:text-gray-400">
-          No pending requests
+          <T>No pending requests</T>
         </div>
       )}
 
       {/* CARDS */}
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {users.map((user, i) => (
+        {paginatedUsers.map((user, i) => (
           <motion.div
             key={user._id}
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
@@ -150,9 +165,18 @@ export default function AdminRequestsPage() {
             <div className="relative bg-white dark:bg-[#0c1a2b] rounded-2xl p-6 shadow-xl hover:shadow-2xl transition">
               {/* HEADER */}
               <div className="flex items-center gap-4 mb-4">
-                <div className="h-14 w-14 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                  {user.name.charAt(0)}
-                </div>
+                {/* ✅ PROFILE IMAGE */}
+                {user.image ? (
+                  <img
+                    src={user.image}
+                    alt={user.name}
+                    className="h-14 w-14 rounded-full object-cover shadow-lg"
+                  />
+                ) : (
+                  <div className="h-14 w-14 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                    {user.name.charAt(0)}
+                  </div>
+                )}
 
                 <div>
                   <p className="text-lg font-semibold text-gray-800 dark:text-white">
@@ -173,10 +197,10 @@ export default function AdminRequestsPage() {
                 />
               </div>
 
-              {/* 🔥 KYC DETAILS */}
+              {/* KYC DETAILS */}
               <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-[#08111f] dark:to-[#0f1f35] border border-gray-200 dark:border-gray-700">
                 <p className="text-xs font-semibold text-gray-500 mb-2">
-                  KYC DETAILS
+                  <T>KYC DETAILS</T>
                 </p>
 
                 <div className="grid grid-cols-2 gap-3 text-sm">
@@ -217,7 +241,7 @@ export default function AdminRequestsPage() {
                   className="flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white text-sm px-3 py-2 rounded-lg"
                 >
                   <CheckCircle size={16} />
-                  Approve
+                  <T>Approve</T>
                 </motion.button>
 
                 <motion.button
@@ -227,7 +251,7 @@ export default function AdminRequestsPage() {
                   className="flex items-center gap-1 bg-yellow-500 hover:bg-yellow-600 text-white text-sm px-3 py-2 rounded-lg"
                 >
                   <XCircle size={16} />
-                  Reject
+                  <T>Reject</T>
                 </motion.button>
 
                 <motion.button
@@ -237,12 +261,46 @@ export default function AdminRequestsPage() {
                   className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-2 rounded-lg"
                 >
                   <AlertTriangle size={16} />
-                  Fraud
+                  <T>Fraud</T>
                 </motion.button>
               </div>
             </div>
           </motion.div>
         ))}
+      </div>
+
+      {/* ✅ PAGINATION UI */}
+      <div className="flex justify-center items-center gap-2 flex-wrap">
+        <button
+          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+          className="px-3 py-1 rounded-lg bg-gray-200 dark:bg-[#111c2d]"
+        >
+          <T>Prev</T>
+        </button>
+
+        {[...Array(totalPages)].map((_, i) => {
+          const page = i + 1;
+          return (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-1 rounded-lg ${
+                currentPage === page
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 dark:bg-[#111c2d]"
+              }`}
+            >
+              {page}
+            </button>
+          );
+        })}
+
+        <button
+          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+          className="px-3 py-1 rounded-lg bg-gray-200 dark:bg-[#111c2d]"
+        >
+          <T>Next</T>
+        </button>
       </div>
     </div>
   );
@@ -254,7 +312,7 @@ function Info({ label, value }: { label: string; value: string }) {
       whileHover={{ scale: 1.05 }}
       className="bg-gray-50 dark:bg-[#08111f] p-3 rounded-lg"
     >
-      <p className="text-xs text-gray-500">{label}</p>
+      <p className="text-xs text-gray-500"><T>{label}</T></p>
       <p className="font-medium break-words">{value}</p>
     </motion.div>
   );

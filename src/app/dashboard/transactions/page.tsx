@@ -6,6 +6,7 @@ import { ArrowUpRight, ArrowDownLeft, Loader2, Download, FileText, Printer, Glob
 import { useSession } from "next-auth/react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import T from "@/components/T";
 
 export default function TransactionsPage() {
   const { data: session } = useSession();
@@ -85,7 +86,7 @@ export default function TransactionsPage() {
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
       <Loader2 className="animate-spin text-blue-600" size={40} />
-      <p className="text-gray-500 animate-pulse">Loading transactions...</p>
+      <p className="text-gray-500 animate-pulse"><T>Loading transactions...</T></p>
     </div>
   );
 
@@ -95,8 +96,8 @@ export default function TransactionsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Account Statement</h1>
-          <p className="text-gray-500 text-sm">View and download your recent wallet activity</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white"><T>Account Statement</T></h1>
+          <p className="text-gray-500 text-sm"><T>View and download your recent wallet activity</T></p>
         </div>
         
         {transactions.length > 0 && (
@@ -104,7 +105,7 @@ export default function TransactionsPage() {
             onClick={downloadFullStatement}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold transition-all shadow-lg shadow-blue-500/20 active:scale-95"
           >
-            <Download size={18} /> Download Statement
+            <Download size={18} /> <T>Download Statement</T>
           </button>
         )}
       </div>
@@ -114,10 +115,10 @@ export default function TransactionsPage() {
         <div className="p-6 border-b dark:border-blue-900 bg-gray-50/50 dark:bg-blue-900/10 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FileText className="text-blue-600" size={20} />
-            <h3 className="font-bold text-blue-900 dark:text-blue-100">Recent Transactions</h3>
+            <h3 className="font-bold text-blue-900 dark:text-blue-100"><T>Recent Transactions</T></h3>
           </div>
           <span className="text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full font-bold">
-            Total: {transactions.length}
+            <T>Total</T>: {transactions.length}
           </span>
         </div>
 
@@ -194,12 +195,12 @@ export default function TransactionsPage() {
                           </p>
                           {isIntl && (
                             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300 uppercase tracking-wide">
-                              International
+                              <T>International</T>
                             </span>
                           )}
                           {isDonation && (
                             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-100 dark:bg-pink-900/30 text-[#e63b60] uppercase tracking-wide">
-                              Donation
+                              <T>Donation</T>
                             </span>
                           )}
                         </div>
@@ -228,7 +229,7 @@ export default function TransactionsPage() {
           ) : (
             <div className="py-20 text-center">
               <FileText size={60} className="mx-auto text-gray-200 dark:text-gray-800 mb-4" />
-              <p className="text-gray-500 font-medium">No activity found in your history.</p>
+              <p className="text-gray-500 font-medium"><T>No activity found in your history.</T></p>
             </div>
           )}
         </div>

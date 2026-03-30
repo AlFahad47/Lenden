@@ -1,23 +1,16 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  FaGlobeAmericas,
-  FaCalculator,
-  FaPiggyBank,
-  FaHeart,
-  FaLock,
-  FaChevronLeft,
-  FaChevronRight,
-  FaRocket,
-  FaInfoCircle,
-  FaBolt,
-} from "react-icons/fa";
-import { IoCloseCircleOutline } from "react-icons/io5";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
+import React, { useEffect, useRef, useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { 
+  FaGlobeAmericas, FaCalculator, FaPiggyBank, FaHeart, 
+  FaLock, FaChevronLeft, FaChevronRight, FaRocket, FaInfoCircle, FaBolt
+} from "react-icons/fa"
+import { IoCloseCircleOutline } from "react-icons/io5"
+import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
+import Link from "next/link"
+import T from "@/components/T"
 
 type EliteMenuItem = {
   name: string;
@@ -165,8 +158,8 @@ export default function EliteFeaturesSlider() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4DA1FF]/10 border border-[#4DA1FF]/20 text-[#1E50FF] dark:text-[#4DA1FF] text-xs font-semibold mb-3">
             <FaBolt size={10} /> Your Coins: {userPoints}
           </div>
-          <h2 className="home-heading text-2xl md:text-4xl">
-            Elite <span className="home-gradient-text">Privileges</span>
+          <h2 className="text-2xl md:text-4xl font-extrabold text-gray-800 dark:text-white">
+            <T>Elite</T> <span className="bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF] bg-clip-text text-transparent"><T>Privileges</T></span>
           </h2>
 
           <div className="flex items-center justify-center gap-4 mt-8">
@@ -176,11 +169,8 @@ export default function EliteFeaturesSlider() {
             >
               <FaChevronLeft size={14} />
             </button>
-            <p className="home-body text-sm italic">Explore premium features</p>
-            <button
-              onClick={() => scroll("right")}
-              className="p-3 rounded-full bg-white dark:bg-[#121928] border border-gray-200 dark:border-gray-800 text-gray-400 hover:text-[#1E50FF] transition shadow-sm"
-            >
+            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium italic"><T>Explore premium features</T></p>
+            <button onClick={() => scroll("right")} className="p-3 rounded-full bg-white dark:bg-[#121928] border border-gray-200 dark:border-gray-800 text-gray-400 hover:text-[#1E50FF] transition shadow-sm">
               <FaChevronRight size={14} />
             </button>
           </div>
@@ -204,18 +194,10 @@ export default function EliteFeaturesSlider() {
                 className="group relative min-w-75 p-8 rounded-[2rem] border border-gray-200 bg-white shadow-sm transition-all duration-300 cursor-pointer md:min-w-87.5 dark:border-gray-800 dark:bg-[#121928]"
               >
                 <div className="absolute top-6 right-8">
-                  <span
-                    className={`text-[10px] font-bold px-3 py-1 rounded-full shadow-sm ${
-                      isUnlocked
-                        ? "bg-green-100 text-green-600"
-                        : "bg-slate-100 text-slate-600"
-                    }`}
-                  >
-                    {isUnlocked
-                      ? "Unlocked"
-                      : isSubscribed
-                        ? "Elite"
-                        : `${item.pointsNeeded} Coins`}
+                  <span className={`text-[10px] font-bold px-3 py-1 rounded-full shadow-sm ${
+                    isUnlocked ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600'
+                  }`}>
+                    {isUnlocked ? <T>Unlocked</T> : isSubscribed ? <T>Elite</T> : `${item.pointsNeeded} Coins`}
                   </span>
                 </div>
 

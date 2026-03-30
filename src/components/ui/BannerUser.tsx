@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import SendMoneyForm from "../modals/sendmoney";
 import AddMoneyForm from "../modals/AddMoneyForm";
 import RequestMoneyForm from "../modals/RequestMoney";
+import T from "@/components/T";
 
 const BannerUser: React.FC = () => {
   const { data: session } = useSession();
@@ -274,7 +275,7 @@ const BannerUser: React.FC = () => {
                 className={`w-2 h-2 rounded-full animate-pulse ${isApproved ? "bg-green-400" : "bg-orange-400"}`}
               />
               <span className="text-[#1E50FF] dark:text-[#4DA1FF] text-xs font-bold tracking-widest uppercase">
-                NovaPay · {isApproved ? "Verified Account" : "KYC Pending"}
+                NovaPay · <T>{isApproved ? "Verified Account" : "KYC Pending"}</T>
               </span>
             </div>
             <motion.button
@@ -291,7 +292,7 @@ const BannerUser: React.FC = () => {
               {/* Label & Rank */}
               <div className="flex flex-col items-start leading-tight">
                 <span className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#64748B] dark:text-[#94A3B8]">
-                  Tier Status
+                  <T>Tier Status</T>
                 </span>
                 <span className="text-sm font-semibold text-[#0F172A] dark:text-white">
                   {dbUser?.rank || "Bronze"}
@@ -308,10 +309,10 @@ const BannerUser: React.FC = () => {
 
           <div>
             <p className="text-[#64748B] dark:text-[#94A3B8] text-base mb-1">
-              {greeting},
+              <T>{greeting}</T>,
             </p>
             <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] text-[#0F172A] dark:text-white">
-              Welcome back,{" "}
+              <T>Welcome back,</T>{" "}
               <span
                 className="text-transparent bg-clip-text"
                 style={{ backgroundImage: hedwigGradient }}
@@ -320,11 +321,9 @@ const BannerUser: React.FC = () => {
               </span>
             </h1>
             <p className="mt-4 text-[#64748B] dark:text-[#94A3B8] text-sm md:text-base max-w-md leading-relaxed">
-              Your digital assets are{" "}
-              {isApproved ? "secure and ready" : "under review"}.{" "}
               {isApproved
-                ? "Manage transfers and track spending in real-time."
-                : "Complete your profile to unlock all features."}
+                ? <T>Your digital assets are secure and ready. Manage transfers and track spending in real-time.</T>
+                : <T>Your digital assets are under review. Complete your profile to unlock all features.</T>}
             </p>
           </div>
 
@@ -338,7 +337,7 @@ const BannerUser: React.FC = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-[#4DA1FF] to-[#1E50FF]" />
                 <LayoutDashboard size={16} className="relative text-white" />
                 <span className="relative text-white text-sm font-semibold tracking-wide">
-                  Dashboard
+                  <T>Dashboard</T>
                 </span>
                 <ArrowUpRight
                   size={15}
@@ -353,7 +352,7 @@ const BannerUser: React.FC = () => {
               >
                 <Wallet size={15} />
                 <span className="text-sm font-semibold cursor-pointer">
-                  Wallet Account
+                  <T>Wallet Account</T>
                 </span>
               </motion.button>
             </Link>
@@ -371,7 +370,7 @@ const BannerUser: React.FC = () => {
                 <span className={stat.color}>{stat.icon}</span>
                 <div>
                   <p className="text-[10px] text-[#94A3B8] leading-none">
-                    {stat.label}
+                    <T>{stat.label}</T>
                   </p>
                   <p className="text-xs font-bold text-[#0F172A] dark:text-white mt-0.5">
                     {loading ? "..." : stat.value}
@@ -408,8 +407,8 @@ const BannerUser: React.FC = () => {
               className={`text-xs font-medium ${pendingRequests > 0 ? "text-red-600 dark:text-red-400" : "text-[#0F172A] dark:text-white"}`}
             >
               {pendingRequests > 0
-                ? `${pendingRequests} New Request`
-                : "No Alerts"}
+                ? <>{pendingRequests} <T>New Request</T></>
+                : <T>No Alerts</T>}
             </span>
             {pendingRequests > 0 && (
               <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[9px] text-white font-bold animate-pulse">
@@ -431,7 +430,7 @@ const BannerUser: React.FC = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-white/60 text-[10px] uppercase tracking-widest font-medium">
-                    NovaPay Wallet
+                    <T>NovaPay Wallet</T>
                   </p>
                   <p className="text-white font-bold text-base mt-0.5">
                     {firstName}
@@ -445,7 +444,7 @@ const BannerUser: React.FC = () => {
               </div>
               <div>
                 <p className="text-white/60 text-[10px] uppercase tracking-widest">
-                  Available Balance
+                  <T>Available Balance</T>
                 </p>
                 <p className="text-white font-bold text-3xl tracking-tight mt-1">
                   {loading
@@ -478,7 +477,7 @@ const BannerUser: React.FC = () => {
               >
                 <span className="text-current">{action.icon}</span>
                 <span className="text-[10px] font-semibold text-[#0F172A] dark:text-white">
-                  {action.label}
+                  <T>{action.label}</T>
                 </span>
               </motion.button>
             ))}
@@ -513,6 +512,8 @@ const BannerUser: React.FC = () => {
                 >
                   <X size={18} />
                 </button>
+                <h3 className="text-lg font-bold text-[#0F172A] dark:text-white"><T>Recent Alerts</T></h3>
+                <button onClick={() => setIsListModalOpen(false)} className="p-2 text-gray-500 hover:rotate-90 transition-transform"><X size={18} /></button>
               </div>
 
               <div className="overflow-y-auto p-4 space-y-3 custom-scrollbar">
