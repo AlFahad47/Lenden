@@ -157,7 +157,7 @@ const WalletAccountPage = () => {
   const currency = dbUser?.currency === "BDT" ? "৳" : "$";
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#020617] text-slate-900 dark:text-slate-100 p-4 md:p-8 transition-colors">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#020617] text-slate-900 dark:text-slate-100 p-4 md:p-30 transition-colors">
       <div className="max-w-6xl mx-auto">
         
         {/* Header */}
