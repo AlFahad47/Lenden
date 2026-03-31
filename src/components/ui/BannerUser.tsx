@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -31,6 +32,7 @@ import RequestMoneyForm from "../modals/RequestMoney";
 import T from "@/components/T";
 
 const BannerUser: React.FC = () => {
+  const router = useRouter();
   const { data: session } = useSession();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [dbUser, setDbUser] = useState<any>(null);
@@ -166,7 +168,7 @@ const BannerUser: React.FC = () => {
     {
       label: "History",
       icon: <TrendingUp size={15} />,
-      onClick: () => console.log("Navigate to history"),
+      onClick: () => router.push("/dashboard/transactions"),
     },
   ];
 
@@ -471,6 +473,7 @@ const BannerUser: React.FC = () => {
             {cardActions.map((action) => (
               <motion.button
                 key={action.label}
+                onClick={action.onClick}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 className="flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl bg-white/70 dark:bg-white/[0.04] border border-[#4DA1FF]/15 backdrop-blur-sm hover:bg-[#4DA1FF]/10 text-[#1E50FF] dark:text-[#4DA1FF]"

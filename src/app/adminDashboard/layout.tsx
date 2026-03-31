@@ -21,6 +21,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Bell,
+  Home,
 } from "lucide-react";
 
 const adminItems = [
@@ -84,11 +85,12 @@ export default function AdminLayout({
     <aside className="h-full w-full bg-white dark:bg-[#0c1a2b] border-r border-gray-200 dark:border-gray-700 transition-all duration-300 flex flex-col">
       {/* SIDEBAR HEADER */}
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-700">
-        {!desktopCollapsed && (
-          <span className="font-bold text-blue-600 dark:text-blue-400 text-lg">
-            NOVAPAY <span className="text-xs opacity-70">ADMIN</span>
-          </span>
-        )}
+        <Link
+          href="/"
+          className="font-bold text-blue-600 dark:text-blue-400 text-lg hover:opacity-80 transition-opacity"
+        >
+          {desktopCollapsed ? "N" : <><span>NOVAPAY</span> <span className="text-xs opacity-70">ADMIN</span></>}
+        </Link>
 
         <button
           onClick={() => setDesktopCollapsed(!desktopCollapsed)}
@@ -184,6 +186,14 @@ export default function AdminLayout({
             >
               <Menu size={22} />
             </button>
+
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 rounded-full border border-blue-200/80 dark:border-blue-500/30 bg-blue-50 dark:bg-blue-900/20 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/35 transition-colors"
+            >
+              <Home size={12} />
+              Home
+            </Link>
 
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 capitalize">
               <T>{pageTitle}</T>

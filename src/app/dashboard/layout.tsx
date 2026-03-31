@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   CreditCard,
   BarChart3,
+  Home,
   Settings,
   Bell,
   ChevronLeft,
@@ -31,6 +32,9 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const router = useRouter();
   const { data: session, status } = useSession();
+  const accountStatus =
+    (session?.user as { accountStatus?: string } | undefined)?.accountStatus ||
+    "active";
   const t = useTranslations("sidebar");
   const td = useTranslations("dashboard");
 
@@ -65,7 +69,7 @@ export default function DashboardLayout({
     }
 
     // 🚨 FRAUD AUTO LOGOUT (ADDED)
-    if (session?.user?.accountStatus === "fraud") {
+    if (accountStatus === "fraud") {
       signOut({
         callbackUrl: "/login?error=fraud_blocked",
       });
@@ -75,7 +79,7 @@ export default function DashboardLayout({
     if (session?.user?.role?.toLowerCase() === "admin") {
       router.push("/adminDashboard");
     }
-  }, [session, status, router]);
+  }, [session, status, router, accountStatus]);
 
   /* ---------------- SUBSCRIPTION FETCH ---------------- */
 
@@ -153,11 +157,12 @@ export default function DashboardLayout({
       transition-all duration-300`}
     >
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-700">
-        {!desktopCollapsed && (
-          <h1 className="font-bold text-blue-600 dark:text-blue-400">
-            NOVAPAY
-          </h1>
-        )}
+        <Link
+          href="/"
+          className="font-bold text-blue-600 dark:text-blue-400 hover:opacity-80 transition-opacity"
+        >
+          {desktopCollapsed ? "N" : "NOVAPAY"}
+        </Link>
 
         <button
           onClick={() => setDesktopCollapsed(!desktopCollapsed)}
@@ -259,8 +264,16 @@ export default function DashboardLayout({
               className="lg:hidden text-gray-700 dark:text-gray-300"
               onClick={() => setMobileOpen(true)}
             >
-              {/* Menu icon */}
+              <Menu size={20} />
             </button>
+
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 rounded-full border border-blue-200/80 dark:border-blue-500/30 bg-blue-50 dark:bg-blue-900/20 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/35 transition-colors"
+            >
+              <Home size={12} />
+              Home
+            </Link>
 
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 capitalize">
               {pageTitle}
