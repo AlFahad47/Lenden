@@ -17,6 +17,7 @@ import LanguageSwitcher from "../LanguageSwitcher";
 type FullUser = {
   rank?: string;
   points?: number;
+  image?: string | null;
 };
 
 const Navbar: React.FC = () => {
@@ -137,6 +138,9 @@ const Navbar: React.FC = () => {
         { name: t("reviews"), path: "/#reviews" },
       ];
 
+  const avatarSrc =
+    fullUser?.image?.trim() || user?.image?.trim() || "/user.jfif";
+
   return (
     <>
       {/* FIXED POSITIONING & POINTER EVENTS:
@@ -175,7 +179,7 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Desktop Links (Center) */}
-          <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+          <div className="hidden lg:flex flex-1 items-center justify-center gap-8 min-w-0 px-6">
             {navLinks.map((link) => {
               const isActive = link.path.startsWith("/#")
                 ? activeHash === link.path.replace("/", "")
@@ -210,10 +214,10 @@ const Navbar: React.FC = () => {
 
 
           {/* Desktop Right - Theme + Auth/Get Started */}
-          <div className="hidden md:flex shrink-0 items-center gap-4 z-20">
+          <div className="hidden lg:flex shrink-0 items-center gap-4 z-30">
 
             
-          <div className="">
+          <div className="relative z-20">
             <LanguageSwitcher/>
           </div>
             {/* Theme Toggle */}
@@ -270,10 +274,7 @@ const Navbar: React.FC = () => {
                     <img
                       alt="User Avatar"
                       referrerPolicy="no-referrer"
-                      src={
-                        user.image ||
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8oghbsuzggpkknQSSU-Ch_xep_9v3m6EeBQ&s"
-                      }
+                      src={avatarSrc}
                       className="w-full h-full object-cover"
                     />
                     {/* Online Dot */}
@@ -343,7 +344,7 @@ const Navbar: React.FC = () => {
 
           {/* Mobile Menu Toggle */}
           <button
-            className="md:hidden flex items-center justify-center text-slate-800 dark:text-white z-20 w-10 h-10 bg-white/50 dark:bg-white/10 rounded-full border border-slate-200 dark:border-white/10 shadow-sm"
+            className="lg:hidden flex items-center justify-center text-slate-800 dark:text-white z-20 w-10 h-10 bg-white/50 dark:bg-white/10 rounded-full border border-slate-200 dark:border-white/10 shadow-sm"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -352,7 +353,7 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu Dropdown */}
         {isMobileMenuOpen && (
-          <div className="absolute top-[110%] left-4 right-4 pointer-events-auto bg-white/95 dark:bg-[#0a101f]/95 backdrop-blur-2xl border border-slate-200 dark:border-white/10 shadow-2xl rounded-[2rem] p-6 flex flex-col gap-2 md:hidden origin-top animate-in fade-in zoom-in-95 duration-200">
+          <div className="absolute top-[110%] left-4 right-4 z-40 pointer-events-auto bg-white/95 dark:bg-[#0a101f]/95 backdrop-blur-2xl border border-slate-200 dark:border-white/10 shadow-2xl rounded-[2rem] p-6 flex flex-col gap-2 lg:hidden origin-top animate-in fade-in zoom-in-95 duration-200">
             <div className="flex justify-end mb-2">
               <ThemeToggleButton
                 variant="circle"

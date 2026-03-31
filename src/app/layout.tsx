@@ -6,7 +6,7 @@ import { Toaster } from "react-hot-toast"; // Toast notifications
 import Footer from "@/components/layout/Footer";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
-import Navbar from "@/components/layout/Navbar";
+import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import LocaleProvider from "@/providers/LocaleProvider";
 import ChatBotAI from "./components/ChatBotAI";
 
@@ -34,7 +34,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <LocaleProvider>
             <AuthProvider>
-              <Navbar />
+              <NavbarWrapper />
               <main>               
                 {children}
               </main>
