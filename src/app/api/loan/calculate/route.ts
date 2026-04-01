@@ -13,6 +13,22 @@ export async function POST(req: Request) {
     const user = await db.collection("users").findOne({ email });
     if (!user) return Response.json({ error: "User not found" }, { status: 404 });
 
+    //CHECK KYC STATUS FIRST
+    if (user.kycStatus !== "approved") {
+      const kycReason = "Your KYC is not approved yet. Please verify your identity to unlock AI limits.";
+      
+      await db.collection("users").updateOne(
+        { email },
+        { $set: { loanLimit: 0, limitReason: kycReason } }
+      );
+
+      return Response.json({ 
+        success: true, 
+        limit: 0, 
+        reason: kycReason 
+      });
+    }
+
     // 2. CHECK FOR ACTIVE LOANS
     const activeLoan = await db.collection("loans").findOne({ 
       userEmail: email, 
