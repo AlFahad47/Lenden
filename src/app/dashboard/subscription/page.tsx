@@ -1,10 +1,12 @@
-"use client";
+﻿"use client";
 
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { Crown, Check, Loader2, Zap, Globe, Calculator, PiggyBank } from "lucide-react";
+import { Crown, Check, Loader2, Zap, Globe, Calculator, PiggyBank, AlertTriangle, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { SUBSCRIPTION_PRICES, SubscriptionPlan, ELITE_FEATURES } from "@/types/subscription";
 import T from "@/components/T";
+import { formatAmount } from "@/lib/utils";
 
 const FEATURE_ICONS: Record<string, React.ElementType> = {
   "International Pay": Globe,
@@ -29,11 +31,26 @@ export default function SubscriptionPage() {
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [mainBalance, setMainBalance] = useState<number | null>(null);
+  const [foreignWallets, setForeignWallets] = useState<{ currency: string; amount: number; symbol: string; flag: string }[]>([]);
 
   useEffect(() => {
     if (!session?.user?.email) return;
     fetchStatus();
+    fetchWallets();
   }, [session]);
+
+  const fetchWallets = async () => {
+    try {
+      const res = await fetch(`/api/transfer/wallets?email=${session?.user?.email}`);
+      const data = await res.json();
+      setMainBalance(data.mainBalance ?? 0);
+      const nonEmpty = (data.wallets ?? []).filter((w: { amount: number }) => w.amount > 0);
+      setForeignWallets(nonEmpty);
+    } catch {
+      // silently fail
+    }
+  };
 
   const fetchStatus = async () => {
     setLoading(true);
@@ -136,6 +153,29 @@ export default function SubscriptionPage() {
         </ul>
       </div>
 
+      {/* Foreign currency warning */}
+      {!status?.subscribed && mainBalance !== null && mainBalance < SUBSCRIPTION_PRICES[selectedPlan] && foreignWallets.length > 0 && (
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-2xl p-4 flex items-start gap-3 animate-in fade-in slide-in-from-top-4 duration-500">
+          <AlertTriangle className="text-amber-500 shrink-0 mt-0.5" size={18} />
+          <div className="flex-1 space-y-2">
+            <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
+              <T>Insufficient BDT balance</T>
+            </p>
+            <p className="text-xs text-amber-700 dark:text-amber-400">
+              <T>You have foreign currency in your wallet:</T>{" "}
+              {foreignWallets.map(w => `${w.flag} ${w.symbol}${w.amount.toFixed(2)} ${w.currency}`).join(", ")}.{" "}
+              <T>Please cash out to BDT first, then subscribe.</T>
+            </p>
+            <Link
+              href="/international/cashout"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-800 dark:text-amber-300 underline underline-offset-2 hover:text-amber-600 transition-colors"
+            >
+              <T>Go to Cash Out</T> <ArrowRight size={12} />
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Plan selector - only visible if not subscribed */}
       {!status?.subscribed && (
         <div className="space-y-4">
@@ -161,7 +201,7 @@ export default function SubscriptionPage() {
                   )}
                 </div>
                 <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-                  ৳{SUBSCRIPTION_PRICES[plan].toLocaleString()}
+                  ৳{formatAmount(SUBSCRIPTION_PRICES[plan])}
                 </p>
                 <p className="text-xs text-blue-400 mt-0.5">
                   {plan === "monthly" ? <T>per month</T> : <T>per year</T>}
@@ -194,7 +234,7 @@ export default function SubscriptionPage() {
             )}
             {purchasing
               ? <T>Processing payment...</T>
-              : <><T>Subscribe for</T> ৳{SUBSCRIPTION_PRICES[selectedPlan].toLocaleString()}</>}
+              : <><T>Subscribe for</T> ৳{formatAmount(SUBSCRIPTION_PRICES[selectedPlan])}</>}
           </button>
 
           <p className="text-center text-[11px] text-blue-400/80">
