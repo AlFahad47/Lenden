@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, Suspense, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import {
   FaPaperPlane,
@@ -39,6 +40,7 @@ type MenuItem = {
   icon: IconType;
   route: string;
   requiresAuth: boolean;
+  points?: number;
 };
 
 const quickActions: MenuItem[] = [
@@ -47,39 +49,45 @@ const quickActions: MenuItem[] = [
     icon: FaPaperPlane,
     route: "/send-money",
     requiresAuth: true,
+    points: 100,
   },
   {
     name: "Request Money",
     icon: FaHandHoldingUsd,
     route: "/request-money",
     requiresAuth: true,
+    points: 20,
   },
   {
     name: "Cash Out",
     icon: FaMoneyBillWave,
     route: "/cash-out",
     requiresAuth: true,
+    points: 50,
   },
   {
     name: "Add Money",
     icon: FaWallet,
     route: "/add-money",
     requiresAuth: true,
+    points: 100,
   },
   {
     name: "Mobile Recharge",
     icon: FaMobileAlt,
     route: "/mobile-recharge",
     requiresAuth: false,
+    points: 20,
   },
   {
     name: "Pay Bill",
     icon: FaReceipt,
     route: "/pay-bill",
     requiresAuth: false,
+    points: 25,
   },
   {
-    name: "Transactions",
+    name: "Transaction History",
     icon: FaHistory,
     route: "/dashboard/transactions",
     requiresAuth: true,
@@ -92,7 +100,7 @@ const quickActions: MenuItem[] = [
     requiresAuth: true,
   },
   {
-    name: "Global Pay",
+    name: "International Pay",
     icon: FaGlobe,
     route: "/international",
     requiresAuth: true,
@@ -129,6 +137,7 @@ const QuickActionsContent = () => {
   const [activeModal, setActiveModal] = useState<string | null>(() =>
     sendMoneyAction ? "Send Money" : null,
   );
+  const [isMounted, setIsMounted] = useState(false);
 
   const total = quickActions.length;
 
@@ -139,6 +148,21 @@ const QuickActionsContent = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isModalOpen]);
 
   // 3. Optimized Data Fetching: Run requests in parallel
   useEffect(() => {
@@ -317,6 +341,32 @@ const QuickActionsContent = () => {
                   className="absolute left-1/2 top-1/2 flex w-35 flex-col items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] md:w-45 focus:outline-none group"
                   style={getItemStyles(index)}
                 >
+                  {item.points && (
+                    <div
+                      className={`absolute -top-10 left-1/2 -translate-x-1/2 z-30 transition-all duration-500 ease-out
+                      ${isCenter ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-2 scale-90"}`}
+                    >
+                      <div className="relative group">
+                        <div className="absolute inset-0 bg-amber-400/20 blur-xl rounded-full animate-pulse" />
+
+                        <div className="relative flex flex-col items-center justify-center min-w-[50px] px-3 py-1.5 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border border-amber-200/50 dark:border-amber-500/30 rounded-2xl shadow-[0_8px_16px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)]">
+                          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-300/50 to-transparent" />
+
+                          <div className="flex items-center gap-1">
+                            <span className="text-[12px] font-black bg-gradient-to-br from-amber-500 to-orange-600 bg-clip-text text-transparent">
+                              +{item.points}
+                            </span>
+                            <span className="text-[9px] font-bold text-amber-600/80 dark:text-amber-400/80 tracking-tighter uppercase">
+                              <T>Points</T>
+                            </span>
+                          </div>
+
+                          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 bg-white/80 dark:bg-gray-900/80 border-r border-b border-amber-200/50 dark:border-amber-500/30" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div
                     className={`relative mb-3 flex items-center justify-center rounded-[1.5rem] transition-all duration-500
                     ${isCenter ? "h-20 w-20 md:h-24 md:w-24 bg-white dark:bg-[#17304f] shadow-[0_8px_24px_rgba(29,78,216,0.14)] border border-blue-100/90 dark:border-blue-300/35" : "h-16 w-16 md:h-22 md:w-22 bg-slate-200/80 dark:bg-slate-700/40"}
@@ -363,32 +413,36 @@ const QuickActionsContent = () => {
         </div>
 
         {/* Modular Modals */}
-        {isModalOpen && ActiveModalComponent && (
-          <div className="fixed inset-0 z-100 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm animate-in fade-in duration-200 dark:bg-black/70">
-            <div className="w-full max-w-md overflow-hidden rounded-[2rem] border border-slate-100 bg-white shadow-[0_24px_64px_-20px_rgba(15,23,42,0.4)] animate-in zoom-in-95 duration-200 dark:border-white/10 dark:bg-[#12233c]">
-              <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-6 py-5 dark:border-white/10 dark:bg-transparent">
-                <h3 className="flex items-center gap-3 text-lg font-extrabold text-slate-800 dark:text-white">
-                  {activeModal === "Pay Bill" ? (
-                    <FaReceipt className="text-blue-500" />
-                  ) : (
-                    <FaPaperPlane className="text-blue-500" />
-                  )}
-                  <T>{activeModal}</T>
-                </h3>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="rounded-full p-2 transition-colors hover:bg-slate-200 dark:hover:bg-white/10"
-                  aria-label="Close modal"
-                >
-                  <X size={20} className="text-slate-500 dark:text-slate-400" />
-                </button>
+        {isMounted &&
+          isModalOpen &&
+          ActiveModalComponent &&
+          createPortal(
+            <div className="fixed inset-0 z-9999 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm animate-in fade-in duration-200 dark:bg-black/70">
+              <div className="relative z-10000 w-full max-w-md overflow-hidden rounded-[2rem] border border-slate-100 bg-white shadow-[0_24px_64px_-20px_rgba(15,23,42,0.4)] animate-in zoom-in-95 duration-200 dark:border-white/10 dark:bg-[#12233c]">
+                <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-6 py-5 dark:border-white/10 dark:bg-transparent">
+                  <h3 className="flex items-center gap-3 text-lg font-extrabold text-slate-800 dark:text-white">
+                    {activeModal === "Pay Bill" ? (
+                      <FaReceipt className="text-blue-500" />
+                    ) : (
+                      <FaPaperPlane className="text-blue-500" />
+                    )}
+                    <T>{activeModal ?? ""}</T>
+                  </h3>
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="rounded-full p-2 transition-colors hover:bg-slate-200 dark:hover:bg-white/10"
+                    aria-label="Close modal"
+                  >
+                    <X size={20} className="text-slate-500 dark:text-slate-400" />
+                  </button>
+                </div>
+                <div className="p-6">
+                  <ActiveModalComponent />
+                </div>
               </div>
-              <div className="p-6">
-                <ActiveModalComponent />
-              </div>
-            </div>
-          </div>
-        )}
+            </div>,
+            document.body,
+          )}
       </div>
     </section>
   );
