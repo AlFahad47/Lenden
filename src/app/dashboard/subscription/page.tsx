@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import { Crown, Check, Loader2, Zap, Globe, Calculator, PiggyBank, AlertTriangle
 import Link from "next/link";
 import { SUBSCRIPTION_PRICES, SubscriptionPlan, ELITE_FEATURES } from "@/types/subscription";
 import T from "@/components/T";
+import { formatAmount } from "@/lib/utils";
 
 const FEATURE_ICONS: Record<string, React.ElementType> = {
   "International Pay": Globe,
@@ -200,7 +201,7 @@ export default function SubscriptionPage() {
                   )}
                 </div>
                 <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-                  ৳{SUBSCRIPTION_PRICES[plan].toLocaleString()}
+                  ৳{formatAmount(SUBSCRIPTION_PRICES[plan])}
                 </p>
                 <p className="text-xs text-blue-400 mt-0.5">
                   {plan === "monthly" ? <T>per month</T> : <T>per year</T>}
@@ -233,7 +234,7 @@ export default function SubscriptionPage() {
             )}
             {purchasing
               ? <T>Processing payment...</T>
-              : <><T>Subscribe for</T> ৳{SUBSCRIPTION_PRICES[selectedPlan].toLocaleString()}</>}
+              : <><T>Subscribe for</T> ৳{formatAmount(SUBSCRIPTION_PRICES[selectedPlan])}</>}
           </button>
 
           <p className="text-center text-[11px] text-blue-400/80">
