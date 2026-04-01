@@ -7,6 +7,8 @@ export async function POST(req: Request) {
     const client = await clientPromise;
     const db = client.db("novapay_db");
 
+  
+
     const requestedAmount = parseFloat(amount);
     if (isNaN(requestedAmount) || requestedAmount <= 0) {
       return NextResponse.json({ error: "Invalid loan amount" }, { status: 400 });
@@ -25,8 +27,14 @@ export async function POST(req: Request) {
     }
 
     // 2. Fetch User & Verify AI Limit
-    const user = await db.collection("users").findOne({ email });
-    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+  const user = await db.collection("users").findOne({ email });
+
+  // STRICT CHECK: Reject if KYC is not 'approved'
+  if (!user || user.kycStatus !== "approved") {
+    return NextResponse.json({ 
+      error: "Access Denied. Only KYC-approved users can apply for loans." 
+    }, { status: 403 });
+  }
 
     if (requestedAmount > (user.loanLimit || 0)) {
       return NextResponse.json({ error: "Amount exceeds your AI-approved limit" }, { status: 400 });
