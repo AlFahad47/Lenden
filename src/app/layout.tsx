@@ -20,8 +20,19 @@ export const metadata: Metadata = {
   title: "NovaPay - Manage your finances",
   description: "A modern fintech application",
   icons: {
-    icon: "/logo-icon.png",
-    apple: "/logo-icon.png",
+    icon: [
+      {
+        url: "/favicon.svg",
+        type: "image/svg+xml",
+      },
+      {
+        url: "/logo.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
+    ],
+    apple: "/logo.png",
+    shortcut: "/favicon.svg",
   },
   manifest: "/manifest.json",
   appleWebApp: {
