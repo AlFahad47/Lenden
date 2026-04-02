@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Menu, X } from "lucide-react";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
@@ -16,6 +15,7 @@ import { ThemeToggleButton } from "@/components/ui/skiper-ui/skiper26";
 import { useTranslations } from 'next-intl';
 import LanguageSwitcher from "../LanguageSwitcher";
 import { openAuthModal } from "@/components/auth/authModalEvents";
+import Logo from "@/components/ui/Logo";
 
 type FullUser = {
   rank?: string;
@@ -189,14 +189,7 @@ const Navbar: React.FC = () => {
           <div className="shrink-0 z-20">
             {mounted && (
               <Link href="/" className="flex items-center justify-center hover:opacity-80 transition-opacity">
-                <div className="relative w-10 h-10">
-                  <Image
-                    src={theme === "dark" || (systemTheme === "dark" && theme === "system") ? "/logo-light.png" : "/logo-dark.png"}
-                    alt="NovaPay Logo"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
+                <Logo variant="image" className="w-8 h-8" />
               </Link>
             )}
           </div>
